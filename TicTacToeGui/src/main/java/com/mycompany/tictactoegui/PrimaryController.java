@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -16,6 +17,12 @@ public class PrimaryController implements Initializable {
     @FXML
     private GridPane gridPane;
     private char currentPlayer = 'X';
+    @FXML
+    private ImageView userAvater2;
+    @FXML
+    private ImageView userAvater1;
+    @FXML
+    private ImageView userAvater21;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
