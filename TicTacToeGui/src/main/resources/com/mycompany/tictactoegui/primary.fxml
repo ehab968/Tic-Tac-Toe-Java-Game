@@ -24,11 +24,16 @@
          <children>
             <StackPane minHeight="0.0" minWidth="0.0" prefHeight="40.0" prefWidth="43.0">
                <children>
-                  <ImageView fx:id="userAvater2" fitHeight="79.0" fitWidth="57.0" opacity="0.48" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="userAvater2" fitHeight="44.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../../../../../../../../download.jpg" />
+                        <Image url="@../../../images/user.jpg" />
                      </image>
                   </ImageView>
+                     <ImageView fx:id="userAvater211" fitHeight="20.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="BOTTOM_RIGHT">
+                        <image>
+                           <Image url="@../../../images/o.png" />
+                        </image>
+                     </ImageView>
                </children>
             </StackPane>
             <VBox minHeight="0.0" minWidth="0.0" prefHeight="51.0" prefWidth="80.0">
@@ -52,14 +57,14 @@
             </VBox>
             <StackPane minHeight="0.0" minWidth="0.0" opacity="0.61" prefHeight="48.0" prefWidth="58.0" style="-fx-background-color: #e6e7eb;">
                <children>
-                  <ImageView fx:id="userAvater1" fitHeight="64.0" fitWidth="77.0" opacity="0.65" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="userAvater1" fitHeight="54.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../../../../../../../../images.jpg" />
+                        <Image url="@../../../images/robot.jpg" />
                      </image>
                   </ImageView>
                   <ImageView fx:id="userAvater21" fitHeight="20.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="BOTTOM_LEFT">
                      <image>
-                        <Image url="@../../../../../../../../../../../download%20(1).png" />
+                        <Image url="@../../../images/x.png" />
                      </image>
                    
                   </ImageView>
@@ -140,7 +145,7 @@
 
     <!-- ================= BOTTOM ================= -->
     <bottom>
-      <FlowPane alignment="CENTER" hgap="15.0" prefHeight="114.0" prefWidth="604.0" vgap="10.0" BorderPane.alignment="CENTER">
+      <FlowPane alignment="CENTER" hgap="15.0" prefHeight="102.0" prefWidth="600.0" vgap="10.0" BorderPane.alignment="CENTER">
          <children>
             <Button fx:id="restartGameButton" alignment="CENTER" mnemonicParsing="false" prefHeight="38.0" prefWidth="315.0" style="-fx-background-color: #2096f3;-fx-background-radius: 5px;-fx-border-radius: 5px;" text="Restart the game" textAlignment="CENTER" textFill="WHITE" />
             <Button mnemonicParsing="false" prefHeight="37.0" prefWidth="315.0" style="-fx-background-color: #ffffff;-fx-border-color: black;-fx-border-radius: 5px;                -fx-border-width: 0.7px;" text="Exit to main menu" />
