@@ -4,9 +4,8 @@
  */
 package com.mycompany.tictactoegui;
 
-import com.mycompany.tictactoegui.interfaces.OnUserChanged;
+import com.mycompany.tictactoegui.interfaces.OnUserEvent;
 import java.util.HashMap;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -21,11 +20,10 @@ import javafx.scene.shape.Line;
 public class GameController {
     GridPane gridPane;
     Pane gamePane;
-    
-    
-    private OnUserChanged onUserChanged;
-    
-    
+
+    private OnUserEvent onUserChanged;
+    private OnUserEvent onUserWinning;
+
     private boolean isWin = false;
     private char currentPlayer = 'X';
     HashMap<Integer, Character> gridInputs;
@@ -51,7 +49,9 @@ public class GameController {
                         addShapeToCell(cell, currentPlayer);
                         checkWinning(cell);
                         cell.setDisable(true);
-                        changePlayer();
+                        if(!isWin){
+                            changePlayer();
+                        }
                     }
                 });
                 gridPane.add(cell, row, col);
@@ -59,8 +59,11 @@ public class GameController {
         }
     }
     
-    public final void setOnUserChanged(OnUserChanged listener) {
+    public final void setOnUserChanged(OnUserEvent listener) {
         this.onUserChanged = listener;
+    }
+    public final void setOnUserWinning(OnUserEvent listener) {
+        this.onUserWinning = listener;
     }
     
     private void changePlayer(){
@@ -117,6 +120,7 @@ public class GameController {
     private void userWon(int[] winCells) {
         isWin = true;
         drawWinningLine(winCells);
+        onUserWinning.handle(currentPlayer);
         System.out.println("User " + currentPlayer + " won the Game!!!");
     }
 

@@ -7,6 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 public class PrimaryController implements Initializable {
@@ -33,9 +34,45 @@ public class PrimaryController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         GameController gc = new GameController(gamePane, gridPane);
+
+        gc.setOnUserChanged((currentPlayer) -> {
+           onUserChange(currentPlayer);
+        });
         
-        gc.setOnUserChanged((currentPlayer)->{
-                System.out.println("Player changed to " + currentPlayer);
+          gc.setOnUserWinning((currentPlayer) -> {
+           onUserWinning(currentPlayer);
         });
     }
+
+    private void onUserChange(char currentPlayer){
+         System.out.println("Player changed to " + currentPlayer);
+
+            if (currentPlayer == 'X') {
+                userStatusText.setText("Your Turn");
+                userStatusText.setFill(Color.GREEN);
+                opponentStatusText.setText("Waiting...");
+                opponentStatusText.setFill(Color.RED);
+            } else {
+                userStatusText.setText("Waiting...");
+                userStatusText.setFill(Color.RED);
+                opponentStatusText.setText("Playing...");
+                opponentStatusText.setFill(Color.GREEN);
+            }
+    }
+    
+    
+     private void onUserWinning(char currentPlayer){
+         if (currentPlayer == 'X') {
+                userStatusText.setText("WON🎉🎉");
+                userStatusText.setFill(Color.GREEN);
+                opponentStatusText.setText("LOST");
+                opponentStatusText.setFill(Color.RED);
+            } else {
+                userStatusText.setText("LOST");
+                userStatusText.setFill(Color.RED);
+                opponentStatusText.setText("WON🎉🎉");
+                opponentStatusText.setFill(Color.GREEN);
+            }
+     
+     }
 }

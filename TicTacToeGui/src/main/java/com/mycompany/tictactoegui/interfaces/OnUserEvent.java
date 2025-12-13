@@ -9,7 +9,7 @@ package com.mycompany.tictactoegui.interfaces;
  * @author mahmo
  */
 @FunctionalInterface
-public interface OnUserChanged {
+public interface OnUserEvent {
     void handle(char currentPlayer);
 }
 
