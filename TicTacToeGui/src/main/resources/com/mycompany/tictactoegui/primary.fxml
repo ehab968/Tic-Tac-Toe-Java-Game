@@ -33,9 +33,9 @@
             </StackPane>
             <VBox minHeight="0.0" minWidth="0.0" prefHeight="51.0" prefWidth="80.0">
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Player         " textAlignment="RIGHT" wrappingWidth="80.3830292224884" />
+                  <Text fx:id="userNameText" strokeType="OUTSIDE" strokeWidth="0.0" text="Player         " textAlignment="RIGHT" wrappingWidth="80.3830292224884" />
                   <Text fill="#53ff87" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="80.3830292224884" />
-                  <Text fill="#53ff87" strokeType="OUTSIDE" strokeWidth="0.0" text="YourTurn" textAlignment="CENTER" wrappingWidth="80.3830292224884" />
+                  <Text fx:id="userStatusText" fill="#53ff87" strokeType="OUTSIDE" strokeWidth="0.0" text="YourTurn" textAlignment="CENTER" wrappingWidth="80.3830292224884" />
                </children>
             </VBox>
             <Text fill="#a1a1a1" strokeType="OUTSIDE" strokeWidth="0.0" text="VS" wrappingWidth="33.41796875">
@@ -45,9 +45,9 @@
             </Text>
             <VBox minHeight="0.0" minWidth="0.0" prefHeight="51.0" prefWidth="80.0">
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Computer" textAlignment="CENTER" wrappingWidth="80.3830292224884" />
+                  <Text fx:id="opponentNameText" strokeType="OUTSIDE" strokeWidth="0.0" text="Computer" textAlignment="CENTER" wrappingWidth="80.3830292224884" />
                   <Text fill="#53ff87" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="80.3830292224884" />
-                  <Text fill="#ff5454" strokeType="OUTSIDE" strokeWidth="0.0" text="Waiting" textAlignment="CENTER" wrappingWidth="80.3830292224884" />
+                  <Text fx:id="opponentStatusText" fill="#ff5454" strokeType="OUTSIDE" strokeWidth="0.0" text="Waiting" textAlignment="CENTER" wrappingWidth="80.3830292224884" />
                </children>
             </VBox>
             <StackPane minHeight="0.0" minWidth="0.0" opacity="0.61" prefHeight="48.0" prefWidth="58.0" style="-fx-background-color: #e6e7eb;">

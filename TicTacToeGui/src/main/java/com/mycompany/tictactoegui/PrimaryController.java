@@ -7,6 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 
 public class PrimaryController implements Initializable {
 
@@ -20,6 +21,14 @@ public class PrimaryController implements Initializable {
     private ImageView userAvater1;
     @FXML
     private ImageView userAvater21;
+    @FXML
+    private Text userNameText;
+    @FXML
+    private Text userStatusText;
+    @FXML
+    private Text opponentNameText;
+    @FXML
+    private Text opponentStatusText;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
