@@ -3,10 +3,10 @@ package com.mycompany.tictactoegui;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.ResourceBundle;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -19,9 +19,16 @@ public class PrimaryController implements Initializable {
     private Pane gamePane;
     @FXML
     private GridPane gridPane;
-    private char currentPlayer = 'X';
+    @FXML
+    private ImageView userAvater2;
+    @FXML
+    private ImageView userAvater1;
+    @FXML
+    private ImageView userAvater21;
 
-    private HashMap<Integer, Character> gridInputs = new HashMap();
+    private boolean isWin = false;
+    private char currentPlayer = 'X';
+    private HashMap<Integer, Character> gridInputs = new HashMap();// to save user inputs
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -31,13 +38,13 @@ public class PrimaryController implements Initializable {
                 cellId++;
                 StackPane cell = new StackPane();
                 cell.setPrefSize(120, 120);
-
                 cell.setId(Integer.toString(cellId));
 
                 cell.setOnMouseClicked((MouseEvent e) -> {
-                    if (cell.isDisable() == false) {
+                    if (cell.isDisable() == false && !isWin) {
                         addShapeToCell(cell, currentPlayer);
-                        didWin(cell);
+                        checkWinning(cell);
+
                         cell.setDisable(true);
                         cell.setOnMouseClicked(null);
                         currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
@@ -64,7 +71,7 @@ public class PrimaryController implements Initializable {
         }
     }
 
-    private void didWin(StackPane cell) {
+    private void checkWinning(StackPane cell) {
 
         int cellId = Integer.parseInt(cell.getId());
         char cellShape = gridInputs.get(cellId);
@@ -93,12 +100,13 @@ public class PrimaryController implements Initializable {
 
     }
 
-    private void userWon(int[] line) {
-        drawWinLine(line);
+    private void userWon(int[] winCells) {
+        isWin = true;
+        drawWinningLine(winCells);
         System.out.println("User " + currentPlayer + " won the Game!!!");
     }
 
-    private void drawWinLine(int[] winCells) {
+    private void drawWinningLine(int[] winCells) {
         int first = winCells[0];
         int last = winCells[2];
 
@@ -143,5 +151,4 @@ public class PrimaryController implements Initializable {
         }
         return null;
     }
-
 }
