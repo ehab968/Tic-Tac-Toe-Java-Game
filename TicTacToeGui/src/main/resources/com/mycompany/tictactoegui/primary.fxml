@@ -33,7 +33,7 @@
             </StackPane>
             <VBox minHeight="0.0" minWidth="0.0" prefHeight="51.0" prefWidth="80.0">
                <children>
-                  <Text fx:id="userNameText" strokeType="OUTSIDE" strokeWidth="0.0" text="Player         " textAlignment="RIGHT" wrappingWidth="80.3830292224884" />
+                  <Text fx:id="userNameText" strokeType="OUTSIDE" strokeWidth="0.0" text="Player X   " textAlignment="CENTER" wrappingWidth="80.3830292224884" />
                   <Text fill="#53ff87" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="80.3830292224884" />
                   <Text fx:id="userStatusText" fill="#53ff87" strokeType="OUTSIDE" strokeWidth="0.0" text="YourTurn" textAlignment="CENTER" wrappingWidth="80.3830292224884" />
                </children>
@@ -45,7 +45,7 @@
             </Text>
             <VBox minHeight="0.0" minWidth="0.0" prefHeight="51.0" prefWidth="80.0">
                <children>
-                  <Text fx:id="opponentNameText" strokeType="OUTSIDE" strokeWidth="0.0" text="Computer" textAlignment="CENTER" wrappingWidth="80.3830292224884" />
+                  <Text fx:id="opponentNameText" strokeType="OUTSIDE" strokeWidth="0.0" text="Player O" textAlignment="CENTER" wrappingWidth="80.3830292224884" />
                   <Text fill="#53ff87" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="80.3830292224884" />
                   <Text fx:id="opponentStatusText" fill="#ff5454" strokeType="OUTSIDE" strokeWidth="0.0" text="Waiting" textAlignment="CENTER" wrappingWidth="80.3830292224884" />
                </children>
@@ -142,7 +142,7 @@
     <bottom>
       <FlowPane alignment="CENTER" hgap="15.0" prefHeight="114.0" prefWidth="604.0" vgap="10.0" BorderPane.alignment="CENTER">
          <children>
-            <Button alignment="CENTER" mnemonicParsing="false" prefHeight="38.0" prefWidth="315.0" style="-fx-background-color: #2096f3;-fx-background-radius: 5px;-fx-border-radius: 5px;" text="Restart the game" textAlignment="CENTER" textFill="WHITE" />
+            <Button fx:id="restartGameButton" alignment="CENTER" mnemonicParsing="false" prefHeight="38.0" prefWidth="315.0" style="-fx-background-color: #2096f3;-fx-background-radius: 5px;-fx-border-radius: 5px;" text="Restart the game" textAlignment="CENTER" textFill="WHITE" />
             <Button mnemonicParsing="false" prefHeight="37.0" prefWidth="315.0" style="-fx-background-color: #ffffff;-fx-border-color: black;-fx-border-radius: 5px;                -fx-border-width: 0.7px;" text="Exit to main menu" />
          </children>
       </FlowPane>
