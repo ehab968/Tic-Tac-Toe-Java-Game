@@ -6,6 +6,7 @@ package com.mycompany.tictactoegui;
 
 import com.mycompany.tictactoegui.interfaces.OnUserEvent;
 import java.util.HashMap;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -18,6 +19,7 @@ import javafx.scene.shape.Line;
  * @author mahmo
  */
 public class GameController {
+
     GridPane gridPane;
     Pane gamePane;
 
@@ -30,13 +32,14 @@ public class GameController {
 
     GameController(Pane gamePane, GridPane gridPane) {
         this.gridPane = gridPane;
-        this.gamePane= gamePane;
+        this.gamePane = gamePane;
         this.gridInputs = new HashMap();
         initiateGrid();
     }
 
     private void initiateGrid() {
         int cellId = 0;
+        isWin = false;
         for (int col = 0; col < 3; col++) {
             for (int row = 0; row < 3; row++) {
                 cellId++;
@@ -49,7 +52,7 @@ public class GameController {
                         addShapeToCell(cell, currentPlayer);
                         checkWinning(cell);
                         cell.setDisable(true);
-                        if(!isWin){
+                        if (!isWin) {
                             changePlayer();
                         }
                     }
@@ -58,17 +61,36 @@ public class GameController {
             }
         }
     }
-    
+
     public final void setOnUserChanged(OnUserEvent listener) {
         this.onUserChanged = listener;
     }
+
     public final void setOnUserWinning(OnUserEvent listener) {
         this.onUserWinning = listener;
     }
-    
-    private void changePlayer(){
+
+    public final void restartGame() {
+       gridInputs.clear();
+        ObservableList<Node> x =gridPane.getChildren();
+        for(Node n : gridPane.getChildren()){
+           if(n instanceof StackPane && Integer.parseInt(n.getId())>=1 && Integer.parseInt(n.getId())<=9 ){
+               ((StackPane) n).getChildren().clear();
+           }
+        }
+         for(Node n : gamePane.getChildren()){
+           if(n instanceof Line ){
+               ((Line) n).setVisible(false);
+           }
+        }
+
+       initiateGrid();
+       changePlayer();
+    }
+
+    private void changePlayer() {
         currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
-        
+
         if (onUserChanged != null) {
             onUserChanged.handle(currentPlayer);
         }
