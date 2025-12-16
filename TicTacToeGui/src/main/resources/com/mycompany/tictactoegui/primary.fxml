@@ -24,12 +24,12 @@
          <children>
             <StackPane minHeight="0.0" minWidth="0.0" opacity="0.61" prefHeight="48.0" prefWidth="58.0" style="-fx-background-color: #e6e7eb;">
                <children>
-                  <ImageView fx:id="userAvater1" fitHeight="54.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../../images/robot.jpg" />
-                     </image>
-                  </ImageView>
-                  <ImageView fx:id="userAvater21" fitHeight="20.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="BOTTOM_RIGHT">
+                     <ImageView fx:id="userAvater2" fitHeight="44.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@../../../images/user.jpg" />
+                        </image>
+                     </ImageView>
+                  <ImageView fx:id="userAvater21" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="BOTTOM_RIGHT">
                      <image>
                         <Image url="@../../../images/x.png" />
                      </image>
@@ -58,12 +58,12 @@
             </VBox>
             <StackPane minHeight="0.0" minWidth="0.0" prefHeight="40.0" prefWidth="43.0">
                <children>
-                  <ImageView fx:id="userAvater2" fitHeight="44.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="userAvater1" fitHeight="47.0" fitWidth="51.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../images/user.jpg" />
+                        <Image url="@../../../images/robot.jpg" />
                      </image>
                   </ImageView>
-                     <ImageView fx:id="userAvater211" fitHeight="20.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="BOTTOM_LEFT">
+                     <ImageView fx:id="userAvater211" fitHeight="18.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="BOTTOM_LEFT">
                         <image>
                            <Image url="@../../../images/o.png" />
                         </image>
