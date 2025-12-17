@@ -1,58 +1,49 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.tictactoegui;
 
 import com.mycompany.tictactoegui.interfaces.OnUserEvent;
-import java.util.HashMap;
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
+import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
-
-/**
- *
- * @author mahmo
- */
 public class GameController {
 
     GridPane gridPane;
     Pane gamePane;
-
     private OnUserEvent onUserChanged;
     private OnUserEvent onUserWinning;
-
+    private char[][] charMatrix = new char[3][3];
+    private StackPane[][] stackCells = new StackPane[3][3]; // => كل ستاك بان هنا ريفرنس للسيل اللى موجودة فى الجريد بان
     private boolean isWin = false;
     private char currentPlayer = 'X';
-    HashMap<Integer, Character> gridInputs;
 
     GameController(Pane gamePane, GridPane gridPane) {
         this.gridPane = gridPane;
         this.gamePane = gamePane;
-        this.gridInputs = new HashMap();
         initiateGrid();
     }
 
     private void initiateGrid() {
-        int cellId = 0;
-        isWin = false;
         for (int col = 0; col < 3; col++) {
             for (int row = 0; row < 3; row++) {
-                cellId++;
                 StackPane cell = new StackPane();
+                stackCells[row][col] = cell;
                 cell.setPrefSize(120, 120);
-                cell.setId(Integer.toString(cellId));
-
+                final int r = row;
+                final int c = col;
                 cell.setOnMouseClicked((MouseEvent e) -> {
-                    if (!isWin) {
+                    if (cell.isDisable() == false && !isWin) {
                         addShapeToCell(cell, currentPlayer);
-                        checkWinning(cell);
+                        charMatrix[r][c] = currentPlayer;
                         cell.setDisable(true);
-                        if (!isWin) {
+                        int[][] winIndexes = checkWin();
+
+                        if (isWin) {
+                            drawWinningLine(winIndexes);
+                            onUserWinning.handle(currentPlayer);
+                        } else if (!isWin) {
                             changePlayer();
                         }
                     }
@@ -70,22 +61,14 @@ public class GameController {
         this.onUserWinning = listener;
     }
 
-    public final void restartGame() {
-       gridInputs.clear();
-        ObservableList<Node> x =gridPane.getChildren();
-        for(Node n : gridPane.getChildren()){
-           if(n instanceof StackPane && Integer.parseInt(n.getId())>=1 && Integer.parseInt(n.getId())<=9 ){
-               ((StackPane) n).getChildren().clear();
-           }
+    private void addShapeToCell(StackPane cell, char player) {
+        if (player == 'X') {
+            XShape x = new XShape(45);
+            cell.getChildren().add(x);
+        } else {
+            OShape o = new OShape(15);
+            cell.getChildren().add(o);
         }
-         for(Node n : gamePane.getChildren()){
-           if(n instanceof Line ){
-               ((Line) n).setVisible(false);
-           }
-        }
-
-       initiateGrid();
-       changePlayer();
     }
 
     private void changePlayer() {
@@ -95,101 +78,74 @@ public class GameController {
             onUserChanged.handle(currentPlayer);
         }
     }
-
-    private void addShapeToCell(StackPane cell, char player) {
-        int cellId = Integer.parseInt(cell.getId());
-
-        if (player == 'X') {
-            XShape x = new XShape(45);
-            cell.getChildren().add(x);
-            gridInputs.put(cellId, 'X');
-        } else {
-            OShape o = new OShape(15);
-            cell.getChildren().add(o);
-            gridInputs.put(cellId, 'O');
+    
+    public final void restartGame() {
+        gamePane.getChildren().removeIf(n -> n instanceof Line);
+        isWin = false;
+        for (int r = 0; r < 3; r++) {
+            for (int c = 0; c < 3; c++) {
+                charMatrix[r][c] = '\0';
+            }
+        }
+        for (int r = 0; r < 3; r++) {
+            for (int c = 0; c < 3; c++) {
+                StackPane cell = stackCells[r][c];
+                cell.getChildren().clear();
+                cell.setDisable(false);
+            }
+        }
+        currentPlayer = 'X';
+        if (onUserChanged != null) {
+            onUserChanged.handle(currentPlayer);
         }
     }
 
-    private void checkWinning(StackPane cell) {
 
-        int cellId = Integer.parseInt(cell.getId());
-        char cellShape = gridInputs.get(cellId);
-
-        int[][] wins = {
-            //Horizontal
-            {1, 2, 3}, {4, 5, 6}, {7, 8, 9},
-            //Vertical
-            {1, 4, 7}, {2, 5, 8}, {3, 6, 9},
-            // diagonal
-            {1, 5, 9}, {3, 5, 7}
-        };
-
-        for (int[] line : wins) {
-            if (gridInputs.get(line[0]) != null
-                    && gridInputs.get(line[1]) != null
-                    && gridInputs.get(line[2]) != null
-                    && gridInputs.get(line[0]) == cellShape
-                    && gridInputs.get(line[1]) == cellShape
-                    && gridInputs.get(line[2]) == cellShape) {
-
-                userWon(line);
-                return;
+    private int[][] checkWin() {
+        for (int r = 0; r < 3; r++) {
+            if (charMatrix[r][0] != '\0' && charMatrix[r][0] == charMatrix[r][1] && charMatrix[r][1] == charMatrix[r][2]) {
+                isWin = true;
+                int[][] res = {{r, 0}, {r, 1}, {r, 2}};
+                return res;
             }
         }
-
-    }
-
-    private void userWon(int[] winCells) {
-        isWin = true;
-        drawWinningLine(winCells);
-        onUserWinning.handle(currentPlayer);
-        System.out.println("User " + currentPlayer + " won the Game!!!");
-    }
-
-    private void drawWinningLine(int[] winCells) {
-        int first = winCells[0];
-        int last = winCells[2];
-
-        double[] start = getCellCenter(first);
-        double[] end = getCellCenter(last);
-
-        if (start == null || end == null) {
-            return;
+        for (int c = 0; c < 3; c++) {
+            if (charMatrix[0][c] != '\0' && charMatrix[0][c] == charMatrix[1][c] && charMatrix[1][c] == charMatrix[2][c]) {
+                isWin = true;
+                int[][] res = {{0, c}, {1, c}, {2, c}};
+                return res;
+            }
         }
-        Line line = new Line();
-        line.setStartX(start[0]);
-        line.setStartY(start[1]);
-        line.setEndX(end[0]);
-        line.setEndY(end[1]);
-
-        line.setStrokeWidth(6);
-        line.setStyle("-fx-stroke: red;");
-
-        gamePane.getChildren().add(line);
-    }
-
-    private double[] getCellCenter(int cellId) {
-        gridPane.applyCss();
-        gridPane.layout();
-        for (Node n : gridPane.getChildren()) {
-            if (!(n instanceof StackPane)) {
-                continue;
-            }
-
-            if (n.getId() != null && Integer.parseInt(n.getId()) == cellId) {
-                System.out.println(n);
-                // Get center in local coordinates
-                double centerX = n.getBoundsInLocal().getWidth() / 2;
-                double centerY = n.getBoundsInLocal().getHeight() / 2;
-                System.out.println("centerX = " + centerX + "centerY = " + centerY);
-                // Convert to gamePane coordinates
-                javafx.geometry.Point2D p = n.localToScene(centerX, centerY);
-                javafx.geometry.Point2D pInGamePane = gamePane.sceneToLocal(p);
-
-                return new double[]{pInGamePane.getX(), pInGamePane.getY()};
-            }
+        if (charMatrix[0][0] != '\0' && charMatrix[0][0] == charMatrix[1][1] && charMatrix[1][1] == charMatrix[2][2]) {
+            isWin = true;
+            int[][] res = {{0, 0}, {1, 1}, {2, 2}};
+            return res;
+        }
+        if (charMatrix[0][2] != '\0' && charMatrix[0][2] == charMatrix[1][1] && charMatrix[1][1] == charMatrix[2][0]) {
+            isWin = true;
+            int[][] res = {{0, 2}, {1, 1}, {2, 0}};
+            return res;
         }
         return null;
     }
 
+    private void drawWinningLine(int[][] winIndex) {
+        gridPane.applyCss();
+        gridPane.layout();
+        // {0,0} {0,1} {0,2} => win indexs
+        int r1 = winIndex[0][0]; // => 0
+        int c1 = winIndex[0][1]; // => 0
+        int r3 = winIndex[2][0]; // => 0
+        int c3 = winIndex[2][1]; // => 2       
+        StackPane _1stCell = stackCells[r1][c1];
+        StackPane _3rdCell = stackCells[r3][c3];
+
+        Bounds b1 = _1stCell.localToScene(_1stCell.getBoundsInLocal());
+        Bounds b3 = _3rdCell.localToScene(_3rdCell.getBoundsInLocal());
+        Point2D p1 = gamePane.sceneToLocal(b1.getCenterX(), b1.getCenterY());
+        Point2D p3 = gamePane.sceneToLocal(b3.getCenterX(), b3.getCenterY());
+        Line line = new Line(p1.getX(), p1.getY(), p3.getX(), p3.getY());
+        line.setStrokeWidth(3);
+        gamePane.getChildren().add(line);
+    }
 }
