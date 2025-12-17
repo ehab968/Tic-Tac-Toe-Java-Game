@@ -8,12 +8,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
-
 public class GameController {
 
     GridPane gridPane;
     Pane gamePane;
-
     private OnUserEvent onUserChanged;
     private OnUserEvent onUserWinning;
     private char[][] charMatrix = new char[3][3];
