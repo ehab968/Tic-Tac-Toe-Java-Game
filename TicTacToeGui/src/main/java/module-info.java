@@ -5,4 +5,5 @@ module com.mycompany.tictactoegui {
 
     opens com.mycompany.tictactoegui to javafx.fxml;
     exports com.mycompany.tictactoegui;
+    requires tic.tac.toe.shared;
 }
