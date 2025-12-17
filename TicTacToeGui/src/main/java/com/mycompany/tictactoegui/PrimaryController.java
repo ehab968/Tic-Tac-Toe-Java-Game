@@ -34,6 +34,8 @@ public class PrimaryController implements Initializable {
     private Text opponentStatusText;
     @FXML
     private Button restartGameButton;
+    @FXML
+    private ImageView userAvater211;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
