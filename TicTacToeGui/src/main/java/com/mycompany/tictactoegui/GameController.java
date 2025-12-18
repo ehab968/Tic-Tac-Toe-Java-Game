@@ -61,15 +61,6 @@ public class GameController {
         this.onUserWinning = listener;
     }
 
-    public void onUserWon(int[] winningLine) {
-        isWin = true;
-        drawWinningLine(winningLine);
-
-        if (onUserWinning != null) {
-            onUserWinning.handle(currentPlayer);
-        }
-    }
-
     private void addShapeToCell(StackPane cell, char player) {
         if (player == 'X') {
             XShape x = new XShape(45);
@@ -148,7 +139,7 @@ public class GameController {
         Point2D p3 = gamePane.sceneToLocal(b3.getCenterX(), b3.getCenterY());
         Line line = new Line(p1.getX(), p1.getY(), p3.getX(), p3.getY());
         line.setStrokeWidth(6);
-        
+
         if (charMatrix[winIndex[0]] == 'X') {
             line.setStyle("-fx-stroke: red;");
         } else {
@@ -156,4 +147,18 @@ public class GameController {
         }
         gamePane.getChildren().add(line);
     }
+
+    public void onUserWon(int[] winningLine) {
+        isWin = true;
+        drawWinningLine(winningLine);
+        showWinningDialog();
+        if (onUserWinning != null) {
+            onUserWinning.handle(currentPlayer);
+        }
+    }
+
+    private void showWinningDialog() {
+        WinDialog.show(currentPlayer);
+    }
+
 }
