@@ -148,7 +148,7 @@
       <FlowPane alignment="CENTER" hgap="15.0" prefHeight="102.0" prefWidth="600.0" vgap="10.0" BorderPane.alignment="CENTER">
          <children>
             <Button fx:id="restartGameButton" alignment="CENTER" mnemonicParsing="false" prefHeight="38.0" prefWidth="315.0" style="-fx-background-color: #2096f3;-fx-background-radius: 5px;-fx-border-radius: 5px;" text="Restart the game" textAlignment="CENTER" textFill="WHITE" />
-            <Button mnemonicParsing="false" prefHeight="37.0" prefWidth="315.0" style="-fx-background-color: #ffffff;-fx-border-color: black;-fx-border-radius: 5px;                -fx-border-width: 0.7px;" text="Exit to main menu" />
+            <Button mnemonicParsing="false" onAction="#onExitPressed" prefHeight="37.0" prefWidth="315.0" style="-fx-background-color: #ffffff;-fx-border-color: black;-fx-border-radius: 5px;                -fx-border-width: 0.7px;" text="Exit to main menu" />
          </children>
       </FlowPane>
    </bottom>
