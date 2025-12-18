@@ -5,7 +5,8 @@
 package com.mycompany.tictactoegui;
 
 import com.iti.group3.tic_tac_toe_shared.LoginData;
-import com.iti.group3.tic_tac_toe_shared.LoginResponse;
+import com.iti.group3.tic_tac_toe_shared.Response;
+import com.iti.group3.tic_tac_toe_shared.UserData;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
@@ -68,12 +69,12 @@ public class LoginController implements Initializable {
                     ear = new ObjectInputStream(s.getInputStream());
                     mouth.writeObject(request);
                     
-                    LoginResponse response = (LoginResponse) ear.readObject();
+                    Response<UserData> response = (Response) ear.readObject();
                     
                    
                      if(response.isSuccess()) {
-                        showMessage("Welcome " + response.getUser().getName(), true);
-                        System.out.println("Welcome " + response.getUser().getName());
+                        showMessage("Welcome " + response.getData().getUserName(), true);
+                        System.out.println("Welcome " + response.getData().getUserName());
                     } else {
                         showMessage(response.getMessage(), false);
                         System.out.println(response.getMessage());
@@ -110,13 +111,9 @@ public class LoginController implements Initializable {
         errorBox.setStyle("-fx-background-color: #fef2f2; -fx-border-color: #fee2e2;");
         errorLabel.setStyle("-fx-text-fill: #dc2626; -fx-font-size: 11; -fx-font-weight: bold;");
     }
-    PauseTransition delay = new PauseTransition(Duration.seconds(.5));
-delay.setOnFinished(e -> {
-    errorBox.setVisible(false);
-    errorBox.setManaged(false);
-});
-delay.play();
-});
+    
+  
+    });
   
 }
 
