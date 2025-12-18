@@ -64,7 +64,7 @@ public class LoginController implements Initializable {
                 try {
                    
                     LoginData request = new LoginData(userName, password);
-                    s=new Socket(InetAddress.getLocalHost(),5005);
+                    s=new Socket(InetAddress.getLocalHost(),5006);
                     mouth = new ObjectOutputStream(s.getOutputStream());
                     ear = new ObjectInputStream(s.getInputStream());
                     mouth.writeObject(request);
