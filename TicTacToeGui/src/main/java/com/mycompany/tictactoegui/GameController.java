@@ -41,13 +41,13 @@ public class GameController {
                         addShapeToCell(cell, currentPlayer);
                         charMatrix[id] = currentPlayer;
                         cell.setDisable(true);
-                        
+
                         checkWin();
                         if (!isWin) {
                             changePlayer();
                         }
                     }
-                });  
+                });
                 gridPane.add(cell, col, row);
             }
         }
@@ -105,8 +105,12 @@ public class GameController {
         }
     }
 
+    /*
+        0   1   2
+        3   4   5
+        6   7   8
+     */
     private void checkWin() {
-        // Define winning combinations using 2D coordinates
         int[][] wins = {
             // Horizontal
             {0, 1, 2}, {3, 4, 5}, {6, 7, 8},
@@ -117,6 +121,7 @@ public class GameController {
         };
 
         for (int[] line : wins) {
+            //{0, 1, 2}
             char first = charMatrix[line[0]];
             char second = charMatrix[line[1]];
             char third = charMatrix[line[2]];
@@ -143,7 +148,12 @@ public class GameController {
         Point2D p3 = gamePane.sceneToLocal(b3.getCenterX(), b3.getCenterY());
         Line line = new Line(p1.getX(), p1.getY(), p3.getX(), p3.getY());
         line.setStrokeWidth(6);
-        line.setStyle("-fx-stroke: red;");
+        
+        if (charMatrix[winIndex[0]] == 'X') {
+            line.setStyle("-fx-stroke: red;");
+        } else {
+            line.setStyle("-fx-stroke: blue;");
+        }
         gamePane.getChildren().add(line);
     }
 }
