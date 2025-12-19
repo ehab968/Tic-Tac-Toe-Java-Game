@@ -76,7 +76,7 @@ public class LoginController implements Initializable {
                         showMessage("Welcome " + response.getData().getUserName(), true);
                         System.out.println("Welcome " + response.getData().getUserName());
                     } else {
-                        showMessage(response.getMessage(), false);
+                        showMessage(response.getMessage().toString(), false);
                         System.out.println(response.getMessage());
                     }
                   
