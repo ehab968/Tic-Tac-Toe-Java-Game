@@ -52,6 +52,11 @@ public class HomeController implements Initializable {
 
     @FXML
     private void onSelectOnline(ActionEvent event) {
+        try {
+            App.setRoot("login");
+        } catch (IOException ex) {
+            System.getLogger(HomeController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
     }
 
 }

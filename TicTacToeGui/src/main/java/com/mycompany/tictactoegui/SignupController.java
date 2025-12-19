@@ -77,7 +77,7 @@ public class SignupController implements Initializable {
                 showAlert("Success", "Account created successfully!");
                 clearFields();
                  App.setRoot("login");
-            }else if(new Command(CommandType.USERNAME_EXISTS).equals(response)){
+            }else if(cmd.getType() == CommandType.USERNAME_EXISTS){
                 showAlert("Error", "Sorry This account is used before");
                 System.out.println("-------------------------------");
                 System.out.println("********************************");
