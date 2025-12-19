@@ -8,9 +8,11 @@ package com.mycompany.tictactoegui;
  *
  * @author mahmo
  */
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -32,18 +34,19 @@ public class WinDialog {
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setResizable(false);
-            stage.initStyle(StageStyle.UNIFIED);
+            stage.initStyle(StageStyle.UNDECORATED);
+            scene.setFill(Color.TRANSPARENT);
             stage.setScene(scene);
-            stage.show();
             stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                 @Override
                 public void handle(final WindowEvent event) {
                     controller.onBackToMainMenu();
                 }
             });
-
-            controller.playVideo();
+            
+            stage.show();
             controller.setgameController(gameController);
+            controller.playVideo();
         } catch (Exception e) {
             e.printStackTrace();
         }

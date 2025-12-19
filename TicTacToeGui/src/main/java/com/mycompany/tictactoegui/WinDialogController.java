@@ -18,8 +18,12 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 import java.util.Random;
+import javafx.event.ActionEvent;
 
 import javafx.fxml.FXML;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 
 public class WinDialogController {
 
@@ -33,16 +37,19 @@ public class WinDialogController {
 
     @FXML
     private MediaView mediaView;
+    private VideoManager videoManager;
 
-    private MediaPlayer mediaPlayer;
     private GameController gameController;
     @FXML
     private Label videoText;
     Random rand;
     @FXML
     private Label opponentName;
+    @FXML
+    private StackPane root;
 
     public void initialize() {
+        videoManager = new VideoManager("/videos_audios/bravo.mp4", mediaView);
         rand = new Random();
     }
 
@@ -55,6 +62,11 @@ public class WinDialogController {
         videoText.setText(getRandomCongratsText(winner));
     }
 
+    @FXML
+    private void onCloseButton(ActionEvent event) {
+        onBackToMainMenu();
+    }
+
     public void onBackToMainMenu() {
         close();
         gameController.exitGame();
@@ -63,7 +75,6 @@ public class WinDialogController {
     public void onPlayAgain() {
         close();
         Platform.runLater(new Runnable() {
-
             @Override
             public void run() {
                 gameController.restartGame();
@@ -73,27 +84,13 @@ public class WinDialogController {
     }
 
     public void playVideo() {
-        String path = getClass()
-                .getResource("/videos_audios/bravo.mp4")
-                .toExternalForm();
-
-        Media media = new Media(path);
-        mediaPlayer = new MediaPlayer(media);
-        mediaView.setMediaPlayer(mediaPlayer);
-
-        mediaPlayer.play();
+       videoManager.playVideo();
     }
 
     private void close() {
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-        }
+        videoManager.stop();
         Stage stage = (Stage) mediaView.getScene().getWindow();
         stage.close();
-    }
-
-    private Runnable Runnable() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     private String getRandomCongratsText(char winner) {
