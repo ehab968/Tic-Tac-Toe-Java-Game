@@ -64,7 +64,7 @@ public class LoginController implements Initializable {
                 try {
                    
                     LoginData request = new LoginData(userName, password);
-                    s=new Socket(InetAddress.getLocalHost(),5006);
+                    s=new Socket(InetAddress.getLocalHost(),5005);
                     mouth = new ObjectOutputStream(s.getOutputStream());
                     ear = new ObjectInputStream(s.getInputStream());
                     mouth.writeObject(request);
@@ -75,6 +75,8 @@ public class LoginController implements Initializable {
                      if(response.isSuccess()) {
                         showMessage("Welcome " + response.getData().getUserName(), true);
                         System.out.println("Welcome " + response.getData().getUserName());
+                        App.setRoot("onLineUsers");
+                        
                     } else {
                         showMessage(response.getMessage().toString(), false);
                         System.out.println(response.getMessage());
