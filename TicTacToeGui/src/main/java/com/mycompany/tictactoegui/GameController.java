@@ -1,6 +1,7 @@
 package com.mycompany.tictactoegui;
 
 import com.mycompany.tictactoegui.interfaces.OnUserEvent;
+import java.io.IOException;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
@@ -95,6 +96,14 @@ public class GameController {
             onUserChanged.handle(currentPlayer);
         }
     }
+    
+    public final void exitGame() {
+        try {
+            App.setRoot("home");
+        } catch (IOException ex) {
+            System.getLogger(PrimaryController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+    }
 
     /*
         0   1   2
@@ -158,7 +167,7 @@ public class GameController {
     }
 
     private void showWinningDialog() {
-        WinDialog.show(currentPlayer);
+        WinDialog.show(currentPlayer,this);
     }
 
 }

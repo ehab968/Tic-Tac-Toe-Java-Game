@@ -39,9 +39,11 @@ public class PrimaryController implements Initializable {
     @FXML
     private ImageView userAvater211;
 
+    GameController gc;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        GameController gc = new GameController(gamePane, gridPane);
+        gc = new GameController(gamePane, gridPane);
 
         gc.setOnUserChanged((currentPlayer) -> {
             onUserChange(currentPlayer);
@@ -50,9 +52,9 @@ public class PrimaryController implements Initializable {
         gc.setOnUserWinning((currentPlayer) -> {
             onUserWinning(currentPlayer);
         });
-        
-         restartGameButton.setOnAction((action) -> {
-            gc.restartGame();  
+
+        restartGameButton.setOnAction((action) -> {
+            gc.restartGame();
         });
     }
 
@@ -88,10 +90,6 @@ public class PrimaryController implements Initializable {
 
     @FXML
     private void onExitPressed(ActionEvent event) {
-        try {
-            App.setRoot("home");
-        } catch (IOException ex) {
-            System.getLogger(PrimaryController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-        }
+        gc.exitGame();
     }
 }
