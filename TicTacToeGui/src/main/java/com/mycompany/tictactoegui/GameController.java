@@ -36,8 +36,8 @@ public class GameController {
                 cell.setPrefSize(120, 120);
                 cell.setId(Integer.toString(cellId));
                 final int id = cellId;
-                cell.setOnMouseClicked((MouseEvent e) -> {
                     if (cell.isDisable() == false && !isWin) {
+                cell.setOnMouseClicked((MouseEvent e) -> {
                         doClickSound();
                         e.consume();
                     if (!cell.isDisable() && !isWin) {
@@ -51,10 +51,12 @@ public class GameController {
                         }
                     }
                 });
+                }
                 gridPane.add(cell, col, row);
             }
         }
     }
+        
 
     private void doClickSound(){
         if(currentPlayer == 'X')
