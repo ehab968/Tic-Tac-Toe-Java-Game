@@ -37,6 +37,9 @@ public class GameController {
                 cell.setId(Integer.toString(cellId));
                 final int id = cellId;
                 cell.setOnMouseClicked((MouseEvent e) -> {
+                    if (cell.isDisable() == false && !isWin) {
+                        doClickSound();
+                        e.consume();
                     if (!cell.isDisable() && !isWin) {
                         addShapeToCell(cell, currentPlayer);
                         charMatrix[id] = currentPlayer;
@@ -53,6 +56,12 @@ public class GameController {
         }
     }
 
+    private void doClickSound(){
+        if(currentPlayer == 'X')
+            SoundPlayer.PlayerXClick();
+        else if(currentPlayer == 'O')
+            SoundPlayer.playerOClick();
+    }
     public final void setOnUserChanged(OnUserEvent listener) {
         this.onUserChanged = listener;
     }
