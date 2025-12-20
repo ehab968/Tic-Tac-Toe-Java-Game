@@ -1,7 +1,9 @@
 package com.mycompany.tictactoegui;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -50,11 +52,8 @@ public class PrimaryController implements Initializable {
         });
         
          restartGameButton.setOnAction((action) -> {
-            gc.restartGame();
-            
+            gc.restartGame();  
         });
-
-        
     }
 
     private void onUserChange(char currentPlayer) {
@@ -84,6 +83,15 @@ public class PrimaryController implements Initializable {
             userStatusText.setFill(Color.RED);
             opponentStatusText.setText("WON🎉🎉");
             opponentStatusText.setFill(Color.GREEN);
+        }
+    }
+
+    @FXML
+    private void onExitPressed(ActionEvent event) {
+        try {
+            App.setRoot("home");
+        } catch (IOException ex) {
+            System.getLogger(PrimaryController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
     }
 }
