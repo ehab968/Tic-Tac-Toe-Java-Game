@@ -36,20 +36,32 @@ public class GameController {
                 cell.setPrefSize(120, 120);
                 cell.setId(Integer.toString(cellId));
                 final int id = cellId;
-                cell.setOnMouseClicked((MouseEvent e) -> {
-                    if (!cell.isDisable() && !isWin) {
-                        addShapeToCell(cell, currentPlayer);
-                        charMatrix[id] = currentPlayer;
-                        cell.setDisable(true);
+                if (cell.isDisable() == false && !isWin) {
+                    cell.setOnMouseClicked((MouseEvent e) -> {
+                        doClickSound();
+                        e.consume();
+                        if (!cell.isDisable() && !isWin) {
+                            addShapeToCell(cell, currentPlayer);
+                            charMatrix[id] = currentPlayer;
+                            cell.setDisable(true);
 
-                        checkWin();
-                        if (!isWin) {
-                            changePlayer();
+                            checkWin();
+                            if (!isWin) {
+                                changePlayer();
+                            }
                         }
-                    }
-                });
-                gridPane.add(cell, col, row);
+                    });
+                    gridPane.add(cell, col, row);
+                }
             }
+        }
+    }
+
+    private void doClickSound() {
+        if (currentPlayer == 'X') {
+            SoundPlayer.PlayerXClick();
+        } else if (currentPlayer == 'O') {
+            SoundPlayer.playerOClick();
         }
     }
 
@@ -148,7 +160,7 @@ public class GameController {
         Point2D p3 = gamePane.sceneToLocal(b3.getCenterX(), b3.getCenterY());
         Line line = new Line(p1.getX(), p1.getY(), p3.getX(), p3.getY());
         line.setStrokeWidth(6);
-        
+
         if (charMatrix[winIndex[0]] == 'X') {
             line.setStyle("-fx-stroke: red;");
         } else {
