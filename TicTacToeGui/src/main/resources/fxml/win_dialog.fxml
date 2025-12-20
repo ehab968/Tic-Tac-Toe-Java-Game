@@ -13,7 +13,7 @@
 <?import javafx.scene.media.MediaView?>
 <?import javafx.scene.text.Font?>
 
-<StackPane fx:id="root" prefHeight="493.0" prefWidth="484.0" style="-fx-background-color: white; -fx-background-radius: 12; -fx-border-radius: 12; -fx-border-width: 2;  -fx-border-color: #d1d5db;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.tictactoegui.WinDialogController">
+<StackPane fx:id="root" prefHeight="493.0" prefWidth="484.0" style="-fx-background-color: white; -fx-background-radius: 12; -fx-border-radius: 12; -fx-border-width: 2;  -fx-border-color: #d1d5db;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.tictactoegui.WinDialogController">
     <children>
         <VBox prefHeight="523.0" prefWidth="539.0">
             <children>

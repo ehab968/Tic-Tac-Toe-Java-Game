@@ -49,7 +49,6 @@ public class WinDialogController {
     private StackPane root;
 
     public void initialize() {
-        videoManager = new VideoManager("/videos_audios/bravo.mp4", mediaView);
         rand = new Random();
     }
 
@@ -69,7 +68,13 @@ public class WinDialogController {
 
     public void onBackToMainMenu() {
         close();
-        gameController.exitGame();
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                gameController.exitGame();
+            }
+        });
+
     }
 
     public void onPlayAgain() {
@@ -84,12 +89,12 @@ public class WinDialogController {
     }
 
     public void playVideo() {
-       videoManager.playVideo();
+        videoManager = new VideoManager("/videos_audios/bravo.mp4", mediaView);
     }
 
     private void close() {
         videoManager.stop();
-        Stage stage = (Stage) mediaView.getScene().getWindow();
+        Stage stage = (Stage) root.getScene().getWindow();
         stage.close();
     }
 

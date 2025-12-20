@@ -34,30 +34,23 @@ public class VideoManager {
             Media media = new Media(path);
             mediaPlayer = new MediaPlayer(media);
             mediaView.setMediaPlayer(mediaPlayer);
+            
+             mediaPlayer.setOnReady(() -> {
+                mediaPlayer.play();
+            });
+             
+             mediaPlayer.setOnError(() -> {
+            System.err.println("Media error: " + mediaPlayer.getError().getMessage());
+        });
         } catch (Exception e) {
             System.err.println("Could not load video: " + e.getMessage());
         }
     }
 
-    public void playVideo() {
-        // FIX 1: Only play when the media is fully loaded
-        if (mediaPlayer.getStatus() == MediaPlayer.Status.READY) {
-            mediaPlayer.play();
-        } else {
-            mediaPlayer.setOnReady(() -> {
-                mediaPlayer.play();
-            });
-        }
-
-        // FIX 2: Handle potential errors (e.g., codec issues)
-        mediaPlayer.setOnError(() -> {
-            System.err.println("Media error: " + mediaPlayer.getError().getMessage());
-        });
-    }
-
     public void stop() {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
+            mediaPlayer.dispose();
         }
     }
 }

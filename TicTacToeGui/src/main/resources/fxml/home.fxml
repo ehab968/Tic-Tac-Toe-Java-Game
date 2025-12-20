@@ -25,7 +25,7 @@
                 <Image url="@../images/logo.png" />
             </image>
         </ImageView>
-
+        
         <Label style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #111827;" text="Tic Tac Toe" />
 
         <!-- Online Label with Green Indicator -->
