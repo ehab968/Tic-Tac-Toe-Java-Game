@@ -4,9 +4,9 @@
  */
 package com.mycompany.tictactoegui;
 
-import com.iti.group3.tic_tac_toe_shared.Command;
-import com.iti.group3.tic_tac_toe_shared.CommandType;
-import com.iti.group3.tic_tac_toe_shared.LoginData;
+import com.iti.group3.tic_tac_toe_shared.Request;
+import com.iti.group3.tic_tac_toe_shared.RequestType;
+import com.iti.group3.tic_tac_toe_shared.AuthData;
 import com.iti.group3.tic_tac_toe_shared.Response;
 import com.iti.group3.tic_tac_toe_shared.UserData;
 import java.io.ObjectInputStream;
@@ -69,9 +69,9 @@ public class LoginController implements Initializable {
                     mouth = new ObjectOutputStream(s.getOutputStream());
                     mouth.flush();
                     ear = new ObjectInputStream(s.getInputStream());
-                    LoginData request = new LoginData(userName, password);
-                    Command command = new Command(CommandType.LOGIN, request);
-                    mouth.writeObject(command);
+                    AuthData loginData = new AuthData(userName, password);
+                    Request request = new Request(RequestType.LOGIN, loginData);
+                    mouth.writeObject(request);
                     mouth.flush();
                     
                     Response<UserData> response = (Response) ear.readObject();

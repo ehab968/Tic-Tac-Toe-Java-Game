@@ -1,8 +1,10 @@
 package com.mycompany.tictactoegui;
 
-import com.iti.group3.tic_tac_toe_shared.Command;
-import com.iti.group3.tic_tac_toe_shared.CommandType;
+import com.iti.group3.tic_tac_toe_shared.AuthData;
+import com.iti.group3.tic_tac_toe_shared.Request;
+import com.iti.group3.tic_tac_toe_shared.RequestType;
 import com.iti.group3.tic_tac_toe_shared.Response;
+import com.iti.group3.tic_tac_toe_shared.ResponseType;
 import com.iti.group3.tic_tac_toe_shared.UserData;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -50,26 +52,23 @@ public class SignupController implements Initializable {
             return;
         }
 
-        UserData us = new UserData(userName, password, 0, 0, 0, 0, 0);
+        AuthData loginData = new AuthData(userName, password);
         new Thread(() -> {
             try {
                 socket = new Socket("localhost", 5005);
                 out = new ObjectOutputStream(socket.getOutputStream());
                 out.flush();
                 in = new ObjectInputStream(socket.getInputStream());
-                Command command = new Command(CommandType.REGISTER, us);
-                out.writeObject(command);
+                Request request = new Request(RequestType.REGISTER, loginData);
+                out.writeObject(request);
                 out.flush();
                 Response<UserData> response = (Response<UserData>) in.readObject();
                 if (response.isSuccess()) {
                     showAlert("Success", "Account created successfully!");
                     clearFields();
-                    out.close();
-                    in.close();
-                    socket.close();
                     App.setRoot("login");
                 } else {
-                    if (response.getMessage() == CommandType.USERNAME_EXISTS) {
+                    if (response.getMessage() == ResponseType.USERNAME_EXISTS) {
                         showAlert("Error", "Sorry This account is used before");
                         System.out.println("-------------------------------");
                         System.out.println("********************************");
