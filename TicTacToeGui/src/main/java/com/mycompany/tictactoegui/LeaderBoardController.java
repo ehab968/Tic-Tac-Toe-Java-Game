@@ -6,15 +6,19 @@ package com.mycompany.tictactoegui;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -103,5 +107,21 @@ public class LeaderBoardController implements Initializable {
 
     return grid;
 }
+   
+   private Scene preScene;
+
+public void setPreScene(Scene preScene) {
+    this.preScene = preScene;
+}
+
+
+    @FXML
+    private void backToOnlineuSers(ActionEvent event) {
+         Stage stage = (Stage) ((Node) event.getSource())
+            .getScene().getWindow();
+
+    stage.setScene(preScene);
+}
+    
 
 }

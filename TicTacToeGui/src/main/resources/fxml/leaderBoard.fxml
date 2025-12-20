@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="546.0" prefWidth="689.0" style="-fx-background-color: #f0f4f8;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.tictactoegui.LeaderBoardController">
+<BorderPane prefHeight="546.0" prefWidth="689.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.tictactoegui.LeaderBoardController">
 
     <!-- ================= Header ================= -->
     <top>
@@ -21,7 +21,7 @@
             <padding>
                 <Insets bottom="10" left="10" right="10" top="10" />
             </padding>
-         <Button maxHeight="59.0" maxWidth="42.0" prefHeight="39.0" prefWidth="42.0" style="-fx-background-color: white; -fx-pref-height: 10;" text="←" textAlignment="CENTER" wrapText="true">
+         <Button maxHeight="59.0" maxWidth="42.0" onAction="#backToOnlineuSers" prefHeight="39.0" prefWidth="42.0" style="-fx-background-color: white; -fx-pref-height: 10;" text="←" textAlignment="CENTER" wrapText="true">
             <font>
                <Font size="27.0" />
             </font>
@@ -38,14 +38,14 @@
 
     <!-- ================= Main Content ================= -->
     <center>
-        <ScrollPane fitToWidth="true" prefHeight="506.0" prefWidth="752.0" style="-fx-background-color: transparent;">
-            <VBox spacing="10">
+        <ScrollPane fitToWidth="true" prefHeight="456.0" prefWidth="642.0" style="-fx-background-color: white;">
+            <VBox spacing="10" style="-fx-background-color: white;">
                 <padding>
                     <Insets bottom="10" left="10" right="10" top="10" />
                 </padding>
 
                 <!-- Table Header -->
-                <GridPane hgap="10" style="-fx-background-color: #f1f5f9;" vgap="5">
+                <GridPane hgap="10" prefHeight="35.0" prefWidth="653.0" style="-fx-background-color: #f1f5f9;" vgap="5">
                     <padding>
                         <Insets bottom="5" left="5" right="5" top="5" />
                     </padding>
@@ -59,19 +59,19 @@
 
                     <Label text="Player Username" GridPane.columnIndex="0">
                   <font>
-                     <Font size="18.0" />
+                     <Font size="16.0" />
                   </font></Label>
                     <Label text="Current Status" GridPane.columnIndex="1">
                   <font>
-                     <Font size="18.0" />
+                     <Font size="14.0" />
                   </font></Label>
                     <Label text=" Rating" GridPane.columnIndex="2">
                   <font>
-                     <Font size="18.0" />
+                     <Font size="14.0" />
                   </font></Label>
                     <Label text="Actions" GridPane.columnIndex="3">
                   <font>
-                     <Font size="18.0" />
+                     <Font size="14.0" />
                   </font></Label>
                <rowConstraints>
                   <RowConstraints />
@@ -79,7 +79,7 @@
                 </GridPane>
 
                 <!-- Players Rows -->
-                <VBox spacing="5" fx:id="playersContainer" >
+                <VBox fx:id="playersContainer" prefHeight="396.0" prefWidth="667.0" spacing="5" style="-fx-background-color: white;">
               
                 </VBox>
 
