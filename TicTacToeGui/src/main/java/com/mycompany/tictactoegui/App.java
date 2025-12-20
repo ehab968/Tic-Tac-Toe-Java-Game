@@ -12,13 +12,12 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 
-/**
- * JavaFX App
- */
+
 public class App extends Application {
 
     private static Scene scene;
 
+    
     @Override
     public void start(Stage stage) throws IOException {
         SoundPlayer.setbuttonVolume(0);
