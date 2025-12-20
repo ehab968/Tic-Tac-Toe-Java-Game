@@ -8,19 +8,24 @@ import com.iti.group3.tic_tac_toe_shared.Request;
 import com.iti.group3.tic_tac_toe_shared.RequestType;
 import com.iti.group3.tic_tac_toe_shared.Response;
 import com.iti.group3.tic_tac_toe_shared.UserData;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -28,11 +33,14 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 
 public class OnlineUsersController implements Initializable {
 
     @FXML
     private VBox userListContainer;
+    @FXML
+    private Button leaderBoardButton;
 
     private Socket socket;
     private ObjectOutputStream out;
@@ -42,8 +50,6 @@ public class OnlineUsersController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         loadOnlineUsers();
     }
-
-    @FXML
 
     private List<UserData> getOnlineUsers() {
         try {
@@ -89,6 +95,20 @@ public class OnlineUsersController implements Initializable {
         }).start();
     }
 
+    private void showAlert(String title, String msg) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle(title);
+                alert.setHeaderText(null);
+                alert.setContentText(msg);
+                alert.showAndWait();
+            }
+        }
+        );
+    }
+
     public void addUser(String username, String status, boolean canInvite) {
         HBox hbox = new HBox();
         hbox.setAlignment(Pos.CENTER_LEFT);
@@ -127,17 +147,36 @@ public class OnlineUsersController implements Initializable {
         userListContainer.getChildren().add(hbox);
     }
 
-    private void showAlert(String title, String msg) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle(title);
-                alert.setHeaderText(null);
-                alert.setContentText(msg);
-                alert.showAndWait();
-            }
+    @FXML
+    private void navToLeaderBoard(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/fxml/leaderBoard.fxml")
+            );
+            Parent root = loader.load();
+
+            LeaderBoardController controller = loader.getController();
+
+            Scene currentScene = ((Node) event.getSource()).getScene();
+            controller.setPreScene(currentScene);
+
+            Stage stage = (Stage) currentScene.getWindow();
+            stage.setScene(new Scene(root));
+            controller.setPreScene(currentScene);
+
+        } catch (IOException ex) {
+            System.getLogger(OnlineUsersController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
-        );
+
     }
+
+    @FXML
+    private void backToOnlinePage(ActionEvent event) {
+        try {
+            App.setRoot("home");
+        } catch (IOException ex) {
+            System.getLogger(HomeController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+    }
+
 }
