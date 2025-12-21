@@ -1,17 +1,24 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package com.mycompany.tictactoegui;
 
+import com.iti.group3.tic_tac_toe_shared.Request;
+import com.iti.group3.tic_tac_toe_shared.RequestType;
+import com.iti.group3.tic_tac_toe_shared.Response;
+import com.iti.group3.tic_tac_toe_shared.UserData;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -24,24 +31,69 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-/**
- * FXML Controller class
- *
- * @author COMPUMARTS
- */
 public class OnlineUsersController implements Initializable {
 
+    public static String myUserName;
     @FXML
     private VBox userListContainer;
     @FXML
     private Button leaderBoardButton;
 
-    /**
-     * Initializes the controller class.
-     */
+    @FXML
+    private Button reloadButton;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-       
+        loadOnlineUsers();
+    }
+
+    private List<UserData> getOnlineUsers() {
+        try {
+            
+            Request request = new Request(RequestType.GetOnlineUsers);
+            ClientSocket.write(request);
+
+            Response<List<UserData>> response = (Response<List<UserData>>) ClientSocket.read();
+            
+            if (response.isSuccess()) {
+                return response.getData();
+            }
+        } catch (IOException ex) {
+            System.getLogger(OnlineUsersController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        } catch (ClassNotFoundException ex) {
+            System.getLogger(OnlineUsersController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+        return new ArrayList<>();
+    }
+
+    public void loadOnlineUsers() {
+        new Thread(() -> {
+            List<UserData> onlineUsers = getOnlineUsers();
+
+            Platform.runLater(() -> {
+                userListContainer.getChildren().clear();
+
+                if (onlineUsers.isEmpty()) {
+                    showAlert("No Users Online", "");
+                } else {
+                    for (UserData u : onlineUsers) {
+                        if (myUserName != null && u.getUserName().equals(myUserName)) {
+                            continue;
+                        }
+                        addUser(
+                                u.getUserName(),
+                                "Online",
+                                true
+                        );
+                    }
+                }
+            });
+        }).start();
+    }
+
+    @FXML
+    private void onlineUserReload(ActionEvent event) {
+        loadOnlineUsers();
     }
 
     public void addUser(String username, String status, boolean canInvite) {
@@ -84,17 +136,17 @@ public class OnlineUsersController implements Initializable {
 
     @FXML
     private void navToLeaderBoard(ActionEvent event) {
-         try {
+        try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/fxml/leaderBoard.fxml")
             );
             Parent root = loader.load();
-            
+
             LeaderBoardController controller = loader.getController();
-            
+
             Scene currentScene = ((Node) event.getSource()).getScene();
             controller.setPreScene(currentScene);
-            
+
             Stage stage = (Stage) currentScene.getWindow();
             stage.setScene(new Scene(root));
             controller.setPreScene(currentScene);
@@ -102,7 +154,7 @@ public class OnlineUsersController implements Initializable {
         } catch (IOException ex) {
             System.getLogger(OnlineUsersController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
-        
+
     }
 
     @FXML
@@ -112,6 +164,20 @@ public class OnlineUsersController implements Initializable {
         } catch (IOException ex) {
             System.getLogger(HomeController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
+    }
+
+    private void showAlert(String title, String msg) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle(title);
+                alert.setHeaderText(null);
+                alert.setContentText(msg);
+                alert.showAndWait();
+            }
+        }
+        );
     }
 
 }

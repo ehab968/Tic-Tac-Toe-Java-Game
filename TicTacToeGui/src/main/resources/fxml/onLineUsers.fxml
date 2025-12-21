@@ -30,7 +30,7 @@
     </font>
 </Button>
 
-            <Button style="-fx-background-color: white; -fx-pref-height: 10;" text="⟳">
+            <Button fx:id="reloadButton" onAction="#onlineUserReload" style="-fx-background-color: white; -fx-pref-height: 10;" text="⟳">
                 <font>
                     <Font size="23.0" />
                 </font>
