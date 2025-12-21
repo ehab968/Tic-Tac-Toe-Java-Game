@@ -6,7 +6,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -19,12 +18,6 @@ public class PrimaryController implements Initializable {
     @FXML
     private GridPane gridPane;
     @FXML
-    private ImageView userAvater2;
-    @FXML
-    private ImageView userAvater1;
-    @FXML
-    private ImageView userAvater21;
-    @FXML
     private Text userNameText;
     @FXML
     private Text userStatusText;
@@ -34,8 +27,6 @@ public class PrimaryController implements Initializable {
     private Text opponentStatusText;
     @FXML
     private Button restartGameButton;
-    @FXML
-    private ImageView userAvater211;
 
     GameController gc;
     @FXML
@@ -106,4 +97,5 @@ public class PrimaryController implements Initializable {
     private void onExitPressed(ActionEvent event) {
         gc.exitGame();
     }
+
 }
