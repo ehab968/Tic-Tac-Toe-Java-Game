@@ -7,6 +7,10 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.scene.control.Button;
+import javafx.scene.layout.StackPane;
 
 
 public class App extends Application {
@@ -16,7 +20,15 @@ public class App extends Application {
     
     @Override
     public void start(Stage stage) throws IOException {
+        SoundPlayer.setbuttonVolume(0);
+        Platform.runLater(() -> SoundPlayer.playbuttonClick());
         scene = new Scene(loadFXML("home"), 800, 600);
+        scene.addEventFilter(ActionEvent.ACTION, (event) -> {
+            if (event.getTarget() instanceof Button) {
+                SoundPlayer.setbuttonVolume(1);
+                SoundPlayer.playbuttonClick();
+            }
+        });
         stage.setScene(scene);
         stage.show();
     }
