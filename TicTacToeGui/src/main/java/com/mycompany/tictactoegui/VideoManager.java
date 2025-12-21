@@ -1,13 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.tictactoegui;
 
-import javafx.scene.layout.Pane;
+import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.util.Duration;
 
 /**
  *
@@ -15,65 +13,59 @@ import javafx.scene.media.MediaView;
  */
 public class VideoManager {
 
-    public MediaView createVideoView() {
-        String path = getClass()
-                .getResource("/videos_audios/bravo.mp4")
-                .toExternalForm();
+    private MediaPlayer mediaPlayer;
+    private MediaView mediaView;
+    private String videoPath;
+    private int retryCount = 0;
 
-        Media media = new Media(path);
-        MediaPlayer player = new MediaPlayer(media);
+    VideoManager(String videoPath, MediaView mediaView) {
+        this.mediaView = mediaView;
+        this.videoPath = videoPath;
 
-        MediaView mediaView = new MediaView(player);
-        mediaView.setFitWidth(280);
-        mediaView.setPreserveRatio(true);
+        loadVideo();
+    }
 
-        player.play();
-        return mediaView;
+    private void loadVideo() {
+        try {
+            String resource = getClass().getResource(videoPath).toExternalForm();
+            Media media = new Media(resource);
+            mediaPlayer = new MediaPlayer(media);
+            mediaView.setMediaPlayer(mediaPlayer);
+            mediaPlayer.setOnReady(() -> {
+                System.out.println("Video loaded successfully after " + retryCount + " retries.");
+                mediaPlayer.seek(Duration.ZERO);
+                mediaPlayer.play();          
+            });
+
+            mediaPlayer.setOnError(() -> {
+                System.err.println("GStreamer Error: " + mediaPlayer.getError().getMessage());
+                stop();
+                if (retryCount < 20) {
+                    retryCount++;
+                    PauseTransition delay = new PauseTransition(Duration.millis(200));
+                    delay.setOnFinished(event -> loadVideo());
+                    delay.play();
+                }
+            });
+
+        } catch (Exception e) {
+            System.err.println("Setup Error: " + e.getMessage());
+            stop();
+            if (retryCount < 5) {
+                retryCount++;
+                // Wait 200ms before trying again to let the OS breathe
+                PauseTransition delay = new PauseTransition(Duration.millis(200));
+                delay.setOnFinished(event -> loadVideo());
+                delay.play();
+            }
+        }
+    }
+
+    public void stop() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.dispose();
+            mediaPlayer = null;
+        }
     }
 }
-//
-//public class VideoManager {
-//
-//    Pane gamePane;
-//
-//    VideoManager(Pane gamePane) {
-//        this.gamePane = gamePane;
-//    }
-//
-//    public void playVidoe() {
-//        try {
-//            String path = getClass()
-//                    .getResource("/videos_audios/bravo.mp4")
-//                    .toExternalForm();
-//
-//            Media media = new Media(path);
-//            MediaPlayer mediaPlayer = new MediaPlayer(media);
-//
-//            MediaView mediaView = new MediaView(mediaPlayer);
-//            mediaView.setFitWidth(400);
-//            mediaView.setFitHeight(300);
-//            mediaView.setPreserveRatio(true);
-//
-//            // Center video
-//            mediaView.setLayoutX(
-//                    (gamePane.getWidth() - 400) / 2
-//            );
-//            mediaView.setLayoutY(
-//                    (gamePane.getHeight() - 300) / 2
-//            );
-//
-//            gamePane.getChildren().add(mediaView);
-//
-//            mediaPlayer.play();
-//
-//            // Remove video after finishing
-//            mediaPlayer.setOnEndOfMedia(() -> {
-//                mediaPlayer.stop();
-//                gamePane.getChildren().remove(mediaView);
-//            });
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-//}
