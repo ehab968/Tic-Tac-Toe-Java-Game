@@ -19,7 +19,7 @@ import javafx.scene.image.ImageView;
  */
 public class HomeController implements Initializable {
 
-
+    
     @FXML
     private ImageView userAvater2;
     @FXML
@@ -34,8 +34,8 @@ public class HomeController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-    }    
-    
+    }
+
     @FXML
     private void onSelectSinglePlayer(ActionEvent event) {
     }
@@ -57,5 +57,5 @@ public class HomeController implements Initializable {
             System.getLogger(HomeController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
     }
-
+    
 }
