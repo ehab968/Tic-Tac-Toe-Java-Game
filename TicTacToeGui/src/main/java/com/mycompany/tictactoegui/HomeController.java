@@ -12,13 +12,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
+
 /**
  * FXML Controller class
  *
  * @author mahmo
  */
 public class HomeController implements Initializable {
-
 
     @FXML
     private ImageView userAvater2;
@@ -28,14 +28,15 @@ public class HomeController implements Initializable {
     private Button multiplayerBTN;
     @FXML
     private Button onlineBTN;
+
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-    }    
-    
+    }
+
     @FXML
     private void onSelectSinglePlayer(ActionEvent event) {
     }
@@ -52,7 +53,11 @@ public class HomeController implements Initializable {
     @FXML
     private void onSelectOnline(ActionEvent event) {
         try {
-            App.setRoot("login");
+            if (ClientSocket.user == null) {
+                App.setRoot("login");
+            } else {
+                App.setRoot("onLineUsers");
+            }
         } catch (IOException ex) {
             System.getLogger(HomeController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }

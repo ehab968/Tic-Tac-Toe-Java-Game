@@ -39,9 +39,6 @@ public class OnlineUsersController implements Initializable {
     @FXML
     private Button leaderBoardButton;
 
-    private Socket socket;
-    private ObjectOutputStream out;
-    private ObjectInputStream in;
     @FXML
     private Button reloadButton;
 
@@ -52,15 +49,12 @@ public class OnlineUsersController implements Initializable {
 
     private List<UserData> getOnlineUsers() {
         try {
-            socket = new Socket("localhost", 5005);
-            out = new ObjectOutputStream(socket.getOutputStream());
-            out.flush();
-            in = new ObjectInputStream(socket.getInputStream());
+            
             Request request = new Request(RequestType.GetOnlineUsers);
-            out.writeObject(request);
-            out.flush();
+            ClientSocket.write(request);
 
-            Response<List<UserData>> response = (Response<List<UserData>>) in.readObject();
+            Response<List<UserData>> response = (Response<List<UserData>>) ClientSocket.read();
+            
             if (response.isSuccess()) {
                 return response.getData();
             }
