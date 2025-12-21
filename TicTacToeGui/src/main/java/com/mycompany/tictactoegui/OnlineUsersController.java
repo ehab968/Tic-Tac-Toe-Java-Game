@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package com.mycompany.tictactoegui;
 
 import com.iti.group3.tic_tac_toe_shared.Request;
@@ -37,6 +33,7 @@ import javafx.stage.Stage;
 
 public class OnlineUsersController implements Initializable {
 
+    public static String myUserName;
     @FXML
     private VBox userListContainer;
     @FXML
@@ -45,6 +42,8 @@ public class OnlineUsersController implements Initializable {
     private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
+    @FXML
+    private Button reloadButton;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -84,6 +83,9 @@ public class OnlineUsersController implements Initializable {
                     showAlert("No Users Online", "");
                 } else {
                     for (UserData u : onlineUsers) {
+                        if (myUserName != null && u.getUserName().equals(myUserName)) {
+                            continue;
+                        }
                         addUser(
                                 u.getUserName(),
                                 "Online",
@@ -95,18 +97,9 @@ public class OnlineUsersController implements Initializable {
         }).start();
     }
 
-    private void showAlert(String title, String msg) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle(title);
-                alert.setHeaderText(null);
-                alert.setContentText(msg);
-                alert.showAndWait();
-            }
-        }
-        );
+    @FXML
+    private void onlineUserReload(ActionEvent event) {
+        loadOnlineUsers();
     }
 
     public void addUser(String username, String status, boolean canInvite) {
@@ -177,6 +170,20 @@ public class OnlineUsersController implements Initializable {
         } catch (IOException ex) {
             System.getLogger(HomeController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
+    }
+
+    private void showAlert(String title, String msg) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle(title);
+                alert.setHeaderText(null);
+                alert.setContentText(msg);
+                alert.showAndWait();
+            }
+        }
+        );
     }
 
 }

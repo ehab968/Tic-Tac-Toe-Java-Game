@@ -80,6 +80,7 @@ public class LoginController implements Initializable {
                      if(response.isSuccess()) {
                         showMessage("Welcome " + response.getData().getUserName(), true);
                         System.out.println("Welcome " + response.getData().getUserName());
+                        OnlineUsersController.myUserName = response.getData().getUserName();
                         App.setRoot("onLineUsers");
                         
                     } else {
