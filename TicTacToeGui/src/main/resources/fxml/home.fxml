@@ -9,7 +9,14 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="599.0" prefWidth="1050.0" spacing="20" style="-fx-background-color: linear-gradient(from 50% 0% to 50% 100%, #2b6cee1a, transparent); -fx-padding: 20;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.tictactoegui.HomeController">
+<VBox alignment="CENTER" 
+      prefHeight="599.0" 
+      prefWidth="1050.0" 
+      spacing="20" 
+      style="-fx-background-color: linear-gradient(from 50% 0% to 50% 100%, #2b6cee1a, transparent); -fx-padding: 20;" 
+      xmlns="http://javafx.com/javafx/25" 
+      xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.mycompany.tictactoegui.HomeController">
 
     <!-- Header -->
     <VBox alignment="CENTER" maxWidth="1000.0" prefWidth="846.0" spacing="10" style="-fx-background-color: linear-gradient(to bottom right, #2b6cee1a, transparent); -fx-padding: 20; -fx-border-color: #e5e7eb; -fx-border-width: 0 0 0 0;">
@@ -18,7 +25,7 @@
                 <Image url="@../images/logo.png" />
             </image>
         </ImageView>
-
+        
         <Label style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #111827;" text="Tic Tac Toe" />
 
         <!-- Online Label with Green Indicator -->

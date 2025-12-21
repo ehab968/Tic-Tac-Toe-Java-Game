@@ -62,5 +62,5 @@ public class HomeController implements Initializable {
             System.getLogger(HomeController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
     }
-
+    
 }
