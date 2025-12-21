@@ -80,9 +80,12 @@
                         <id>ide-debug</id>
                         <configuration>
                             <options>
+                                <option>--enable-native-access=javafx.graphics</option>
                                 <option>--add-modules</option>
                                 <option>javafx.media</option>
+                                <option>javafx.graphics</option>
                                 <option>--enable-native-access=javafx.media</option>
+                                <option>-Dprism.dirtyopts=false</option>
                                 <option>-agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address}</option>
                             </options>
                         </configuration>

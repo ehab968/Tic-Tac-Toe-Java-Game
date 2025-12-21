@@ -1,5 +1,7 @@
 package com.mycompany.tictactoegui;
 
+import com.iti.group3.tic_tac_toe_shared.GameData;
+import com.iti.group3.tic_tac_toe_shared.UserData;
 import com.mycompany.tictactoegui.interfaces.OnUserEvent;
 import java.io.IOException;
 import javafx.geometry.Bounds;
@@ -20,10 +22,17 @@ public class GameController {
     private StackPane[] stackCells = new StackPane[9]; // => كل ستاك بان هنا ريفرنس للسيل اللى موجودة فى الجريد بان
     private boolean isWin = false;
     private char currentPlayer = 'X';
+    UserData user;
+    UserData opponent;
+    GameData game;
 
     GameController(Pane gamePane, GridPane gridPane) {
         this.gridPane = gridPane;
         this.gamePane = gamePane;
+        user = new UserData("UserName");
+        opponent = new UserData("CPU_MEDIUM");
+        game = new GameData("1", user, opponent, null);
+
         initiateGrid();
     }
 
@@ -96,7 +105,7 @@ public class GameController {
             onUserChanged.handle(currentPlayer);
         }
     }
-    
+
     public final void exitGame() {
         try {
             App.setRoot("home");
@@ -160,14 +169,16 @@ public class GameController {
     public void onUserWon(int[] winningLine) {
         isWin = true;
         drawWinningLine(winningLine);
-        showWinningDialog();
+        game.setWinner(user);
+
+        showWinningDialog(game);
         if (onUserWinning != null) {
             onUserWinning.handle(currentPlayer);
         }
     }
 
-    private void showWinningDialog() {
-        WinDialog.show(currentPlayer,this);
+    private void showWinningDialog(GameData game) {
+        WinDialog.show(game, user, this);
     }
 
 }
