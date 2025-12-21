@@ -4,13 +4,19 @@ import com.iti.group3.tic_tac_toe_shared.GameData;
 import com.iti.group3.tic_tac_toe_shared.UserData;
 import com.mycompany.tictactoegui.interfaces.OnUserEvent;
 import java.io.IOException;
+import java.util.function.BiConsumer;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class GameController {
 
@@ -22,6 +28,11 @@ public class GameController {
     private StackPane[] stackCells = new StackPane[9]; // => كل ستاك بان هنا ريفرنس للسيل اللى موجودة فى الجريد بان
     private boolean isWin = false;
     private char currentPlayer = 'X';
+    static private int choosenScore;
+    static private int counter = 0;
+    private int userScore = 0;
+    private int opponentScore = 0;
+    private BiConsumer<Integer, Integer> onScoreChanged;
     UserData user;
     UserData opponent;
     GameData game;
@@ -32,7 +43,11 @@ public class GameController {
         user = new UserData("UserName");
         opponent = new UserData("CPU_MEDIUM");
         game = new GameData("1", user, opponent, null);
-
+        showChosseScoreDialog();
+        if (counter > choosenScore) {
+            choosenScore = 0;
+        }
+        counter++;
         initiateGrid();
     }
 
@@ -116,6 +131,9 @@ public class GameController {
         if (onUserChanged != null) {
             onUserChanged.handle(currentPlayer);
         }
+        if(onScoreChanged != null){
+        onScoreChanged.accept(userScore, opponentScore);
+    }
     }
 
     public final void exitGame() {
@@ -183,14 +201,58 @@ public class GameController {
         drawWinningLine(winningLine);
         game.setWinner(user);
 
-        showWinningDialog(game);
+        if (currentPlayer == 'X') {
+            userScore++;
+            game.setWinner(user);
+            userWonWholeGame(userScore);
+        } else {
+            opponentScore++;
+            game.setWinner(opponent);
+            userWonWholeGame(opponentScore);
+
+        }
+        //showWinningDialog(game);
+         if(onScoreChanged != null){
+        onScoreChanged.accept(userScore, opponentScore);
+    }
+         
         if (onUserWinning != null) {
             onUserWinning.handle(currentPlayer);
         }
+        
+    }
+
+    private void userWonWholeGame(int userScore) {
+        if (userScore > choosenScore / 2) {
+            showWinningDialog(game);
+        }
+    }
+
+
+    public void setOnScoreChanged(BiConsumer<Integer, Integer> listener) {
+        this.onScoreChanged = listener;
     }
 
     private void showWinningDialog(GameData game) {
         WinDialog.show(game, user, this);
+    }
+
+    private void showChosseScoreDialog() {
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/chooseScore.fxml"));
+            Parent dialogRoot = loader.load();
+            ChooseScoreController chooseScoreController = loader.getController();
+            Stage dialogStage = new Stage();
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.setTitle("Choose Score");
+            dialogStage.setScene(new Scene(dialogRoot));
+            dialogStage.showAndWait();
+            choosenScore = chooseScoreController.getScore();
+        } catch (IOException ex) {
+            System.getLogger(GameController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+
     }
 
 }

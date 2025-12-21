@@ -1,6 +1,5 @@
 package com.mycompany.tictactoegui;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -8,7 +7,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -40,6 +38,10 @@ public class PrimaryController implements Initializable {
     private ImageView userAvater211;
 
     GameController gc;
+    @FXML
+    private Text userScoreText;
+    @FXML
+    private Text opponentScoreText;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -56,6 +58,13 @@ public class PrimaryController implements Initializable {
         restartGameButton.setOnAction((action) -> {
             gc.restartGame();
         });
+        
+        
+        gc.setOnScoreChanged((uScore, oScore) -> {
+    userScoreText.setText("Score: " + uScore);
+    opponentScoreText.setText("Score: " + oScore);
+});
+
     }
 
     private void onUserChange(char currentPlayer) {
@@ -87,6 +96,11 @@ public class PrimaryController implements Initializable {
             opponentStatusText.setFill(Color.GREEN);
         }
     }
+
+    public void updateScore(int userScore, int opponentScore) {
+    userScoreText.setText("Score: " + userScore);
+    opponentScoreText.setText("Score: " + opponentScore);
+}
 
     @FXML
     private void onExitPressed(ActionEvent event) {
