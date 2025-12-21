@@ -20,7 +20,7 @@ public class App extends Application {
     public void start(Stage stage) throws IOException {
         SoundPlayer.setbuttonVolume(0);
         Platform.runLater(() -> SoundPlayer.playbuttonClick());
-        scene = new Scene(loadFXML("home"), 640, 600);
+        scene = new Scene(loadFXML("home"), 800, 600);
         scene.addEventFilter(ActionEvent.ACTION, (event) -> {
             if (event.getTarget() instanceof Button) {
                 SoundPlayer.setbuttonVolume(1);

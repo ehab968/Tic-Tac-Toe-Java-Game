@@ -1,14 +1,24 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package com.mycompany.tictactoegui;
 
+import com.iti.group3.tic_tac_toe_shared.Request;
+import com.iti.group3.tic_tac_toe_shared.RequestType;
+import com.iti.group3.tic_tac_toe_shared.Response;
+import com.iti.group3.tic_tac_toe_shared.UserData;
+import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -16,44 +26,41 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 
-/**
- * FXML Controller class
- *
- * @author COMPUMARTS
- */
 public class OnlineUsersController implements Initializable {
+
+    public static String myUserName;
 
     @FXML
     private VBox userListContainer;
 
-    /**
-     * Initializes the controller class.
-     */
+    @FXML
+    private Button leaderBoardButton;
+
+    @FXML
+    private Button reloadButton;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-<<<<<<< Updated upstream
-        // TODO
-    }    
-=======
         loadOnlineUsers();
     }
 
+    // ================= Networking =================
+
     private List<UserData> getOnlineUsers() {
         try {
-            
             Request request = new Request(RequestType.GetOnlineUsers);
             ClientSocket.write(request);
 
-            Response<List<UserData>> response = (Response<List<UserData>>) ClientSocket.read();
-            
+            Response<List<UserData>> response =
+                    (Response<List<UserData>>) ClientSocket.read();
+
             if (response.isSuccess()) {
                 return response.getData();
             }
-        } catch (IOException ex) {
-            System.getLogger(OnlineUsersController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-        } catch (ClassNotFoundException ex) {
-            System.getLogger(OnlineUsersController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        } catch (IOException | ClassNotFoundException ex) {
+            System.getLogger(OnlineUsersController.class.getName());
         }
         return new ArrayList<>();
     }
@@ -69,69 +76,41 @@ public class OnlineUsersController implements Initializable {
                     showAlert("No Users Online", "");
                 } else {
                     for (UserData u : onlineUsers) {
-                        if (myUserName != null && u.getUserName().equals(myUserName)) {
+                        if (myUserName != null &&
+                                u.getUserName().equals(myUserName)) {
                             continue;
                         }
-                        addUser(
-                                u,
-                                "Online",
-                                true
-                        );
+                        addUser(u, "Online", true);
                     }
                 }
             });
         }).start();
     }
 
->>>>>>> Stashed changes
     @FXML
-
-public void addUser(String username, String status, boolean canInvite) {
-    HBox hbox = new HBox();
-    hbox.setAlignment(Pos.CENTER_LEFT);
-    hbox.setSpacing(10);
-    hbox.setStyle("-fx-background-radius: 15; -fx-padding: 10; -fx-border-color: transparent;");
-
-    VBox vbox = new VBox(2);
-    Label nameLabel = new Label(username);
-    nameLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #111827;");
-    Label statusLabel = new Label(status);
-    statusLabel.setStyle("-fx-font-size: 10px; -fx-font-weight: bold;");
-    if(status.equals("Playing...")) statusLabel.setTextFill(Color.ORANGE);
-    else if(status.equals("Online")) statusLabel.setTextFill(Color.GREEN);
-    else statusLabel.setTextFill(Color.YELLOW);
-
-    vbox.getChildren().addAll(nameLabel, statusLabel);
-
-    Region spacer = new Region();
-    HBox.setHgrow(spacer, Priority.ALWAYS);
-
-    Button btn = new Button();
-    if(canInvite) {
-        btn.setText("Invite ⚔");
-        btn.setStyle("-fx-background-color:#2b7cee; -fx-text-fill:white; -fx-background-radius:20;");
-    } else {
-        btn.setText("Spectate 👀");
-        btn.setStyle("-fx-background-color:#f3f4f6; -fx-text-fill:#4b5563; -fx-background-radius:20;");
+    private void onlineUserReload(ActionEvent event) {
+        loadOnlineUsers();
     }
 
-<<<<<<< Updated upstream
-    hbox.getChildren().addAll(vbox, spacer, btn);
-=======
+    // ================= UI =================
+
     public void addUser(UserData user, String status, boolean canInvite) {
-        HBox hbox = new HBox();
+
+        HBox hbox = new HBox(10);
         hbox.setAlignment(Pos.CENTER_LEFT);
-        hbox.setSpacing(10);
-        hbox.setStyle("-fx-background-radius: 15; -fx-padding: 10; -fx-border-color: transparent;");
+        hbox.setStyle("-fx-background-radius: 15; -fx-padding: 10;");
 
         VBox vbox = new VBox(2);
+
         Label nameLabel = new Label(user.getUserName());
         nameLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #111827;");
+
         Label statusLabel = new Label(status);
         statusLabel.setStyle("-fx-font-size: 10px; -fx-font-weight: bold;");
-        if (status.equals("Playing...")) {
+
+        if ("Playing...".equals(status)) {
             statusLabel.setTextFill(Color.ORANGE);
-        } else if (status.equals("Online")) {
+        } else if ("Online".equals(status)) {
             statusLabel.setTextFill(Color.GREEN);
         } else {
             statusLabel.setTextFill(Color.YELLOW);
@@ -146,45 +125,32 @@ public void addUser(String username, String status, boolean canInvite) {
         if (canInvite) {
             btn.setText("Invite ⚔");
             btn.setStyle("-fx-background-color:#2b7cee; -fx-text-fill:white; -fx-background-radius:20;");
-            btn.setOnAction((handler)->{
-            
-                //GameRequest gr = new GameRequest();
-                
-                GameRequest.sendRequest(user);
-            
-            });
-            
+            btn.setOnAction(e -> GameRequest.sendRequest(user));
         } else {
             btn.setText("Spectate 👀");
             btn.setStyle("-fx-background-color:#f3f4f6; -fx-text-fill:#4b5563; -fx-background-radius:20;");
         }
 
         hbox.getChildren().addAll(vbox, spacer, btn);
-
         userListContainer.getChildren().add(hbox);
     }
+
+    // ================= Navigation =================
 
     @FXML
     private void navToLeaderBoard(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/fxml/leaderBoard.fxml")
-            );
+            FXMLLoader loader =
+                    new FXMLLoader(getClass().getResource("/fxml/leaderBoard.fxml"));
             Parent root = loader.load();
 
-            LeaderBoardController controller = loader.getController();
-
             Scene currentScene = ((Node) event.getSource()).getScene();
-            controller.setPreScene(currentScene);
-
             Stage stage = (Stage) currentScene.getWindow();
             stage.setScene(new Scene(root));
-            controller.setPreScene(currentScene);
 
         } catch (IOException ex) {
-            System.getLogger(OnlineUsersController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            System.getLogger(OnlineUsersController.class.getName());
         }
-
     }
 
     @FXML
@@ -192,29 +158,17 @@ public void addUser(String username, String status, boolean canInvite) {
         try {
             App.setRoot("home");
         } catch (IOException ex) {
-            System.getLogger(HomeController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            System.getLogger(OnlineUsersController.class.getName());
         }
     }
+
+    // ================= Utils =================
 
     private void showAlert(String title, String msg) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle(title);
-                alert.setHeaderText(null);
-                alert.setContentText(msg);
-                alert.showAndWait();
-            }
-        }
-        );
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.showAndWait();
     }
-    
-    
->>>>>>> Stashed changes
-
-    userListContainer.getChildren().add(hbox);
-}
-
-       
 }

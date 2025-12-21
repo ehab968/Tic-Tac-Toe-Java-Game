@@ -4,6 +4,7 @@
  */
 package com.mycompany.tictactoegui;
 
+import com.iti.group3.tic_tac_toe_shared.GameData;
 import com.iti.group3.tic_tac_toe_shared.Request;
 import com.iti.group3.tic_tac_toe_shared.RequestType;
 import com.iti.group3.tic_tac_toe_shared.Response;
@@ -26,7 +27,7 @@ public class GameRequest {
 
             switch (response.getMessage()) {
                 case INVITE_ACCEPTED:
-                    invitationAccepted();
+                    invitationAccepted(user2);
                     break;
                 case INVITE_REJECTED:
                     invitationRejected();
@@ -46,9 +47,14 @@ public class GameRequest {
 
     }
 
-    public static void invitationAccepted() {
+    public static void invitationAccepted(UserData userData2) {
         
-        
+        try {
+            startOnlineGame(new GameData("1", ClientSocket.user,userData2));
+            App.setRoot("primary");
+        } catch (IOException ex) {
+            System.getLogger(GameRequest.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
     }
 
     public static void invitationRejected() {
@@ -56,5 +62,8 @@ public class GameRequest {
 
     public static void invitationDropped() {
     }
+    
+    public static void startOnlineGame(GameData game){}
+    
 
 }

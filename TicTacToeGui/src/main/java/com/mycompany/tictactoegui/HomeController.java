@@ -10,9 +10,9 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
+
 /**
  * FXML Controller class
  *
@@ -20,7 +20,7 @@ import javafx.scene.image.ImageView;
  */
 public class HomeController implements Initializable {
 
-    
+
     @FXML
     private ImageView userAvater2;
     @FXML
@@ -29,6 +29,7 @@ public class HomeController implements Initializable {
     private Button multiplayerBTN;
     @FXML
     private Button onlineBTN;
+
     /**
      * Initializes the controller class.
      */
@@ -53,7 +54,11 @@ public class HomeController implements Initializable {
     @FXML
     private void onSelectOnline(ActionEvent event) {
         try {
-            App.setRoot("login");
+            if (ClientSocket.user == null) {
+                App.setRoot("login");
+            } else {
+                App.setRoot("onLineUsers");
+            }
         } catch (IOException ex) {
             System.getLogger(HomeController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }

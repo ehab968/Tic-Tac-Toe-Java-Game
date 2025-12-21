@@ -8,33 +8,34 @@ package com.mycompany.tictactoegui;
  *
  * @author mahmo
  */
-import java.io.IOException;
+
+import com.iti.group3.tic_tac_toe_shared.GameData;
+import com.iti.group3.tic_tac_toe_shared.UserData;
 import javafx.application.Platform;
-import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 import java.util.Random;
 import javafx.event.ActionEvent;
 
 import javafx.fxml.FXML;
-import javafx.scene.effect.DropShadow;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
 public class WinDialogController {
 
     @FXML
-    private Label titleLabel;
 
-    private Label subTitleLabel;
-
-    @FXML
     private Label scoreLabel;
-
+    @FXML
+    private Region topStrap;
+    @FXML
+    private Label topTitle;
+    @FXML
+    private Label descriptionTxt;
+    @FXML
+    private Label updatedScoreLabel;
     @FXML
     private MediaView mediaView;
     private VideoManager videoManager;
@@ -42,11 +43,16 @@ public class WinDialogController {
     private GameController gameController;
     @FXML
     private Label videoText;
-    Random rand;
     @FXML
     private Label opponentName;
     @FXML
     private StackPane root;
+
+
+    Random rand;
+    GameData game;
+    private UserData user;
+    private UserData opponent;
 
     public void initialize() {
         rand = new Random();
@@ -56,9 +62,14 @@ public class WinDialogController {
         this.gameController = gameController;
     }
 
-    public void setWinner(char winner) {
-        //subTitleLabel.setText("Player " + winner + " won the game");
-        videoText.setText(getRandomCongratsText(winner));
+    public void setGameData(GameData game, UserData user) {
+        this.game = game;
+        this.user = user;
+        if (game.playerX == user) {
+            this.opponent = game.playerO;
+        } else {
+            this.opponent = game.playerX;
+        }
     }
 
     @FXML
@@ -89,7 +100,40 @@ public class WinDialogController {
     }
 
     public void playVideo() {
-        videoManager = new VideoManager("/videos_audios/bravo.mp4", mediaView);
+        if (game.winner == user) {
+            showWinningDialog();
+        } else {
+            showLosingDialog();
+        }
+    }
+
+    private void showWinningDialog() {
+        topTitle.setText("Winner 🎉🎉");
+        descriptionTxt.setText("You won against");
+        opponentName.setText(opponent.getUserName());
+        scoreLabel.setText(Integer.toString(user.getScore()));
+
+        videoText.setText(getRandomCongratsText());
+        Platform.runLater(() -> {
+            videoManager = new VideoManager("/videos_audios/bravo_fixed.mp4", mediaView);
+        });
+    }
+
+    private void showLosingDialog() {
+        topStrap.setStyle("-fx-background-color: red;");
+        topTitle.setText("Lost!!");
+        descriptionTxt.setText("You Lost against ");
+        opponentName.setText(opponent.getUserName());
+        descriptionTxt.setTextFill(Color.RED);
+
+        updatedScoreLabel.setText("-20");
+        updatedScoreLabel.setTextFill(Color.RED);
+        scoreLabel.setText(Integer.toString(user.getScore()));
+
+        videoText.setText(getRandomLosingText());
+        Platform.runLater(() -> {
+            videoManager = new VideoManager("/videos_audios/losing.mp4", mediaView);
+        });
     }
 
     private void close() {
@@ -98,13 +142,26 @@ public class WinDialogController {
         stage.close();
     }
 
-    private String getRandomCongratsText(char winner) {
+
+    private String getRandomCongratsText() {
+        String userName = user.getUserName();
         String[] congrats = {
-            "عاش يا لعييييب " + winner,
-            "Player " + winner + " is Just Amazing",
-            "عاجل اللاعب " + winner + "فاز بالمباراة"
+            "عاش يا لعييييب " + userName,
+            "Player " + userName + " is Just Amazing",
+            "عاجل اللاعب " + userName + "فاز بالمباراة "
         };
 
         return congrats[rand.nextInt(congrats.length)];
+    }
+
+
+    private String getRandomLosingText() {
+        String userName = user.getUserName();
+        String[] congrats = {
+            "خييبه" + userName
+        };
+
+       // return congrats[rand.nextInt(congrats.length)];
+       return "";
     }
 }

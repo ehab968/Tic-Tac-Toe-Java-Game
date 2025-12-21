@@ -29,10 +29,6 @@ public class SignupController implements Initializable {
     @FXML
     private PasswordField confirmPasswordField;
 
-    private Socket socket;
-    private ObjectOutputStream out;
-    private ObjectInputStream in;
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
     }
@@ -55,14 +51,10 @@ public class SignupController implements Initializable {
         AuthData loginData = new AuthData(userName, password);
         new Thread(() -> {
             try {
-                socket = new Socket("localhost", 5005);
-                out = new ObjectOutputStream(socket.getOutputStream());
-                out.flush();
-                in = new ObjectInputStream(socket.getInputStream());
+
                 Request request = new Request(RequestType.REGISTER, loginData);
-                out.writeObject(request);
-                out.flush();
-                Response<UserData> response = (Response<UserData>) in.readObject();
+                ClientSocket.write(request);
+                Response<UserData> response = (Response<UserData>) ClientSocket.read();
                 if (response.isSuccess()) {
                     showAlert("Success", "Account created successfully!");
                     clearFields();
@@ -76,9 +68,6 @@ public class SignupController implements Initializable {
                         showAlert("Error", "Registration failed");
                     }
                 }
-                in.close();
-                out.close();
-                socket.close();
             } catch (IOException ex) {
                 System.getLogger(SignupController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
             } catch (ClassNotFoundException ex) {
