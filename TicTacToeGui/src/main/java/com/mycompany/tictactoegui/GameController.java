@@ -28,8 +28,7 @@ public class GameController {
     private StackPane[] stackCells = new StackPane[9]; // => كل ستاك بان هنا ريفرنس للسيل اللى موجودة فى الجريد بان
     private boolean isWin = false;
     private char currentPlayer = 'X';
-    static private int choosenScore;
-    static private int counter = 0;
+    static int choosenScore;
     private int userScore = 0;
     private int opponentScore = 0;
     private BiConsumer<Integer, Integer> onScoreChanged;
@@ -44,10 +43,7 @@ public class GameController {
         opponent = new UserData("CPU_MEDIUM");
         game = new GameData("1", user, opponent, null);
         showChosseScoreDialog();
-        if (counter > choosenScore) {
-            choosenScore = 0;
-        }
-        counter++;
+
         initiateGrid();
     }
 
@@ -131,9 +127,9 @@ public class GameController {
         if (onUserChanged != null) {
             onUserChanged.handle(currentPlayer);
         }
-        if(onScoreChanged != null){
-        onScoreChanged.accept(userScore, opponentScore);
-    }
+        if (onScoreChanged != null) {
+            onScoreChanged.accept(userScore, opponentScore);
+        }
     }
 
     public final void exitGame() {
@@ -212,22 +208,38 @@ public class GameController {
 
         }
         //showWinningDialog(game);
-         if(onScoreChanged != null){
-        onScoreChanged.accept(userScore, opponentScore);
-    }
-         
+        if (onScoreChanged != null) {
+            onScoreChanged.accept(userScore, opponentScore);
+        }
+
         if (onUserWinning != null) {
             onUserWinning.handle(currentPlayer);
         }
-        
+
+    }
+
+    public void startNewGame() {
+
+        userScore = opponentScore = 0;
+        restartGame();
+
+        if (onScoreChanged != null) {
+            onScoreChanged.accept(userScore, opponentScore);
+        }
+
+        currentPlayer = 'X';
+        if (onUserChanged != null) {
+            onUserChanged.handle(currentPlayer);
+        }
     }
 
     private void userWonWholeGame(int userScore) {
         if (userScore > choosenScore / 2) {
             showWinningDialog(game);
+            startNewGame();
+
         }
     }
-
 
     public void setOnScoreChanged(BiConsumer<Integer, Integer> listener) {
         this.onScoreChanged = listener;
@@ -237,7 +249,7 @@ public class GameController {
         WinDialog.show(game, user, this);
     }
 
-    private void showChosseScoreDialog() {
+    public void showChosseScoreDialog() {
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/chooseScore.fxml"));
@@ -249,6 +261,7 @@ public class GameController {
             dialogStage.setScene(new Scene(dialogRoot));
             dialogStage.showAndWait();
             choosenScore = chooseScoreController.getScore();
+
         } catch (IOException ex) {
             System.getLogger(GameController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }

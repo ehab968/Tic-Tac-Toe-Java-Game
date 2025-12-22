@@ -48,13 +48,15 @@ public class PrimaryController implements Initializable {
 
         restartGameButton.setOnAction((action) -> {
             gc.restartGame();
+            restartGameButton.setText("Restart the round");
         });
-        
-        
+
         gc.setOnScoreChanged((uScore, oScore) -> {
-    userScoreText.setText("Score: " + uScore);
-    opponentScoreText.setText("Score: " + oScore);
-});
+            userScoreText.setText("Score: " + uScore);
+            opponentScoreText.setText("Score: " + oScore);
+            restartGameButton.setText("Continue");
+
+        });
 
     }
 
@@ -87,11 +89,6 @@ public class PrimaryController implements Initializable {
             opponentStatusText.setFill(Color.GREEN);
         }
     }
-
-    public void updateScore(int userScore, int opponentScore) {
-    userScoreText.setText("Score: " + userScore);
-    opponentScoreText.setText("Score: " + opponentScore);
-}
 
     @FXML
     private void onExitPressed(ActionEvent event) {

@@ -152,7 +152,7 @@
                -fx-border-radius:5px;
                -fx-font-size:14px;
                -fx-font-weight:bold;"
-                        text="Restart the game"
+                        text="Restart the round"
                         textAlignment="CENTER"
                         textFill="WHITE"/>
                 <Button mnemonicParsing="false"
