@@ -66,6 +66,9 @@ public class LoginController implements Initializable {
                     if (response.isSuccess()) {
              
                         ClientSocket.user = response.getData();
+                        ClientStreamSocket.user = response.getData();
+                        ClientStreamSocket.startStream();
+                        
                         showMessage("Welcome " + response.getData().getUserName(), true);
                         System.out.println("Welcome " + response.getData().getUserName());
                         OnlineUsersController.myUserName = response.getData().getUserName();

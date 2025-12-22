@@ -12,6 +12,7 @@ import com.iti.group3.tic_tac_toe_shared.ResponseType;
 import static com.iti.group3.tic_tac_toe_shared.ResponseType.INVITE_ACCEPTED;
 import com.iti.group3.tic_tac_toe_shared.UserData;
 import java.io.IOException;
+import javafx.application.Platform;
 
 /**
  *
@@ -20,32 +21,14 @@ import java.io.IOException;
 public class GameRequest {
 
     public static void sendRequest(UserData user2) {
-        Request request = new Request(RequestType.INVITE_USER, user2);
         try {
-            ClientSocket.write(request);
-
-            Response response = ClientSocket.read();
-
-            switch (response.getMessage()) {
-                case INVITE_ACCEPTED:
-                    invitationAccepted(user2);
-                    break;
-                case INVITE_REJECTED:
-                    invitationRejected();
-                    break;
-                case INVITE_DROPPED:
-                default:
-                    invitationAccepted(user2);
-                    break;
-
-            }
-
+            Request request = new Request(RequestType.INVITE_USER, user2);
+            ClientStreamSocket.write(request);
         } catch (IOException ex) {
             System.getLogger(GameRequest.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         } catch (ClassNotFoundException ex) {
             System.getLogger(GameRequest.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
-
     }
 
     public static void invitationAccepted(UserData userData2) {
@@ -67,31 +50,25 @@ public class GameRequest {
     }
 
     public static void startOnlineGame(GameData game) {
+        Platform.runLater(() -> {
+            try {
+                App.setRoot("primary");
+            } catch (IOException ex) {
+                System.getLogger(GameRequest.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            }
+        });
     }
 
-    public static void listenToRequest() {
-
-        new Runnable() {
-
-            @Override
-            public void run() {
-                try {
-                    //Client 2
-                   while(true){
-                   Response response = ClientSocket.read();
-                    
-                  if(response.getMessage() == ResponseType.REQUEST_GAME){
-                   ClientSocket.write(new Request(RequestType.ACCEPT_INVITE,null));
-                    App.setRoot("primary");
-                  }
-                   }
-                } catch (IOException ex) {
-                    System.getLogger(GameRequest.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-                } catch (ClassNotFoundException ex) {
-                    System.getLogger(GameRequest.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-                }
-            }
-        }.run();
+    public static void RequestReceived(Response response) {
+        UserData user1 = (UserData) response.getData();
+        Request request = new Request(RequestType.ACCEPT_INVITE, user1);
+        try {
+            ClientStreamSocket.write(request);
+        } catch (IOException ex) {
+            System.getLogger(GameRequest.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        } catch (ClassNotFoundException ex) {
+            System.getLogger(GameRequest.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
 
     }
 

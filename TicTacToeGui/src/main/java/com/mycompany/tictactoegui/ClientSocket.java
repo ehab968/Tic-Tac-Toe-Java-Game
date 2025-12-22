@@ -53,6 +53,7 @@ public class ClientSocket extends Thread {
             out = null;
             in = null;
             socket = null;
+            user=null;
         }
     }
 
@@ -77,10 +78,6 @@ public class ClientSocket extends Thread {
             closeConnection();
             throw e;
         }
-    }
-
-    public void setUser(UserData user) {
-        this.user = user;
     }
 
 }
