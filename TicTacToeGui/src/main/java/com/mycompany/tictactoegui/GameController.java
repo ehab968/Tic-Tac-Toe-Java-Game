@@ -4,7 +4,11 @@ import com.iti.group3.tic_tac_toe_shared.GameData;
 import com.iti.group3.tic_tac_toe_shared.UserData;
 import com.mycompany.tictactoegui.interfaces.OnUserEvent;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.function.BiConsumer;
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -15,8 +19,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
-
+import javafx.util.Duration;
 
 public class GameController {
 
@@ -28,11 +33,14 @@ public class GameController {
     private StackPane[] stackCells = new StackPane[9]; // => كل ستاك بان هنا ريفرنس للسيل اللى موجودة فى الجريد بان
     private boolean isWin = false;
     private char currentPlayer = 'X';
+    static int choosenScore;
+    private int userScore = 0;
+    private int opponentScore = 0;
+    private BiConsumer<Integer, Integer> onScoreChanged;
     UserData user;
     UserData opponent;
     GameData game;
     private int modeType;
-    
 
     GameController(Pane gamePane, GridPane gridPane) {
         this.gridPane = gridPane;
@@ -40,12 +48,13 @@ public class GameController {
         user = new UserData("UserName");
         opponent = new UserData("CPU_MEDIUM");
         game = new GameData("1", user, opponent, null);
+        showChosseScoreDialog();
 
         initiateGrid();
     }
 
     private void initiateGrid() {
-        
+
         int cellId = -1;
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
@@ -108,32 +117,36 @@ public class GameController {
         if (onUserChanged != null) {
             onUserChanged.handle(currentPlayer);
         }
-        if(modeType == 1 && currentPlayer == 'O')
-        {
-         computerRole();   
+        if (modeType == 1 && currentPlayer == 'O') {
+            computerRole();
         }
     }
 
-    public void computerRole()
-    {
-        Random rand = new Random();
-        int randomNumber;
-        do {
-        randomNumber = rand.nextInt(9); 
-       } while (charMatrix[randomNumber] != '\0');
-         
-       
-            StackPane cell = stackCells[randomNumber];
+    public void computerRole() {
+        List<Integer> emptyCells = new ArrayList<>();
+        for (int i = 0; i < charMatrix.length; i++) {
+            if (charMatrix[i] == '\0') {
+                emptyCells.add(i);
+            }
+        }
+        if (!emptyCells.isEmpty()) {
+            Random rand = new Random();
+            int randomNumber=rand.nextInt(emptyCells.size());           
+            int cellNumber = emptyCells.get(randomNumber);
+
+            StackPane cell = stackCells[cellNumber];
             addShapeToCell(cell, 'O');
-            charMatrix[randomNumber] = 'O';
+            charMatrix[cellNumber] = 'O';
             cell.setDisable(true);
 
             checkWin();
             if (!isWin) {
                 changePlayer();
             }
-    
+        }
+
     }
+
     public final void restartGame() {
         gamePane.getChildren().removeIf(n -> n instanceof Line);
         isWin = false;
@@ -148,6 +161,9 @@ public class GameController {
         currentPlayer = 'X';
         if (onUserChanged != null) {
             onUserChanged.handle(currentPlayer);
+        }
+        if (onScoreChanged != null) {
+            onScoreChanged.accept(userScore, opponentScore);
         }
     }
 
@@ -216,16 +232,61 @@ public class GameController {
         drawWinningLine(winningLine);
         game.setWinner(user);
 
-        showWinningDialog(game);
+        if (currentPlayer == 'X') {
+            userScore++;
+            game.setWinner(user);
+            userWonWholeGame(userScore);
+        } else {
+            opponentScore++;
+            game.setWinner(opponent);
+            userWonWholeGame(opponentScore);
+
+        }
+        //showWinningDialog(game);
+        if (onScoreChanged != null) {
+            onScoreChanged.accept(userScore, opponentScore);
+        }
+
         if (onUserWinning != null) {
             onUserWinning.handle(currentPlayer);
         }
+
+    }
+
+    public void startNewGame() {
+
+        userScore = opponentScore = 0;
+        restartGame();
+
+        if (onScoreChanged != null) {
+            onScoreChanged.accept(userScore, opponentScore);
+        }
+
+        currentPlayer = 'X';
+        if (onUserChanged != null) {
+            onUserChanged.handle(currentPlayer);
+        }
+    }
+
+    private void userWonWholeGame(int userScore) {
+        if (userScore > choosenScore / 2) {
+             PauseTransition pause = new PauseTransition(Duration.seconds(.5));
+        pause.setOnFinished(event -> {
+            showWinningDialog(game);
+            startNewGame();
+        });
+        pause.play();
+
+        }
+    }
+
+    public void setOnScoreChanged(BiConsumer<Integer, Integer> listener) {
+        this.onScoreChanged = listener;
     }
 
     private void showWinningDialog(GameData game) {
         WinDialog.show(game, user, this);
     }
-
 
     public void showChosseScoreDialog() {
 
@@ -245,9 +306,9 @@ public class GameController {
         }
 
     }
-     public void setModeType(int modeType)
-    {
-        this.modeType=modeType;
+
+    public void setModeType(int modeType) {
+        this.modeType = modeType;
     }
 
 }

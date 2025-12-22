@@ -67,7 +67,7 @@
                                     </padding>
                                     <font>
 
-                               <Font name="Bauhaus 93" size="14.0" />
+                                        <Font name="Bauhaus 93" size="14.0" />
                                     </font>
                                 </Label>
                             </children>

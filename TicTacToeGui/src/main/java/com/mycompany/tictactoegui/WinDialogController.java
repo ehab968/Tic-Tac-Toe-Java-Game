@@ -8,22 +8,25 @@ package com.mycompany.tictactoegui;
  *
  * @author mahmo
  */
+
 import com.iti.group3.tic_tac_toe_shared.GameData;
 import com.iti.group3.tic_tac_toe_shared.UserData;
-import javafx.application.Platform;
-import javafx.scene.control.Label;
-import javafx.scene.media.MediaView;
-import javafx.stage.Stage;
 import java.util.Random;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
+
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 
 public class WinDialogController {
 
     @FXML
+
     private Label scoreLabel;
     @FXML
     private Region topStrap;
@@ -45,10 +48,14 @@ public class WinDialogController {
     @FXML
     private StackPane root;
 
+
     Random rand;
     GameData game;
     private UserData user;
     private UserData opponent;
+
+    private int totalScore;
+
 
     public void initialize() {
         rand = new Random();
@@ -81,16 +88,16 @@ public class WinDialogController {
                 gameController.exitGame();
             }
         });
+
     }
 
     public void onPlayAgain() {
         close();
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                gameController.restartGame();
-            }
+        Platform.runLater(() -> {
+            gameController.restartGame();
+            gameController.showChosseScoreDialog();
         });
+
     }
 
     public void playVideo() {
@@ -129,12 +136,14 @@ public class WinDialogController {
             videoManager = new VideoManager("/videos_audios/losing.mp4", mediaView);
         });
     }
-
+    
+   
     private void close() {
         videoManager.stop();
         Stage stage = (Stage) root.getScene().getWindow();
         stage.close();
     }
+
 
     private String getRandomCongratsText() {
         String userName = user.getUserName();
@@ -147,13 +156,14 @@ public class WinDialogController {
         return congrats[rand.nextInt(congrats.length)];
     }
 
+
     private String getRandomLosingText() {
         String userName = user.getUserName();
         String[] congrats = {
             "خييبه" + userName
         };
 
-       // return congrats[rand.nextInt(congrats.length)];
-       return "";
+        // return congrats[rand.nextInt(congrats.length)];
+        return "";
     }
 }

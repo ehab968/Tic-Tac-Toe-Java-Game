@@ -84,6 +84,7 @@
                         <id>ide-debug</id>
                         <configuration>
                             <options>
+
                                 <option>--enable-native-access=javafx.graphics</option>
                                 <option>--add-modules</option>
                                 <option>javafx.media</option>
