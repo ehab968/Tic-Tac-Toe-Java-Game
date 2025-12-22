@@ -12,6 +12,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 
 /**
@@ -26,7 +27,6 @@ public class ClientSocket extends Thread {
     static public UserData user;
     public static ServerListener serverListener;
 
-
     static private void connectToServer() throws UnknownHostException, UnknownHostException, IOException {
         if (socket == null) {
             socket = new Socket(InetAddress.getLocalHost(), 5005);
@@ -36,17 +36,47 @@ public class ClientSocket extends Thread {
         }
     }
 
+    private static void closeConnection() {
+        try {
+            System.out.println("Closing Connection");
+            if (out != null) {
+                out.close();
+            }
+            if (in != null) {
+                in.close();
+            }
+            if (socket != null) {
+                socket.close();
+            }
+
+        } catch (IOException ex) {
+            out = null;
+            in = null;
+            socket = null;
+        }
+    }
+
     static public Response read() throws IOException, ClassNotFoundException {
-        Response response = null;
-        connectToServer();
-        response = (Response) in.readObject();
-        return response;
+        try {
+            Response response = null;
+            connectToServer();
+            response = (Response) in.readObject();
+            return response;
+        } catch (SocketException e) {
+            closeConnection();
+            throw e;
+        }
     }
 
     static public void write(Request request) throws IOException, ClassNotFoundException {
-        connectToServer();
-        out.writeObject(request);
-        out.flush();
+        try {
+            connectToServer();
+            out.writeObject(request);
+            out.flush();
+        } catch (SocketException e) {
+            closeConnection();
+            throw e;
+        }
     }
 
     public void setUser(UserData user) {
