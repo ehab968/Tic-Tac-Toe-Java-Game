@@ -40,11 +40,20 @@ public class PrimaryController implements Initializable {
     private ImageView userAvater211;
 
     GameController gc;
+<<<<<<< Updated upstream
+=======
+    @FXML
+    private Text userScoreText;
+    @FXML
+    private Text opponentScoreText;
+    private int modeType;
+>>>>>>> Stashed changes
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        gc = new GameController(gamePane, gridPane);
 
+        gc = new GameController(gamePane, gridPane);
+        
         gc.setOnUserChanged((currentPlayer) -> {
             onUserChange(currentPlayer);
         });
@@ -92,4 +101,16 @@ public class PrimaryController implements Initializable {
     private void onExitPressed(ActionEvent event) {
         gc.exitGame();
     }
+<<<<<<< Updated upstream
+=======
+
+    public void setModeType(int modeType) {
+        this.modeType = modeType;
+
+        if (gc != null) {
+            gc.setModeType(modeType);
+        }
+
+    }
+>>>>>>> Stashed changes
 }

@@ -9,7 +9,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 
@@ -37,9 +39,20 @@ public class HomeController implements Initializable {
         // TODO
     }
 
+    
     @FXML
     private void onSelectSinglePlayer(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/primary.fxml"));
+            Parent root = loader.load();
+            PrimaryController controller = loader.getController();
+            controller.setModeType(1);
+            App.setRoot(root);
+        } catch (IOException ex) {
+            System.getLogger(HomeController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
     }
+   
 
     @FXML
     private void onSelectMultiplayer(ActionEvent event) {
@@ -62,5 +75,5 @@ public class HomeController implements Initializable {
             System.getLogger(HomeController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
     }
-    
+
 }

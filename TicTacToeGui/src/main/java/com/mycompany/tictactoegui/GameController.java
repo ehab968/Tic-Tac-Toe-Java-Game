@@ -4,13 +4,19 @@ import com.iti.group3.tic_tac_toe_shared.GameData;
 import com.iti.group3.tic_tac_toe_shared.UserData;
 import com.mycompany.tictactoegui.interfaces.OnUserEvent;
 import java.io.IOException;
+import java.util.Random;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
+import javafx.stage.Stage;
+
 
 public class GameController {
 
@@ -25,6 +31,8 @@ public class GameController {
     UserData user;
     UserData opponent;
     GameData game;
+    private int modeType;
+    
 
     GameController(Pane gamePane, GridPane gridPane) {
         this.gridPane = gridPane;
@@ -37,6 +45,7 @@ public class GameController {
     }
 
     private void initiateGrid() {
+        
         int cellId = -1;
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
@@ -99,8 +108,32 @@ public class GameController {
         if (onUserChanged != null) {
             onUserChanged.handle(currentPlayer);
         }
+        if(modeType == 1 && currentPlayer == 'O')
+        {
+         computerRole();   
+        }
     }
 
+    public void computerRole()
+    {
+        Random rand = new Random();
+        int randomNumber;
+        do {
+        randomNumber = rand.nextInt(9); 
+       } while (charMatrix[randomNumber] != '\0');
+         
+       
+            StackPane cell = stackCells[randomNumber];
+            addShapeToCell(cell, 'O');
+            charMatrix[randomNumber] = 'O';
+            cell.setDisable(true);
+
+            checkWin();
+            if (!isWin) {
+                changePlayer();
+            }
+    
+    }
     public final void restartGame() {
         gamePane.getChildren().removeIf(n -> n instanceof Line);
         isWin = false;
@@ -191,6 +224,30 @@ public class GameController {
 
     private void showWinningDialog(GameData game) {
         WinDialog.show(game, user, this);
+    }
+
+
+    public void showChosseScoreDialog() {
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/chooseScore.fxml"));
+            Parent dialogRoot = loader.load();
+            ChooseScoreController chooseScoreController = loader.getController();
+            Stage dialogStage = new Stage();
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.setTitle("Choose Score");
+            dialogStage.setScene(new Scene(dialogRoot));
+            dialogStage.showAndWait();
+            choosenScore = chooseScoreController.getScore();
+
+        } catch (IOException ex) {
+            System.getLogger(GameController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+
+    }
+     public void setModeType(int modeType)
+    {
+        this.modeType=modeType;
     }
 
 }
