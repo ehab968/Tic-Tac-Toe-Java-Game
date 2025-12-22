@@ -26,8 +26,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.application.Platform;
 
-
 public class LoginController implements Initializable {
+
     @FXML
     private TextField usernameField;
     @FXML
@@ -43,7 +43,7 @@ public class LoginController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
     }
-    
+
     @FXML
     private void handleLogin(ActionEvent event) {
 
@@ -64,6 +64,7 @@ public class LoginController implements Initializable {
 
                     Response<UserData> response = (Response) ClientSocket.read();
                     if (response.isSuccess()) {
+             
                         ClientSocket.user = response.getData();
                         showMessage("Welcome " + response.getData().getUserName(), true);
                         System.out.println("Welcome " + response.getData().getUserName());

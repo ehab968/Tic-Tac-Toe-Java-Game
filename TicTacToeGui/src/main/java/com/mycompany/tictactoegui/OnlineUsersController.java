@@ -90,6 +90,7 @@ public class OnlineUsersController implements Initializable {
     @FXML
     private void onlineUserReload(ActionEvent event) {
         loadOnlineUsers();
+        
     }
 
     // ================= UI =================

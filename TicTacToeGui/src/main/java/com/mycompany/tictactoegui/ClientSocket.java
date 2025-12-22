@@ -18,12 +18,14 @@ import java.net.UnknownHostException;
  *
  * @author mahmo
  */
-class ClientSocket extends Thread {
+public class ClientSocket extends Thread {
 
     static private Socket socket;
     static private ObjectInputStream in;
     static private ObjectOutputStream out;
     static public UserData user;
+    public static ServerListener serverListener;
+
 
     static private void connectToServer() throws UnknownHostException, UnknownHostException, IOException {
         if (socket == null) {
