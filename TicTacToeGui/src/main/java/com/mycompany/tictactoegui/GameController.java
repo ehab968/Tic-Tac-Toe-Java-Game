@@ -117,7 +117,7 @@ public class GameController {
             onUserChanged.handle(currentPlayer);
         }
     }
-
+    
     public final void exitGame() {
         try {
             App.setRoot("home");
@@ -125,6 +125,8 @@ public class GameController {
             System.getLogger(PrimaryController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
     }
+
+    
 
     /*
         0   1   2
@@ -188,6 +190,7 @@ public class GameController {
             onUserWinning.handle(currentPlayer);
         }
     }
+
 
     private void showWinningDialog(GameData game) {
         WinDialog.show(game, user, this);

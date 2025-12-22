@@ -8,6 +8,7 @@ package com.mycompany.tictactoegui;
  *
  * @author mahmo
  */
+
 import com.iti.group3.tic_tac_toe_shared.GameData;
 import com.iti.group3.tic_tac_toe_shared.UserData;
 import javafx.application.Platform;
@@ -16,6 +17,7 @@ import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 import java.util.Random;
 import javafx.event.ActionEvent;
+
 import javafx.fxml.FXML;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
@@ -24,6 +26,7 @@ import javafx.scene.paint.Color;
 public class WinDialogController {
 
     @FXML
+
     private Label scoreLabel;
     @FXML
     private Region topStrap;
@@ -44,6 +47,7 @@ public class WinDialogController {
     private Label opponentName;
     @FXML
     private StackPane root;
+
 
     Random rand;
     GameData game;
@@ -81,6 +85,7 @@ public class WinDialogController {
                 gameController.exitGame();
             }
         });
+
     }
 
     public void onPlayAgain() {
@@ -91,6 +96,7 @@ public class WinDialogController {
                 gameController.restartGame();
             }
         });
+
     }
 
     public void playVideo() {
@@ -136,6 +142,7 @@ public class WinDialogController {
         stage.close();
     }
 
+
     private String getRandomCongratsText() {
         String userName = user.getUserName();
         String[] congrats = {
@@ -146,6 +153,7 @@ public class WinDialogController {
 
         return congrats[rand.nextInt(congrats.length)];
     }
+
 
     private String getRandomLosingText() {
         String userName = user.getUserName();

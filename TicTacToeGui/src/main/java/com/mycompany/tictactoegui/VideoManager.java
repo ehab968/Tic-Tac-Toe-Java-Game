@@ -1,5 +1,6 @@
 package com.mycompany.tictactoegui;
 
+
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.scene.media.Media;
@@ -16,6 +17,7 @@ public class VideoManager {
     private MediaPlayer mediaPlayer;
     private MediaView mediaView;
     private String videoPath;
+
     private int retryCount = 0;
 
     VideoManager(String videoPath, MediaView mediaView) {
@@ -27,6 +29,7 @@ public class VideoManager {
 
     private void loadVideo() {
         try {
+
             String resource = getClass().getResource(videoPath).toExternalForm();
             Media media = new Media(resource);
             mediaPlayer = new MediaPlayer(media);
@@ -65,6 +68,7 @@ public class VideoManager {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
             mediaPlayer.dispose();
+
             mediaPlayer = null;
         }
     }

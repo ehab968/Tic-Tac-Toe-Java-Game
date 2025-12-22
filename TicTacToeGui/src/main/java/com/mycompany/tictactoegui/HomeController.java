@@ -20,6 +20,7 @@ import javafx.scene.image.ImageView;
  */
 public class HomeController implements Initializable {
 
+
     @FXML
     private ImageView userAvater2;
     @FXML
