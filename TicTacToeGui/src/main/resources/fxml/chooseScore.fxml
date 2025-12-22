@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+
+<StackPane xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml"
+           style="-fx-background-color: #f0f4f8;"
+           fx:controller="com.mycompany.tictactoegui.ChooseScoreController">
+
+    <VBox alignment="CENTER"
+          maxWidth="360"
+          spacing="0"
+          style="
+              -fx-background-color: white;
+              -fx-background-radius: 24;
+              -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 25, 0.3, 0, 10);
+          ">
+
+        <!-- Top blue bar -->
+        <Pane prefHeight="6" style="-fx-background-color: #2b7cee;" />
+
+        <!-- Content -->
+        <VBox alignment="CENTER" spacing="14">
+            <padding>
+                <Insets top="30" right="30" bottom="30" left="30"/>
+            </padding>
+
+
+            <!-- Message -->
+            <Label text="Enter the maximum score:"
+                   style="-fx-font-size: 16px; -fx-text-fill: #0f172a;" />
+
+            <!-- TextField -->
+            <TextField fx:id="scoreField"
+                       promptText="Enter score here"
+                       maxWidth="200"
+                       style="-fx-font-size: 14px; -fx-background-radius: 10;"/>
+
+             <!-- HBox للخطأ -->
+            <HBox fx:id="errorBox" alignment="CENTER" spacing="2">
+                <Label fx:id="errorLabel" text="" style="-fx-text-fill: red; -fx-font-size: 10px;"/>
+            </HBox>
+
+        </VBox>
+       
+        <!-- Button -->
+        <VBox>
+            <padding>
+                <Insets  right="30" bottom="20" left="30"/>
+            </padding>
+
+            <Button text="OK"
+                    maxWidth="Infinity"
+                    style="
+                        -fx-background-color: #2b7cee;
+                        -fx-text-fill: white;
+                        -fx-font-size: 14px;
+                        -fx-font-weight: bold;
+                        -fx-background-radius: 16;
+                        -fx-pref-height: 48;
+                    "
+                    onMousePressed="#handlePressed"
+                    />
+        </VBox>
+
+    </VBox>
+
+</StackPane>

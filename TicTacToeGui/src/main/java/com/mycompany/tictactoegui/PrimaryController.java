@@ -1,14 +1,11 @@
 package com.mycompany.tictactoegui;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -21,12 +18,6 @@ public class PrimaryController implements Initializable {
     @FXML
     private GridPane gridPane;
     @FXML
-    private ImageView userAvater2;
-    @FXML
-    private ImageView userAvater1;
-    @FXML
-    private ImageView userAvater21;
-    @FXML
     private Text userNameText;
     @FXML
     private Text userStatusText;
@@ -36,10 +27,12 @@ public class PrimaryController implements Initializable {
     private Text opponentStatusText;
     @FXML
     private Button restartGameButton;
-    @FXML
-    private ImageView userAvater211;
 
     GameController gc;
+    @FXML
+    private Text userScoreText;
+    @FXML
+    private Text opponentScoreText;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -55,7 +48,16 @@ public class PrimaryController implements Initializable {
 
         restartGameButton.setOnAction((action) -> {
             gc.restartGame();
+            restartGameButton.setText("Restart the round");
         });
+
+        gc.setOnScoreChanged((uScore, oScore) -> {
+            userScoreText.setText("Score: " + uScore);
+            opponentScoreText.setText("Score: " + oScore);
+            restartGameButton.setText("Continue");
+
+        });
+
     }
 
     private void onUserChange(char currentPlayer) {
@@ -92,4 +94,5 @@ public class PrimaryController implements Initializable {
     private void onExitPressed(ActionEvent event) {
         gc.exitGame();
     }
+
 }
