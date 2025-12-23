@@ -11,7 +11,6 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 
-
 public class App extends Application {
 
     private static Scene scene;
@@ -21,6 +20,10 @@ public class App extends Application {
         SoundPlayer.setbuttonVolume(0);
         Platform.runLater(() -> SoundPlayer.playbuttonClick());
         scene = new Scene(loadFXML("home"), 800, 600);
+
+        scene.getStylesheets().add(
+                getClass().getResource("/styles/styles.css").toExternalForm()
+        );
         scene.addEventFilter(ActionEvent.ACTION, (event) -> {
             if (event.getTarget() instanceof Button) {
                 SoundPlayer.setbuttonVolume(1);
@@ -38,6 +41,10 @@ public class App extends Application {
     private static Parent loadFXML(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/fxml/" + fxml + ".fxml"));
         return fxmlLoader.load();
+    }
+
+    public static Scene getScene() {
+        return scene;
     }
 
     public static void main(String[] args) {
