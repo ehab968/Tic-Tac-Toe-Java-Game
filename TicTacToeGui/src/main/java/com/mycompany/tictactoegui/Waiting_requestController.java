@@ -11,6 +11,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
 import javafx.scene.control.Button;
+import javafx.stage.Stage;
+
 /**
  * FXML Controller class
  *
@@ -18,19 +20,28 @@ import javafx.scene.control.Button;
  */
 public class Waiting_requestController implements Initializable {
 
-
     @FXML
     private Button cancelInviteBtn;
+    private Stage stage;
+
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-    }    
-    
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+
     @FXML
     private void cancelInviteAction(ActionEvent event) {
+        if (stage != null) {
+            stage.close();
+        }
+        CustomDialog.close();
     }
 
 }

@@ -6,6 +6,7 @@ package com.mycompany.tictactoegui;
 
 import com.iti.group3.tic_tac_toe_shared.GameData;
 import com.iti.group3.tic_tac_toe_shared.UserData;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -20,7 +21,8 @@ import javafx.stage.WindowEvent;
  * @author Ahmed Sayed
  */
 public class CustomDialog {
-    
+       public static Stage stage; 
+
     public static void show(String path) {
         try {
             FXMLLoader loader = new FXMLLoader(
@@ -29,8 +31,8 @@ public class CustomDialog {
 
             Scene scene = new Scene(loader.load());
 
+            stage = new Stage();
 
-            Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setResizable(false);
             stage.setScene(scene);
@@ -39,7 +41,19 @@ public class CustomDialog {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    
+       
     
 }
+    
+    public static void close() {
+    Platform.runLater(() -> {
+        if (stage != null) {
+            stage.close();
+            stage = null;
+        }
+    });
 }
+
+}
+
+
