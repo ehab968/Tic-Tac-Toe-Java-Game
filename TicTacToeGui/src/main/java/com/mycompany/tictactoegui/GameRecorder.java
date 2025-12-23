@@ -143,23 +143,22 @@ public class GameRecorder {
         dialog.show();
     }
 
-    private void goToGameAndPlay(String filePath) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/primary.fxml"));
-            Parent root = loader.load();
-            PrimaryController controller = loader.getController();
+    public void goToGameAndPlay(String filePath) {
+        Platform.runLater(() -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/primary.fxml"));
+                Parent root = loader.load();
+                PrimaryController controller = loader.getController();
 
-            // Pass the path to a method you will create in PrimaryController
-            System.out.println("setRecordPath= " + filePath);
-            controller.setRecordPath(filePath);
+                // Pass the path to a method you will create in PrimaryController
+                System.out.println("setRecordPath= " + filePath);
+                controller.setRecordPath(filePath);
 
-            // Show the scene
-            Platform.runLater(() -> {
+                // Show the scene
                 App.getScene().setRoot(root);
-            });
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
     }
 }
