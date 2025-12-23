@@ -4,9 +4,6 @@ import com.iti.group3.tic_tac_toe_shared.GameData;
 import com.iti.group3.tic_tac_toe_shared.UserData;
 import com.mycompany.tictactoegui.interfaces.OnUserEvent;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 import java.util.function.BiConsumer;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXMLLoader;
@@ -41,17 +38,27 @@ public class GameController {
     UserData opponent;
     GameData game;
     private int modeType;
+    private int difficulty;
+    SingleMode singleMode;
 
-    GameController(Pane gamePane, GridPane gridPane) {
+    
+
+    public GameController(Pane gamePane, GridPane gridPane) {
         this.gridPane = gridPane;
         this.gamePane = gamePane;
         user = new UserData("UserName");
         opponent = new UserData("CPU_MEDIUM");
         game = new GameData("1", user, opponent, null);
         showChosseScoreDialog();
+        singleMode = new SingleMode(charMatrix, stackCells, this); 
 
         initiateGrid();
     }
+    public void startGame() {
+    showChosseScoreDialog();
+    singleMode = new SingleMode(charMatrix, stackCells, this);
+    initiateGrid();
+}
 
     private void initiateGrid() {
 
@@ -101,7 +108,7 @@ public class GameController {
         this.onUserWinning = listener;
     }
 
-    private void addShapeToCell(StackPane cell, char player) {
+    public void addShapeToCell(StackPane cell, char player) {
         if (player == 'X') {
             XShape x = new XShape(45);
             cell.getChildren().add(x);
@@ -111,37 +118,22 @@ public class GameController {
         }
     }
 
-    private void changePlayer() {
+    public  void changePlayer() {
         currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
 
         if (onUserChanged != null) {
             onUserChanged.handle(currentPlayer);
         }
+        System.out.println("difffffffff"+difficulty);
+                        System.out.println("modeType"+modeType);
+
+     
         if (modeType == 1 && currentPlayer == 'O') {
-            computerRole();
-        }
-    }
+                   switch (difficulty) {
+                case 1 -> singleMode.computerRoleEasy();
+                case 2 -> singleMode.computerRoleMeduim();
+                case 3 -> singleMode.computerRoleHard();
 
-    public void computerRole() {
-        List<Integer> emptyCells = new ArrayList<>();
-        for (int i = 0; i < charMatrix.length; i++) {
-            if (charMatrix[i] == '\0') {
-                emptyCells.add(i);
-            }
-        }
-        if (!emptyCells.isEmpty()) {
-            Random rand = new Random();
-            int randomNumber=rand.nextInt(emptyCells.size());           
-            int cellNumber = emptyCells.get(randomNumber);
-
-            StackPane cell = stackCells[cellNumber];
-            addShapeToCell(cell, 'O');
-            charMatrix[cellNumber] = 'O';
-            cell.setDisable(true);
-
-            checkWin();
-            if (!isWin) {
-                changePlayer();
             }
         }
 
@@ -180,7 +172,7 @@ public class GameController {
         3   4   5
         6   7   8
      */
-    private void checkWin() {
+    public void checkWin() {
         int[][] wins = {
             // Horizontal
             {0, 1, 2}, {3, 4, 5}, {6, 7, 8},
@@ -242,7 +234,6 @@ public class GameController {
             userWonWholeGame(opponentScore);
 
         }
-        //showWinningDialog(game);
         if (onScoreChanged != null) {
             onScoreChanged.accept(userScore, opponentScore);
         }
@@ -270,12 +261,12 @@ public class GameController {
 
     private void userWonWholeGame(int userScore) {
         if (userScore > choosenScore / 2) {
-             PauseTransition pause = new PauseTransition(Duration.seconds(.5));
-        pause.setOnFinished(event -> {
-            showWinningDialog(game);
-            startNewGame();
-        });
-        pause.play();
+            PauseTransition pause = new PauseTransition(Duration.seconds(.5));
+            pause.setOnFinished(event -> {
+                showWinningDialog(game);
+                startNewGame();
+            });
+            pause.play();
 
         }
     }
@@ -288,7 +279,7 @@ public class GameController {
         WinDialog.show(game, user, this);
     }
 
-    public void showChosseScoreDialog() {
+    public boolean showChosseScoreDialog() {
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/chooseScore.fxml"));
@@ -298,17 +289,31 @@ public class GameController {
             dialogStage.initModality(Modality.APPLICATION_MODAL);
             dialogStage.setTitle("Choose Score");
             dialogStage.setScene(new Scene(dialogRoot));
+            dialogStage.setOnCloseRequest(event -> {
+                event.consume();
+            });
             dialogStage.showAndWait();
+
             choosenScore = chooseScoreController.getScore();
+            return true;
 
         } catch (IOException ex) {
             System.getLogger(GameController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
+        return false;
+
+    }
+
+    public void setDifficultyLevel(int difficulty) {
+        this.difficulty = difficulty;
 
     }
 
     public void setModeType(int modeType) {
         this.modeType = modeType;
+    }
+    public boolean getIsWin() {
+        return isWin;
     }
 
 }
