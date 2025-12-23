@@ -76,6 +76,8 @@ public class ClientStreamSocket {
             }
 
         } catch (IOException ex) {
+
+        } finally {
             out = null;
             in = null;
             socket = null;
@@ -94,7 +96,7 @@ public class ClientStreamSocket {
             throw e;
         }
     }
-    static boolean isInGame =false;
+    public static boolean isInGame = false;
 
     static public void startStream() {
         System.out.println("Stream Socket started");
@@ -108,52 +110,31 @@ public class ClientStreamSocket {
 
                     switch (response.getMessage()) {
 
-    case REQUEST_GAME:
-        if (!isInGame) {
-            GameRequest.RequestReceived(response);
-        }
-        break;
+                        case REQUEST_GAME:
+                            if (!isInGame) {
+                                GameRequest.RequestReceived(response);
+                            }
+                            break;
 
-    case START_GAME:
-        if (!isInGame) {
-            GameRequest.startOnlineGame((GameData) response.getData());
-            isInGame = true;
-        }
-        break;
+                        case START_GAME:
+                            if (!isInGame) {
+                                GameRequest.startOnlineGame((GameData) response.getData());
+                                isInGame = true;
+                            }
+                            break;
 
-    case INVITE_ACCEPTED:
-    case INVITE_REJECTED:
-    case INVITE_DROPPED:
-    case SERVER_FAILURE:
-        GameRequest.handleInviteResponse(response);
-        break;
+                        case INVITE_ACCEPTED:
+                        case INVITE_REJECTED:
+                        case INVITE_DROPPED:
+                        case SERVER_FAILURE:
+                            GameRequest.handleInviteResponse(response);
+                            break;
 
-    case GAME_OVER:
-        isInGame = false;
-        break;
-}
+                        case GAME_OVER:
+                            isInGame = false;
+                            break;
+                    }
 
-                    
-                    
-//                    switch (response.getMessage()) {
-//                        case REQUEST_GAME:
-//                            if (!isInGame) {
-//                                GameRequest.RequestReceived(response);
-//                            }
-//                            break;
-//                        case START_GAME:
-//                            if (!isInGame) {
-//                                GameRequest.startOnlineGame((GameData) response.getData());
-//                                isInGame = true;
-//                            }
-//                            break;
-//                        case GAME_OVER:
-//                            isInGame = false;
-//                        case INVITE_REJECTED:
-//                        case INVITE_ACCEPTED:
-//                        case INVITE_DROPPED:
-//                        case SERVER_FAILURE:
-//                    }
                 }
             } catch (IOException ex) {
                 System.getLogger(ClientStreamSocket.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);

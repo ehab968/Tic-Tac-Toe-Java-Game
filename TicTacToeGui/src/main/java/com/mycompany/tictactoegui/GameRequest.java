@@ -8,12 +8,10 @@ import com.iti.group3.tic_tac_toe_shared.GameData;
 import com.iti.group3.tic_tac_toe_shared.Request;
 import com.iti.group3.tic_tac_toe_shared.RequestType;
 import com.iti.group3.tic_tac_toe_shared.Response;
-import com.iti.group3.tic_tac_toe_shared.ResponseType;
 import static com.iti.group3.tic_tac_toe_shared.ResponseType.INVITE_ACCEPTED;
 import com.iti.group3.tic_tac_toe_shared.UserData;
 import java.io.IOException;
 import javafx.application.Platform;
-import javafx.stage.Stage;
 
 /**
  *
@@ -25,8 +23,7 @@ public class GameRequest {
         try {
             Request request = new Request(RequestType.INVITE_USER, user2);
             ClientStreamSocket.write(request);
-            CustomDialog activeDialog = new CustomDialog();
-            activeDialog.show("waiting_request.fxml");
+            CustomDialog.show("waiting_request.fxml");
 
         } catch (IOException ex) {
             System.getLogger(GameRequest.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
@@ -36,15 +33,9 @@ public class GameRequest {
     }
 
     public static void invitationAccepted(UserData userData2) {
-
-        try {
-
-            startOnlineGame(new GameData("1", ClientSocket.user, userData2));
-            App.setRoot("primary");
+        Platform.runLater(() -> {
             CustomDialog.close();
-        } catch (IOException ex) {
-            System.getLogger(GameRequest.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-        }
+        });
     }
 
     public static void invitationRejected() {
@@ -57,8 +48,8 @@ public class GameRequest {
 
     public static void startOnlineGame(GameData game) {
         Platform.runLater(() -> {
-            CustomDialog.close();
             try {
+                CustomDialog.close();
                 App.setRoot("primary");
             } catch (IOException ex) {
                 System.getLogger(GameRequest.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
@@ -71,49 +62,26 @@ public class GameRequest {
 
         Platform.runLater(() -> {
             PendingInvite.setSender(sender);
-            CustomDialog.show("accept_request.fxml");
+            CustomDialog.show("accept_request.fxml", sender);
         });
     }
 
     public static void handleInviteResponse(Response response) {
-
         Platform.runLater(() -> {
-            System.out.println(response);
+            System.out.println("entering switch" + response);
             switch (response.getMessage()) {
-
-                case INVITE_ACCEPTED: {
-                    CustomDialog.close();
+                case INVITE_ACCEPTED:
                     UserData opponent = (UserData) response.getData();
                     startOnlineGame(new GameData("1", ClientSocket.user, opponent));
                     break;
-                }
-
-                case INVITE_REJECTED: {
-                    CustomDialog.show("accept_request.fxml");
+                case INVITE_REJECTED:
+                    invitationRejected();
                     break;
-                }
-
                 case INVITE_DROPPED:
-                case SERVER_FAILURE: {
-                    CustomDialog.close();
-                    CustomDialog.show("connection_lost_request.fxml");
+                case SERVER_FAILURE:
+                    invitationDropped();
                     break;
-                }
             }
-
         });
     }
-
-//    public static void RequestReceived(Response response) {
-//        UserData user1 = (UserData) response.getData();
-//        Request request = new Request(RequestType.ACCEPT_INVITE, user1);
-//        try {
-//            ClientStreamSocket.write(request);
-//        } catch (IOException ex) {
-//            System.getLogger(GameRequest.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-//        } catch (ClassNotFoundException ex) {
-//            System.getLogger(GameRequest.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-//        }
-//
-//    }
 }

@@ -92,6 +92,7 @@ public class PrimaryController implements Initializable {
 
     @FXML
     private void onExitPressed(ActionEvent event) {
+       ClientStreamSocket.isInGame =false;
         gc.exitGame();
     }
 
