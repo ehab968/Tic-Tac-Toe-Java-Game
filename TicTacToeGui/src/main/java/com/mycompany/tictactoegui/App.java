@@ -21,6 +21,11 @@ public class App extends Application {
         SoundPlayer.setbuttonVolume(0);
         Platform.runLater(() -> SoundPlayer.playbuttonClick());
         scene = new Scene(loadFXML("home"), 800, 600);
+        
+        scene.getStylesheets().add(
+                getClass().getResource("/styles/styles.css").toExternalForm()
+        );
+        
         scene.addEventFilter(ActionEvent.ACTION, (event) -> {
             if (event.getTarget() instanceof Button) {
                 SoundPlayer.setbuttonVolume(1);
