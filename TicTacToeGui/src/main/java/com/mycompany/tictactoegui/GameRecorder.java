@@ -6,16 +6,28 @@ package com.mycompany.tictactoegui;
 
 import com.iti.group3.tic_tac_toe_shared.GameData;
 import com.iti.group3.tic_tac_toe_shared.GameMove;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.util.Duration;
 
 /**
  *
@@ -23,59 +35,131 @@ import java.util.List;
  */
 public class GameRecorder {
 
-    GameData gameData;
     private static final String RECORD_DIR = "game_records";
+    private static final String EXTENSION = ".tictac";
 
-    public GameRecorder(GameData gameData) {
-        this.gameData = gameData;
-    }
-
-    public ArrayList<GameMove> playRecord(String path) {
-        ArrayList<GameMove> loadedMoves = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader("game_records/"+path+".txt"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                // Logic based on your format: Order:Cell-Char
-                // Example: 1:4-X
-                String[] parts = line.split("[:\\-]"); // Splits by either ':' or '-'
-                int order = Integer.parseInt(parts[0]);
-                int cellId = Integer.parseInt(parts[1]);
-                char player = parts[2].charAt(0);
-
-                // Create move object (assuming movePlayer can be null for replay)
-                loadedMoves.add(new GameMove(cellId, player, order, null));
-            }
-        } catch (IOException | NumberFormatException e) {
-            e.printStackTrace();
-        }
-        return loadedMoves;
-    }
-
-    public int saveRecord(ArrayList<GameMove> moves) {
-        // 1. Create the directory if it doesn't exist
+    public int saveRecord(ArrayList<GameMove> moves, GameData gameData) {
         File directory = new File(RECORD_DIR);
         if (!directory.exists()) {
             directory.mkdir();
         }
-
-        // 2. Generate a unique filename using the current date/time
         gameData.setDate(LocalDateTime.now());
         String timestamp = gameData.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
-        String fileName = RECORD_DIR + "/game_" + gameData.getId() + "_" + timestamp + ".txt";
 
-        // 3. Write moves to the file
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-            for (GameMove move : moves) {
-                // Format: cellId:playerChar (e.g., "4:X")
-                writer.write(move.getMoveOrder() + ":" + move.getCellId() + "-" + move.getCharacter());
-                writer.newLine();
-            }
-            System.out.println("Game saved successfully: " + fileName);
+        String fileName = RECORD_DIR + "/" + "game_" + gameData.getId() + "_" + timestamp + EXTENSION;
+
+        // Using ObjectOutputStream to save the list as a binary object
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
+            oos.writeObject(moves);
+            System.out.println("Game saved as custom file: " + fileName);
             return 1;
         } catch (IOException e) {
             e.printStackTrace();
+            return 0;
         }
-        return 0;
+    }
+    private Timeline activeTimeline;
+
+    public void stopPlayback() {
+        if (activeTimeline != null) {
+            activeTimeline.stop();
+            activeTimeline = null;
+            System.out.println("Playback stopped.");
+        }
     }
 
+    public void playRecord(String fileName, GameController gameController) {
+        ArrayList<GameMove> recordedMoves = loadRecord(fileName);
+
+        if (recordedMoves == null || recordedMoves.isEmpty()) {
+            return;
+        }
+
+        gameController.restartGame();
+        for (StackPane cell : gameController.stackCells) {
+            cell.setDisable(true);
+        }
+
+        activeTimeline = new Timeline();
+        for (int i = 0; i < recordedMoves.size(); i++) {
+            GameMove move = recordedMoves.get(i);
+            KeyFrame keyFrame = new KeyFrame(
+                    Duration.seconds(i + 1),
+                    e -> {
+                        StackPane cell = gameController.stackCells[move.getCellId()];
+                        gameController.handleCellPress(cell);
+                    }
+            );
+            activeTimeline.getKeyFrames().add(keyFrame);
+        }
+        activeTimeline.play();
+    }
+
+    private ArrayList<GameMove> loadRecord(String fileName) {
+        File file = new File(RECORD_DIR, fileName + EXTENSION);
+
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+            return (ArrayList<GameMove>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Error loading custom record: " + e.getMessage());
+            return null;
+        }
+    }
+
+    private File[] loadRecordFiles() {
+        File recordsDir = new File(RECORD_DIR);
+        if (recordsDir.exists() && recordsDir.isDirectory()) {
+            File[] files = recordsDir.listFiles((dir, name) -> name.endsWith(EXTENSION));
+            return files;
+        }
+        return null;
+    }
+
+    public void showCustomRecordPicker() {
+        File[] files = loadRecordFiles();
+
+        Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+
+        ListView<String> listView = new ListView<>();
+        for (File f : files) {
+            String fileName = f.getName().replace(EXTENSION, "");
+            listView.getItems().add(fileName);
+        }
+
+        Button playBtn = new Button("Play Selected");
+        playBtn.setOnAction(e -> {
+            String selectedName = listView.getSelectionModel().getSelectedItem();
+            if (selectedName != null) {
+                dialog.close();
+                goToGameAndPlay(selectedName);
+            }
+        });
+
+        VBox layout = new VBox(10, new javafx.scene.control.Label("Select a Record"), listView, playBtn);
+        layout.setStyle("-fx-padding: 20; -fx-background-color: #f0f4f8;");
+
+        dialog.setScene(new Scene(layout, 300, 400));
+        dialog.show();
+    }
+
+    private void goToGameAndPlay(String filePath) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/primary.fxml"));
+            Parent root = loader.load();
+            PrimaryController controller = loader.getController();
+
+            // Pass the path to a method you will create in PrimaryController
+            System.out.println("setRecordPath= " + filePath);
+            controller.setRecordPath(filePath);
+
+            // Show the scene
+            Platform.runLater(() -> {
+                App.getScene().setRoot(root);
+            });
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
 }

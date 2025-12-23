@@ -7,8 +7,6 @@ import com.mycompany.tictactoegui.interfaces.OnUserEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.function.BiConsumer;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -21,7 +19,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 public class GameController {
 
@@ -30,7 +27,7 @@ public class GameController {
     private OnUserEvent onUserChanged;
     private OnUserEvent onUserWinning;
     private char[] charMatrix = new char[9];
-    private StackPane[] stackCells = new StackPane[9]; // => كل ستاك بان هنا ريفرنس للسيل اللى موجودة فى الجريد بان
+    public StackPane[] stackCells = new StackPane[9]; // => كل ستاك بان هنا ريفرنس للسيل اللى موجودة فى الجريد بان
     private boolean isWin = false;
     private char currentPlayer = 'X';
     static int choosenScore;
@@ -43,10 +40,9 @@ public class GameController {
     ArrayList<GameMove> gameMoves;
     int actionOrder;
     boolean isWantToSaveRecord;
-    private String recordPath=null;
-    
+    GameRecorder gameRecorder;
+
     GameController(Pane gamePane, GridPane gridPane, String recordPath) {
-        this.recordPath= recordPath;
         this.gridPane = gridPane;
         this.gamePane = gamePane;
         gameMoves = new ArrayList(0);
@@ -54,8 +50,7 @@ public class GameController {
         user = new UserData("UserName");
         opponent = new UserData("CPU_MEDIUM");
         game = new GameData("1", user, opponent, null);
-
-
+        
         initiateGrid();
     }
 
@@ -76,11 +71,9 @@ public class GameController {
                 gridPane.add(cell, col, row);
             }
         }
-        if(isWantToSaveRecord){
-        }
     }
 
-    private void handleCellPress(StackPane cell) {
+    public void handleCellPress(StackPane cell) {
         doClickSound();
         if (!isWin) {
             addShapeToCell(cell, currentPlayer);
@@ -159,6 +152,9 @@ public class GameController {
     }
 
     public final void exitGame() {
+        if (gameRecorder != null) {
+            gameRecorder.stopPlayback();
+        }
         try {
             App.setRoot("home");
         } catch (IOException ex) {
@@ -247,36 +243,13 @@ public class GameController {
     }
 
     private void saveRecord() {
-        GameRecorder gameRecorder = new GameRecorder(game);
-        gameRecorder.saveRecord(gameMoves);
+        gameRecorder = new GameRecorder();
+        gameRecorder.saveRecord(gameMoves, game);
     }
 
     public void playRecord(String recordPath) {
-        GameRecorder gameRecorder = new GameRecorder(game);
-        ArrayList<GameMove> recordedMoves = gameRecorder.playRecord(recordPath);
-
-        if (recordedMoves == null || recordedMoves.isEmpty()) {
-            return;
-        }
-
-        restartGame();
-        for (StackPane cell : stackCells) {
-            cell.setDisable(true);
-        }
-        Timeline timeline = new Timeline();
-        for (int i = 0; i < recordedMoves.size(); i++) {
-            GameMove move = recordedMoves.get(i);
-
-            KeyFrame keyFrame = new KeyFrame(
-                    Duration.seconds(i + 1),
-                    e -> {
-                        StackPane cell = stackCells[move.getCellId()];
-                        handleCellPress(cell);
-                    }
-            );
-            timeline.getKeyFrames().add(keyFrame);
-        }
-        timeline.play();
+        gameRecorder = new GameRecorder();
+        gameRecorder.playRecord(recordPath, this);
     }
 
     public void startNewGame() {
