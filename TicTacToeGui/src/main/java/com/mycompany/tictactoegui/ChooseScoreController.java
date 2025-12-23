@@ -14,10 +14,12 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 /**
@@ -34,6 +36,8 @@ public class ChooseScoreController implements Initializable {
     @FXML
     private Label errorLabel;
        private int choosenScore;
+    @FXML
+    private CheckBox recordGameCheckBox;
     /**
      * Initializes the controller class.
      */
@@ -41,7 +45,7 @@ public class ChooseScoreController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
     }
-
+    
     @FXML
     private void handlePressed(MouseEvent event) {
 
@@ -62,5 +66,8 @@ public class ChooseScoreController implements Initializable {
      public int getScore() {
         return choosenScore;
     }
-
+     
+     public boolean isWantToRecord(){
+         return recordGameCheckBox.isSelected();
+     }
 }

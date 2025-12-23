@@ -28,15 +28,16 @@ public class PrimaryController implements Initializable {
     @FXML
     private Button restartGameButton;
 
-    GameController gc;
+    public GameController gc;
     @FXML
     private Text userScoreText;
     @FXML
     private Text opponentScoreText;
+    public String recordPath;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        gc = new GameController(gamePane, gridPane);
+        gc = new GameController(gamePane, gridPane, recordPath);
 
         gc.setOnUserChanged((currentPlayer) -> {
             onUserChange(currentPlayer);
@@ -58,6 +59,14 @@ public class PrimaryController implements Initializable {
 
         });
 
+    }
+
+    public void setRecordPath(String recordPath) {
+        System.out.println("setting recordPath= " + recordPath);
+        this.recordPath = recordPath;
+        if (recordPath != null && gc != null) {
+        gc.playRecord(recordPath); 
+    }
     }
 
     private void onUserChange(char currentPlayer) {

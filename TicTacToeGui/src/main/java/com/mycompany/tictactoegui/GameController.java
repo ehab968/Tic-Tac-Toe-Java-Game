@@ -1,10 +1,14 @@
 package com.mycompany.tictactoegui;
 
 import com.iti.group3.tic_tac_toe_shared.GameData;
+import com.iti.group3.tic_tac_toe_shared.GameMove;
 import com.iti.group3.tic_tac_toe_shared.UserData;
 import com.mycompany.tictactoegui.interfaces.OnUserEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.function.BiConsumer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -17,6 +21,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class GameController {
 
@@ -35,14 +40,21 @@ public class GameController {
     UserData user;
     UserData opponent;
     GameData game;
-
-    GameController(Pane gamePane, GridPane gridPane) {
+    ArrayList<GameMove> gameMoves;
+    int actionOrder;
+    boolean isWantToSaveRecord;
+    private String recordPath=null;
+    
+    GameController(Pane gamePane, GridPane gridPane, String recordPath) {
+        this.recordPath= recordPath;
         this.gridPane = gridPane;
         this.gamePane = gamePane;
+        gameMoves = new ArrayList(0);
+        actionOrder = 0;
         user = new UserData("UserName");
         opponent = new UserData("CPU_MEDIUM");
         game = new GameData("1", user, opponent, null);
-        showChosseScoreDialog();
+
 
         initiateGrid();
     }
@@ -56,24 +68,29 @@ public class GameController {
                 stackCells[cellId] = cell;
                 cell.setPrefSize(120, 120);
                 cell.setId(Integer.toString(cellId));
-                final int id = cellId;
-                if (cell.isDisable() == false && !isWin) {
-                    cell.setOnMouseClicked((MouseEvent e) -> {
-                        doClickSound();
-                        e.consume();
-                        if (!cell.isDisable() && !isWin) {
-                            addShapeToCell(cell, currentPlayer);
-                            charMatrix[id] = currentPlayer;
-                            cell.setDisable(true);
+                cell.setOnMouseClicked((MouseEvent e) -> {
+                    System.out.println("Clicking");
+                    e.consume();
+                    handleCellPress(cell);
+                });
+                gridPane.add(cell, col, row);
+            }
+        }
+        if(isWantToSaveRecord){
+        }
+    }
 
-                            checkWin();
-                            if (!isWin) {
-                                changePlayer();
-                            }
-                        }
-                    });
-                    gridPane.add(cell, col, row);
-                }
+    private void handleCellPress(StackPane cell) {
+        doClickSound();
+        if (!isWin) {
+            addShapeToCell(cell, currentPlayer);
+            int cellId = Integer.parseInt(cell.getId());
+            charMatrix[cellId] = currentPlayer;
+            cell.setDisable(true);
+
+            checkWin();
+            if (!isWin) {
+                changePlayer();
             }
         }
     }
@@ -95,13 +112,20 @@ public class GameController {
     }
 
     private void addShapeToCell(StackPane cell, char player) {
+        UserData movePlayer;
         if (player == 'X') {
             XShape x = new XShape(45);
             cell.getChildren().add(x);
+            movePlayer = user;
         } else {
             OShape o = new OShape(15);
             cell.getChildren().add(o);
+            movePlayer = opponent;
         }
+
+        actionOrder++;
+        GameMove gameMove = new GameMove(Integer.parseInt(cell.getId()), player, actionOrder, movePlayer);
+        gameMoves.add(gameMove);
     }
 
     private void changePlayer() {
@@ -113,8 +137,10 @@ public class GameController {
     }
 
     public final void restartGame() {
+        System.out.println("restart");
         gamePane.getChildren().removeIf(n -> n instanceof Line);
         isWin = false;
+        actionOrder = 0;
 
         for (int i = 0; i < 9; i++) {
             charMatrix[i] = '\0';
@@ -131,7 +157,7 @@ public class GameController {
             onScoreChanged.accept(userScore, opponentScore);
         }
     }
-    
+
     public final void exitGame() {
         try {
             App.setRoot("home");
@@ -139,8 +165,6 @@ public class GameController {
             System.getLogger(PrimaryController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
     }
-
-    
 
     /*
         0   1   2
@@ -217,7 +241,42 @@ public class GameController {
         if (onUserWinning != null) {
             onUserWinning.handle(currentPlayer);
         }
+        if (isWantToSaveRecord) {
+            saveRecord();
+        }
+    }
 
+    private void saveRecord() {
+        GameRecorder gameRecorder = new GameRecorder(game);
+        gameRecorder.saveRecord(gameMoves);
+    }
+
+    public void playRecord(String recordPath) {
+        GameRecorder gameRecorder = new GameRecorder(game);
+        ArrayList<GameMove> recordedMoves = gameRecorder.playRecord(recordPath);
+
+        if (recordedMoves == null || recordedMoves.isEmpty()) {
+            return;
+        }
+
+        restartGame();
+        for (StackPane cell : stackCells) {
+            cell.setDisable(true);
+        }
+        Timeline timeline = new Timeline();
+        for (int i = 0; i < recordedMoves.size(); i++) {
+            GameMove move = recordedMoves.get(i);
+
+            KeyFrame keyFrame = new KeyFrame(
+                    Duration.seconds(i + 1),
+                    e -> {
+                        StackPane cell = stackCells[move.getCellId()];
+                        handleCellPress(cell);
+                    }
+            );
+            timeline.getKeyFrames().add(keyFrame);
+        }
+        timeline.play();
     }
 
     public void startNewGame() {
@@ -247,7 +306,6 @@ public class GameController {
         this.onScoreChanged = listener;
     }
 
-
     private void showWinningDialog(GameData game) {
         WinDialog.show(game, user, this);
     }
@@ -262,9 +320,10 @@ public class GameController {
             dialogStage.initModality(Modality.APPLICATION_MODAL);
             dialogStage.setTitle("Choose Score");
             dialogStage.setScene(new Scene(dialogRoot));
+            dialogStage.setResizable(false);
             dialogStage.showAndWait();
             choosenScore = chooseScoreController.getScore();
-
+            isWantToSaveRecord = chooseScoreController.isWantToRecord();
         } catch (IOException ex) {
             System.getLogger(GameController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
