@@ -76,6 +76,8 @@ public class ClientStreamSocket {
             }
 
         } catch (IOException ex) {
+
+        } finally {
             out = null;
             in = null;
             socket = null;
@@ -94,7 +96,7 @@ public class ClientStreamSocket {
             throw e;
         }
     }
-    static boolean isInGame =false;
+    static boolean isInGame = false;
 
     static public void startStream() {
         System.out.println("Stream Socket started");
@@ -131,6 +133,7 @@ public class ClientStreamSocket {
             } catch (ClassNotFoundException ex) {
                 System.getLogger(ClientStreamSocket.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
             }
+            closeConnection();
 
         }).start();
 
