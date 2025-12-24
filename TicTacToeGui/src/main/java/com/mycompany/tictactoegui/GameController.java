@@ -54,7 +54,11 @@ public class GameController {
 
         initiateGrid();
     }
-   
+    public void startGame() {
+    showChosseScoreDialog();
+    singleMode = new SingleMode(charMatrix, stackCells, this);
+    initiateGrid();
+}
 
     private void initiateGrid() {
 
