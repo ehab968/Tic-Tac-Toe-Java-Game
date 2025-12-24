@@ -36,7 +36,7 @@ public class ClientSocket extends Thread {
         }
     }
 
-    private static void closeConnection() {
+    public static void closeConnection() {
         try {
             System.out.println("Closing Connection");
             if (out != null) {

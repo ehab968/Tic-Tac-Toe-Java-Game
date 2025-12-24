@@ -44,6 +44,7 @@ public class HomeController implements Initializable {
 
     @FXML
     private void onSelectMultiplayer(ActionEvent event) {
+        PrimaryController.isOnline = false;
         try {
             App.setRoot("primary");
         } catch (IOException ex) {
@@ -53,6 +54,7 @@ public class HomeController implements Initializable {
 
     @FXML
     private void onSelectOnline(ActionEvent event) {
+        PrimaryController.isOnline = true;
         try {
             if (ClientSocket.user == null) {
                 App.setRoot("login");
