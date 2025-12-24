@@ -4,14 +4,24 @@
  */
 package com.mycompany.tictactoegui;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
+
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -19,7 +29,6 @@ import javafx.scene.image.ImageView;
  * @author mahmo
  */
 public class HomeController implements Initializable {
-
 
     @FXML
     private ImageView userAvater2;
@@ -45,7 +54,17 @@ public class HomeController implements Initializable {
     @FXML
     private void onSelectMultiplayer(ActionEvent event) {
         try {
-            App.setRoot("primary");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/primary.fxml"));
+            Parent root = loader.load();
+            PrimaryController controller = loader.getController();
+
+            // Pass the path to a method you will create in PrimaryController
+            controller.gc.showChosseScoreDialog();
+
+            // Show the scene
+            Platform.runLater(() -> {
+                App.getScene().setRoot(root);
+            });
         } catch (IOException ex) {
             System.getLogger(HomeController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
@@ -63,5 +82,10 @@ public class HomeController implements Initializable {
             System.getLogger(HomeController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
     }
-    
+
+    @FXML
+    private void onPlayRecord(ActionEvent event) {
+        GameRecorder gameRecorder = new GameRecorder();
+        gameRecorder.showCustomRecordPicker();
+    }
 }
