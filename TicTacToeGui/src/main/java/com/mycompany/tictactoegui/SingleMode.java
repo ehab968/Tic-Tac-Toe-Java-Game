@@ -7,7 +7,10 @@ package com.mycompany.tictactoegui;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import javafx.animation.PauseTransition;
+import javafx.event.ActionEvent;
 import javafx.scene.layout.StackPane;
+import javafx.util.Duration;
 
 /**
  *
@@ -26,20 +29,36 @@ public class SingleMode {
     }
 
     private void computerMove(int index) {
-        StackPane cell = stackCells[index];
-        controller.addShapeToCell(cell, 'O');
-        charMatrix[index] = 'O';
-        cell.setDisable(true);
-        controller.checkWin();
-        if (!controller.getIsWin()) {
-            controller.changePlayer();
+        for (StackPane cell : stackCells) {
+            cell.setDisable(true);
         }
+        PauseTransition pause = new PauseTransition(Duration.seconds(.4));
+
+        pause.setOnFinished((ActionEvent event) -> {
+            StackPane cell = stackCells[index];
+
+            controller.addShapeToCell(cell, 'O');
+            charMatrix[index] = 'O';
+            cell.setDisable(true);
+
+            controller.checkWin();
+            if (!controller.getIsWin()) {
+                controller.changePlayer();
+            }
+
+            for (int i = 0; i < stackCells.length; i++) {
+                if (charMatrix[i] == '\0') {
+                    stackCells[i].setDisable(false);
+                }
+            }
+        });
+        pause.play();
+
     }
 
     /**
      * *********************Easy************************
      */
-
     public void computerRoleEasy() {
         List<Integer> emptyCells = new ArrayList<>();
         for (int i = 0; i < charMatrix.length; i++) {
@@ -124,7 +143,6 @@ public class SingleMode {
     /**
      * *********************hard************************
      */
-
     private int evaluateBoard(char[] board) {
         int[][] wins = {
             {0, 1, 2}, {3, 4, 5}, {6, 7, 8},
