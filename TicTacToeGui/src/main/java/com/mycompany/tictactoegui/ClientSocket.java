@@ -49,10 +49,12 @@ public class ClientSocket extends Thread {
             }
 
         } catch (IOException ex) {
+
+        } finally {
             out = null;
             in = null;
             socket = null;
-            user=null;
+            user = null;
         }
     }
 

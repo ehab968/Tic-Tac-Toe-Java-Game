@@ -105,6 +105,7 @@ public class OnlineUsersController implements Initializable {
     @FXML
     private void onlineUserReload(ActionEvent event) {
         loadOnlineUsers();
+
     }
 
     // ================= UI =================
@@ -152,7 +153,12 @@ public class OnlineUsersController implements Initializable {
         if (canInvite) {
             btn.setText("Invite ⚔");
             btn.setStyle("-fx-background-color:#2b7cee; -fx-text-fill:white; -fx-background-radius:20;");
-            btn.setOnAction(e -> GameRequest.sendRequest(user));
+            btn.setOnAction(e -> {
+
+                GameRequest.sendRequest(user);
+
+            });
+
         } else {
             btn.setText("Spectate 👀");
             btn.setStyle("-fx-background-color:#f3f4f6; -fx-text-fill:#4b5563; -fx-background-radius:20;");
