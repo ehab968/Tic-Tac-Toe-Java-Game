@@ -4,15 +4,16 @@
  */
 package com.mycompany.tictactoegui;
 
+import com.iti.group3.tic_tac_toe_shared.UserData;
+import com.mycompany.tictactoegui.CustomDialog;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
-import javafx.scene.control.Button;
-import javafx.stage.Stage;
-
+import javafx.scene.text.Text;
 /**
  * FXML Controller class
  *
@@ -20,9 +21,17 @@ import javafx.stage.Stage;
  */
 public class Waiting_requestController implements Initializable {
 
+
     @FXML
-    private Button cancelInviteBtn;
-    private Stage stage;
+    private Text opponentName;
+    
+        private Stage stage;
+        
+        UserData opponent;
+
+        public void setStage(Stage stage) {
+        this.stage = stage;
+    }
 
     /**
      * Initializes the controller class.
@@ -30,12 +39,12 @@ public class Waiting_requestController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+    }    
+    
+    public void setOpponent(UserData opponent) {
+        this.opponent = opponent;
+        opponentName.setText(opponent.getUserName());
     }
-
-    public void setStage(Stage stage) {
-        this.stage = stage;
-    }
-
     @FXML
     private void cancelInviteAction(ActionEvent event) {
         if (stage != null) {

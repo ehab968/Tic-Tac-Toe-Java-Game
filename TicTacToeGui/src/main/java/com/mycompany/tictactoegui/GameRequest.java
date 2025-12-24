@@ -23,7 +23,7 @@ public class GameRequest {
         try {
             Request request = new Request(RequestType.INVITE_USER, user2);
             ClientStreamSocket.write(request);
-            CustomDialog.show("waiting_request.fxml");
+            CustomDialog.show("waiting_request.fxml",user2);
 
         } catch (IOException ex) {
             System.getLogger(GameRequest.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
@@ -38,12 +38,12 @@ public class GameRequest {
         });
     }
 
-    public static void invitationRejected() {
-        CustomDialog.show("rejected_request.fxml");
+    public static void invitationRejected(UserData userData2) {
+        CustomDialog.show("rejected_request.fxml",userData2);
     }
 
     public static void invitationDropped() {
-        CustomDialog.show("connection_lost_request.fxml");
+        CustomDialog.show("connection_lost_request.fxml",null);
     }
 
     public static void startOnlineGame(GameData game) {
@@ -75,7 +75,9 @@ public class GameRequest {
                     startOnlineGame(new GameData("1", ClientSocket.user, opponent));
                     break;
                 case INVITE_REJECTED:
-                    invitationRejected();
+                 UserData opponent2 = (UserData) response.getData();
+
+                    invitationRejected(opponent2);
                     break;
                 case INVITE_DROPPED:
                 case SERVER_FAILURE:
