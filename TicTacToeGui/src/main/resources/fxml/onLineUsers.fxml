@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
@@ -10,45 +11,45 @@
 
 <!-- Main Card -->
 
-<VBox alignment="TOP_CENTER" maxHeight="703.0" maxWidth="693.0" prefHeight="597.0" prefWidth="635.0" spacing="0" style="-fx-background-color: white; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.tictactoegui.OnlineUsersController">
+<VBox alignment="TOP_CENTER" maxHeight="703.0" maxWidth="693.0" prefHeight="597.0" prefWidth="635.0" spacing="0" style="-fx-background-color: white; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);" stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.tictactoegui.OnlineUsersController">
      
     <!-- Header Section -->
     <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 10; -fx-border-color: #e2e8f0; -fx-border-width: 0 0 1 0;">
          
         <!-- Top Bar -->
         <HBox alignment="CENTER_LEFT" spacing="10">
-            <Button maxHeight="59.0" maxWidth="42.0" onAction="#backToOnlinePage" prefHeight="59.0" prefWidth="33.0" style="-fx-background-color: white; -fx-pref-height: 10;" text="←" textAlignment="RIGHT" wrapText="true">
+            <Button maxHeight="59.0" maxWidth="42.0" onAction="#backToOnlinePage" prefHeight="59.0" prefWidth="33.0" style="-fx-pref-height: 10; -fx-font-size: 16;" text="←" textAlignment="RIGHT" wrapText="true">
                 <font>
                     <Font size="27.0" />
                 </font>
             </Button>
 
             <Region HBox.hgrow="ALWAYS" />
-       <Button fx:id="leaderBoardButton" onAction="#navToLeaderBoard" prefHeight="38" style="             -fx-background-color: linear-gradient(                 from 0% 0% to 100% 100%,                 #fff7cc 0%,                 #f6d365 35%,                 #d4af37 65%,                 #b8962e 100%             );             -fx-text-fill: #000000;             -fx-font-size: 14px;             -fx-font-weight: bold;             -fx-background-radius: 22;             -fx-padding: 7 20;             -fx-cursor: hand;              /* 3D / Elevation effect */             -fx-effect:                 dropshadow(gaussian, rgba(0,0,0,0.25), 4, 0, 0, 1),                 dropshadow(gaussian, rgba(212,175,55,0.8), 12, 0, 0, 5);         " text="🏆 Leaderboard">
-    <font>
-        <Font size="14.0" />
-    </font>
-</Button>
+            <JFXButton fx:id="leaderBoardButton" onAction="#navToLeaderBoard" prefHeight="38" style="             -fx-background-color: linear-gradient(                 from 0% 0% to 100% 100%,                 #fff7cc 0%,                 #f6d365 35%,                 #d4af37 65%,                 #b8962e 100%             );             -fx-text-fill: #000000;             -fx-font-size: 14px;             -fx-font-weight: bold;             -fx-background-radius: 22;             -fx-padding: 7 20;             -fx-cursor: hand;              /* 3D / Elevation effect */             -fx-effect:                 dropshadow(gaussian, rgba(0,0,0,0.25), 4, 0, 0, 1),                 dropshadow(gaussian, rgba(212,175,55,0.8), 12, 0, 0, 5);         " text="🏆 Leaderboard">
+                <font>
+                    <Font size="14.0" />
+                </font>
+            </JFXButton>
 
-            <Button fx:id="reloadButton" onAction="#onlineUserReload" style="-fx-background-color: white; -fx-pref-height: 10;" text="⟳">
+            <JFXButton fx:id="reloadButton" onAction="#onlineUserReload" style="-fx-pref-height: 10; -fx-font-size: 16;" text="⟳">
                 <font>
                     <Font size="23.0" />
                 </font>
-            </Button>
+            </JFXButton>
         </HBox>
          
         <!-- Page Title -->
         <HBox alignment="CENTER_LEFT" spacing="10">
             <VBox spacing="2">
-                <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #111827;" text="Online Players" />
-                <Label style="-fx-font-size: 15px; -fx-text-fill: #6b7280;" text="Find an opponent to start a game">
+                <Label fx:id="screenTitle" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #111827;" text="Online Players" />
+                <Label fx:id="descriptionText" style="-fx-font-size: 15px; -fx-text-fill: #6b7280;" text="Find an opponent to start a game">
                     <font>
                         <Font size="27.0" />
                     </font>
                 </Label>
             </VBox>
             <Region HBox.hgrow="ALWAYS" />
-            <Label style="-fx-background-color: #2b7cee33; -fx-text-fill: #2b7cee; -fx-padding: 3 8 3 8; -fx-background-radius: 20; -fx-font-weight: bold; -fx-font-size: 20px;" text="12 Online">
+            <Label fx:id="onlineUsersText" style="-fx-background-color: #2b7cee33; -fx-text-fill: #2b7cee; -fx-padding: 3 8 3 8; -fx-background-radius: 20; -fx-font-weight: bold; -fx-font-size: 20px;" text="12 Online">
                 <font>
                     <Font size="17.0" />
                 </font>

@@ -40,6 +40,14 @@ public class OnlineUsersController implements Initializable {
 
     @FXML
     private Button reloadButton;
+    @FXML
+    private Label screenTitle;
+    @FXML
+    private Label onlineUsersText;
+
+    private boolean isLeaderBoard = false;
+    @FXML
+    private Label descriptionText;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -107,6 +115,9 @@ public class OnlineUsersController implements Initializable {
         Label statusLabel = new Label(status);
         statusLabel.setStyle("-fx-font-size: 10px; -fx-font-weight: bold;");
 
+        Label scoreLabel = new Label("  - " + user.getScore());
+        scoreLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #111827;");
+
         if ("Playing...".equals(status)) {
             statusLabel.setTextFill(Color.ORANGE);
         } else if ("Online".equals(status)) {
@@ -124,18 +135,13 @@ public class OnlineUsersController implements Initializable {
         if (canInvite) {
             btn.setText("Invite ⚔");
             btn.setStyle("-fx-background-color:#2b7cee; -fx-text-fill:white; -fx-background-radius:20;");
-            btn.setOnAction(e -> {
-
-                GameRequest.sendRequest(user);
-
-            });
-
+            btn.setOnAction(e -> GameRequest.sendRequest(user));
         } else {
             btn.setText("Spectate 👀");
             btn.setStyle("-fx-background-color:#f3f4f6; -fx-text-fill:#4b5563; -fx-background-radius:20;");
         }
 
-        hbox.getChildren().addAll(vbox, spacer, btn);
+        hbox.getChildren().addAll(vbox, scoreLabel, spacer, btn);
         userListContainer.getChildren().add(hbox);
     }
 
@@ -143,14 +149,7 @@ public class OnlineUsersController implements Initializable {
     @FXML
     private void navToLeaderBoard(ActionEvent event) {
         try {
-            FXMLLoader loader
-                    = new FXMLLoader(getClass().getResource("/fxml/leaderBoard.fxml"));
-            Parent root = loader.load();
-
-            Scene currentScene = ((Node) event.getSource()).getScene();
-            Stage stage = (Stage) currentScene.getWindow();
-            stage.setScene(new Scene(root));
-
+            App.setRoot("leaderBoard");
         } catch (IOException ex) {
             System.getLogger(OnlineUsersController.class.getName());
         }

@@ -27,6 +27,7 @@ public class App extends Application {
         scene.getStylesheets().add(
                 getClass().getResource("/styles/styles.css").toExternalForm()
         );
+
         scene.addEventFilter(ActionEvent.ACTION, (event) -> {
             if (event.getTarget() instanceof Button) {
                 SoundPlayer.setbuttonVolume(1);

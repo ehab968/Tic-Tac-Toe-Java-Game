@@ -112,4 +112,16 @@ public class SignupController implements Initializable {
         );
     }
 
+    @FXML
+    public void onBackPressed() {
+        Platform.runLater(() -> {
+            try {
+                App.setRoot("home");
+            } catch (IOException ex) {
+                System.getLogger(SignupController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            }
+        }
+        );
+    }
+
 }
