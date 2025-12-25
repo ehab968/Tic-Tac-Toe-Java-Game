@@ -80,8 +80,9 @@ public class PrimaryController implements Initializable {
             });
         } else {
             ogc = new OnlineGameController(gamePane, gridPane);
-
             setPlayersNames(ogc.getUserData().getUserName(), ogc.getOpponentData().getUserName());
+            userScoreText.setText("Score: " + ogc.getUserData().getScore());
+            opponentScoreText.setText("Score: " + ogc.getUserData().getScore());
 
             ogc.setOnUserChanged((currentPlayer) -> {
                 onUserChange(currentPlayer);
@@ -102,6 +103,11 @@ public class PrimaryController implements Initializable {
                 restartGameButton.setText("Restart the round");
             });
         }
+    }
+
+    public void updateScoreUI(int userScore, int opponentScore) {
+        userScoreText.setText("Score: " + userScore);
+        opponentScoreText.setText("Score: " + opponentScore);
     }
 
     private void onUserChange(char currentPlayer) {

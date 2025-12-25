@@ -241,6 +241,13 @@ public class OnlineGameController {
         boolean iWon = (lastMoveSymbol == mySymbol);
         if (iWon) {
             game.setWinner(user);
+            try {
+                ClientStreamSocket.write(new Request(RequestType.UPDATE_SCORE, game.winner));
+            } catch (IOException ex) {
+                System.getLogger(OnlineGameController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            } catch (ClassNotFoundException ex) {
+                System.getLogger(OnlineGameController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            }
         } else {
             game.setWinner(opponent);
         }

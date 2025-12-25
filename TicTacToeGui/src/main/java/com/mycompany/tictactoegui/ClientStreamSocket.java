@@ -106,6 +106,24 @@ public class ClientStreamSocket {
                                 });
                             }
                             break;
+                        case SERVER_UPDATE_WINNER_SCORE:
+                            int updatedScoreWinner = (int) response.getData();
+                            Platform.runLater(() -> {
+                                if (currentGame.winner.getUserName().equals(ClientStreamSocket.user.getUserName())) {
+                                    user.setScore(updatedScoreWinner);
+                                    PrimaryController.getInstance().updateScoreUI(
+                                            user.getScore(),
+                                            PrimaryController.getInstance().getOnlineGameController().getOpponentData().getScore()
+                                    );
+                                } else {
+                                    PrimaryController.getInstance().getOnlineGameController().opponent.setScore(updatedScoreWinner);
+                                    PrimaryController.getInstance().updateScoreUI(
+                                            user.getScore(),
+                                            PrimaryController.getInstance().getOnlineGameController().getOpponentData().getScore()
+                                    );
+                                }
+                            });
+                            break;
                         case INVITE_REJECTED:
                         case INVITE_ACCEPTED:
                         case INVITE_DROPPED:
