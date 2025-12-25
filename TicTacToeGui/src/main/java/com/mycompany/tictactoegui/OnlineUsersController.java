@@ -40,6 +40,14 @@ public class OnlineUsersController implements Initializable {
 
     @FXML
     private Button reloadButton;
+    @FXML
+    private Label screenTitle;
+    @FXML
+    private Label onlineUsersText;
+
+    private boolean isLeaderBoard = false;
+    @FXML
+    private Label descriptionText;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -47,14 +55,13 @@ public class OnlineUsersController implements Initializable {
     }
 
     // ================= Networking =================
-
     private List<UserData> getOnlineUsers() {
         try {
             Request request = new Request(RequestType.GetOnlineUsers);
             ClientSocket.write(request);
 
-            Response<List<UserData>> response =
-                    (Response<List<UserData>>) ClientSocket.read();
+            Response<List<UserData>> response
+                    = (Response<List<UserData>>) ClientSocket.read();
 
             if (response.isSuccess()) {
                 return response.getData();
@@ -76,8 +83,8 @@ public class OnlineUsersController implements Initializable {
                     showAlert("No Users Online", "");
                 } else {
                     for (UserData u : onlineUsers) {
-                        if (myUserName != null &&
-                                u.getUserName().equals(myUserName)) {
+                        if (myUserName != null
+                                && u.getUserName().equals(myUserName)) {
                             continue;
                         }
                         addUser(u, "Online", true);
@@ -90,11 +97,10 @@ public class OnlineUsersController implements Initializable {
     @FXML
     private void onlineUserReload(ActionEvent event) {
         loadOnlineUsers();
-        
+
     }
 
     // ================= UI =================
-
     public void addUser(UserData user, String status, boolean canInvite) {
 
         HBox hbox = new HBox(10);
@@ -108,6 +114,9 @@ public class OnlineUsersController implements Initializable {
 
         Label statusLabel = new Label(status);
         statusLabel.setStyle("-fx-font-size: 10px; -fx-font-weight: bold;");
+
+        Label scoreLabel = new Label("  - " + user.getScore());
+        scoreLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #111827;");
 
         if ("Playing...".equals(status)) {
             statusLabel.setTextFill(Color.ORANGE);
@@ -132,23 +141,15 @@ public class OnlineUsersController implements Initializable {
             btn.setStyle("-fx-background-color:#f3f4f6; -fx-text-fill:#4b5563; -fx-background-radius:20;");
         }
 
-        hbox.getChildren().addAll(vbox, spacer, btn);
+        hbox.getChildren().addAll(vbox, scoreLabel, spacer, btn);
         userListContainer.getChildren().add(hbox);
     }
 
     // ================= Navigation =================
-
     @FXML
     private void navToLeaderBoard(ActionEvent event) {
         try {
-            FXMLLoader loader =
-                    new FXMLLoader(getClass().getResource("/fxml/leaderBoard.fxml"));
-            Parent root = loader.load();
-
-            Scene currentScene = ((Node) event.getSource()).getScene();
-            Stage stage = (Stage) currentScene.getWindow();
-            stage.setScene(new Scene(root));
-
+            App.setRoot("leaderBoard");
         } catch (IOException ex) {
             System.getLogger(OnlineUsersController.class.getName());
         }
@@ -164,7 +165,6 @@ public class OnlineUsersController implements Initializable {
     }
 
     // ================= Utils =================
-
     private void showAlert(String title, String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);

@@ -64,11 +64,11 @@ public class LoginController implements Initializable {
 
                     Response<UserData> response = (Response) ClientSocket.read();
                     if (response.isSuccess()) {
-             
+
                         ClientSocket.user = response.getData();
                         ClientStreamSocket.user = response.getData();
                         ClientStreamSocket.startStream();
-                        
+
                         showMessage("Welcome " + response.getData().getUserName(), true);
                         System.out.println("Welcome " + response.getData().getUserName());
                         OnlineUsersController.myUserName = response.getData().getUserName();
@@ -121,4 +121,15 @@ public class LoginController implements Initializable {
         }
     }
 
+    @FXML
+    public void onBackPressed() {
+        Platform.runLater(() -> {
+            try {
+                App.setRoot("home");
+            } catch (IOException ex) {
+                System.getLogger(SignupController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            }
+        }
+        );
+    }
 }

@@ -1,10 +1,13 @@
 package com.mycompany.tictactoegui;
 
 import com.iti.group3.tic_tac_toe_shared.GameData;
+import com.iti.group3.tic_tac_toe_shared.GameMove;
 import com.iti.group3.tic_tac_toe_shared.UserData;
 import com.mycompany.tictactoegui.interfaces.OnUserEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.function.BiConsumer;
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -17,6 +20,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class GameController {
 
@@ -25,7 +29,7 @@ public class GameController {
     private OnUserEvent onUserChanged;
     private OnUserEvent onUserWinning;
     private char[] charMatrix = new char[9];
-    private StackPane[] stackCells = new StackPane[9]; // => كل ستاك بان هنا ريفرنس للسيل اللى موجودة فى الجريد بان
+    public StackPane[] stackCells = new StackPane[9]; // => كل ستاك بان هنا ريفرنس للسيل اللى موجودة فى الجريد بان
     private boolean isWin = false;
     private char currentPlayer = 'X';
     static int choosenScore;
@@ -35,19 +39,32 @@ public class GameController {
     UserData user;
     UserData opponent;
     GameData game;
+    private int modeType;
+    private int difficulty;
+    SingleMode singleMode;
 
-    GameController(Pane gamePane, GridPane gridPane) {
+    ArrayList<GameMove> gameMoves;
+    int actionOrder;
+    boolean isWantToSaveRecord;
+    GameRecorder gameRecorder;
+
+    public GameController(Pane gamePane, GridPane gridPane, String recordPath) {
+
         this.gridPane = gridPane;
         this.gamePane = gamePane;
+        gameMoves = new ArrayList(0);
+        actionOrder = 0;
         user = new UserData("UserName");
         opponent = new UserData("CPU_MEDIUM");
         game = new GameData("1", user, opponent, null);
-        showChosseScoreDialog();
+        //showChosseScoreDialog();
+        singleMode = new SingleMode(charMatrix, stackCells, this);
 
         initiateGrid();
     }
 
     private void initiateGrid() {
+
         int cellId = -1;
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
@@ -56,24 +73,27 @@ public class GameController {
                 stackCells[cellId] = cell;
                 cell.setPrefSize(120, 120);
                 cell.setId(Integer.toString(cellId));
-                final int id = cellId;
-                if (cell.isDisable() == false && !isWin) {
-                    cell.setOnMouseClicked((MouseEvent e) -> {
-                        doClickSound();
-                        e.consume();
-                        if (!cell.isDisable() && !isWin) {
-                            addShapeToCell(cell, currentPlayer);
-                            charMatrix[id] = currentPlayer;
-                            cell.setDisable(true);
+                cell.setOnMouseClicked((MouseEvent e) -> {
+                    System.out.println("Clicking");
+                    e.consume();
+                    handleCellPress(cell);
+                });
+                gridPane.add(cell, col, row);
+            }
+        }
+    }
 
-                            checkWin();
-                            if (!isWin) {
-                                changePlayer();
-                            }
-                        }
-                    });
-                    gridPane.add(cell, col, row);
-                }
+    public void handleCellPress(StackPane cell) {
+        doClickSound();
+        if (!isWin) {
+            addShapeToCell(cell, currentPlayer);
+            int cellId = Integer.parseInt(cell.getId());
+            charMatrix[cellId] = currentPlayer;
+            cell.setDisable(true);
+
+            checkWin();
+            if (!isWin) {
+                changePlayer();
             }
         }
     }
@@ -94,27 +114,51 @@ public class GameController {
         this.onUserWinning = listener;
     }
 
-    private void addShapeToCell(StackPane cell, char player) {
+    public void addShapeToCell(StackPane cell, char player) {
+        UserData movePlayer;
         if (player == 'X') {
             XShape x = new XShape(45);
             cell.getChildren().add(x);
+            movePlayer = user;
         } else {
             OShape o = new OShape(15);
             cell.getChildren().add(o);
+            movePlayer = opponent;
         }
+
+        actionOrder++;
+        GameMove gameMove = new GameMove(Integer.parseInt(cell.getId()), player, actionOrder, movePlayer);
+        gameMoves.add(gameMove);
     }
 
-    private void changePlayer() {
+    public void changePlayer() {
         currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
 
         if (onUserChanged != null) {
             onUserChanged.handle(currentPlayer);
         }
+        System.out.println("difffffffff" + difficulty);
+        System.out.println("modeType" + modeType);
+
+        if (modeType == 1 && currentPlayer == 'O') {
+            switch (difficulty) {
+                case 1 ->
+                    singleMode.computerRoleEasy();
+                case 2 ->
+                    singleMode.computerRoleMeduim();
+                case 3 ->
+                    singleMode.computerRoleHard();
+
+            }
+        }
+
     }
 
     public final void restartGame() {
+        System.out.println("restart");
         gamePane.getChildren().removeIf(n -> n instanceof Line);
         isWin = false;
+        actionOrder = 0;
 
         for (int i = 0; i < 9; i++) {
             charMatrix[i] = '\0';
@@ -131,8 +175,11 @@ public class GameController {
             onScoreChanged.accept(userScore, opponentScore);
         }
     }
-    
+
     public final void exitGame() {
+        if (gameRecorder != null) {
+            gameRecorder.stopPlayback();
+        }
         try {
             App.setRoot("home");
         } catch (IOException ex) {
@@ -140,14 +187,12 @@ public class GameController {
         }
     }
 
-    
-
     /*
         0   1   2
         3   4   5
         6   7   8
      */
-    private void checkWin() {
+    public void checkWin() {
         int[][] wins = {
             // Horizontal
             {0, 1, 2}, {3, 4, 5}, {6, 7, 8},
@@ -209,7 +254,6 @@ public class GameController {
             userWonWholeGame(opponentScore);
 
         }
-        //showWinningDialog(game);
         if (onScoreChanged != null) {
             onScoreChanged.accept(userScore, opponentScore);
         }
@@ -217,7 +261,19 @@ public class GameController {
         if (onUserWinning != null) {
             onUserWinning.handle(currentPlayer);
         }
+        if (isWantToSaveRecord) {
+            saveRecord();
+        }
+    }
 
+    private void saveRecord() {
+        gameRecorder = new GameRecorder();
+        gameRecorder.saveRecord(gameMoves, game);
+    }
+
+    public void playRecord(String recordPath) {
+        gameRecorder = new GameRecorder();
+        gameRecorder.playRecord(recordPath, this);
     }
 
     public void startNewGame() {
@@ -237,8 +293,12 @@ public class GameController {
 
     private void userWonWholeGame(int userScore) {
         if (userScore > choosenScore / 2) {
-            showWinningDialog(game);
-            startNewGame();
+            PauseTransition pause = new PauseTransition(Duration.seconds(.5));
+            pause.setOnFinished(event -> {
+                showWinningDialog(game);
+                startNewGame();
+            });
+            pause.play();
 
         }
     }
@@ -247,12 +307,11 @@ public class GameController {
         this.onScoreChanged = listener;
     }
 
-
     private void showWinningDialog(GameData game) {
         WinDialog.show(game, user, this);
     }
 
-    public void showChosseScoreDialog() {
+    public boolean showChosseScoreDialog() {
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/chooseScore.fxml"));
@@ -262,13 +321,36 @@ public class GameController {
             dialogStage.initModality(Modality.APPLICATION_MODAL);
             dialogStage.setTitle("Choose Score");
             dialogStage.setScene(new Scene(dialogRoot));
-            dialogStage.showAndWait();
-            choosenScore = chooseScoreController.getScore();
 
+            dialogStage.setOnCloseRequest(event -> {
+                event.consume();
+            });
+
+            dialogStage.setResizable(false);
+
+            dialogStage.showAndWait();
+
+            choosenScore = chooseScoreController.getScore();
+            isWantToSaveRecord = chooseScoreController.isWantToRecord();
+            return true;
         } catch (IOException ex) {
             System.getLogger(GameController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
+        return false;
 
+    }
+
+    public void setDifficultyLevel(int difficulty) {
+        this.difficulty = difficulty;
+
+    }
+
+    public void setModeType(int modeType) {
+        this.modeType = modeType;
+    }
+
+    public boolean getIsWin() {
+        return isWin;
     }
 
 }
