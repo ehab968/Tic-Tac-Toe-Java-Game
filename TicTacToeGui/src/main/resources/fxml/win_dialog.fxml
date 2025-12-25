@@ -17,24 +17,24 @@
     <children>
         <VBox prefHeight="523.0" prefWidth="539.0">
             <children>
-            <StackPane alignment="CENTER_RIGHT" prefHeight="33.0" prefWidth="539.0">
-               <children>
-                      <Region fx:id="topStrap" minHeight="20" prefHeight="29.0" prefWidth="543.0" style="-fx-background-color: #2b7cee; -fx-background-radius: 0 0 12 12;" />
+                <StackPane alignment="CENTER_RIGHT" prefHeight="33.0" prefWidth="539.0">
+                    <children>
+                        <Region fx:id="topStrap" minHeight="20" prefHeight="29.0" prefWidth="543.0" style="-fx-background-color: #2b7cee; -fx-background-radius: 0 0 12 12;" />
                         <Label fx:id="topTitle" alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" style="-fx-font-weight: 800;" text="Winner 🎉🎉" textAlignment="CENTER" textFill="WHITE">
                             <font>
                                 <Font name="System Bold" size="30.0" />
                             </font>
                         </Label>
-                  <JFXButton alignment="CENTER" buttonType="RAISED" mnemonicParsing="false" onAction="#onCloseButton" style="-fx-background-color: TRANSPARENT;" text="X" textFill="WHITE">
-                     <font>
-                        <Font name="Bell MT Bold" size="18.0" />
-                     </font>
-                     <StackPane.margin>
-                        <Insets right="10.0" />
-                     </StackPane.margin>
-                  </JFXButton>
-               </children>
-            </StackPane>
+                        <JFXButton alignment="CENTER" buttonType="RAISED" mnemonicParsing="false" onAction="#onCloseButton" style="-fx-background-color: TRANSPARENT;" text="X" textFill="WHITE">
+                            <font>
+                                <Font name="Bell MT Bold" size="18.0" />
+                            </font>
+                            <StackPane.margin>
+                                <Insets right="10.0" />
+                            </StackPane.margin>
+                        </JFXButton>
+                    </children>
+                </StackPane>
                 <VBox alignment="CENTER" spacing="0.0">
                     <padding>
                         <Insets bottom="24.0" left="32.0" right="32.0" />
@@ -43,13 +43,15 @@
                         <HBox alignment="CENTER" spacing="4.0">
                             <children>
                                 <Label fx:id="descriptionTxt" style="-fx-font-weight: 500;" text="You won against" textFill="#2b7cee">
-                           <font>
-                              <Font name="System Bold" size="16.0" />
-                           </font></Label>
+                                    <font>
+                                        <Font name="System Bold" size="16.0" />
+                                    </font>
+                                </Label>
                                 <Label fx:id="opponentName" text="AlexGamer99">
-                           <font>
-                              <Font name="System Bold Italic" size="18.0" />
-                           </font></Label>
+                                    <font>
+                                        <Font name="System Bold Italic" size="18.0" />
+                                    </font>
+                                </Label>
                             </children>
                             <VBox.margin>
                                 <Insets top="4.0" />
@@ -57,7 +59,6 @@
                         </HBox>
                         <StackPane alignment="BOTTOM_CENTER" prefHeight="99.0" prefWidth="416.0">
                             <children>
-
                                 <MediaView fx:id="mediaView" fitHeight="240" preserveRatio="true" smooth="true" />
                                 <Label fx:id="videoText" alignment="CENTER" text="🎉 Bravo! You Win!" textAlignment="CENTER" StackPane.alignment="BOTTOM_CENTER">
                                     <padding>

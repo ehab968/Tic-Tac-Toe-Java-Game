@@ -43,7 +43,7 @@ public class ClientStreamSocket {
 
     static private void connectToServer() throws UnknownHostException, UnknownHostException, IOException {
         if (socket == null) {
-            socket = new Socket(InetAddress.getLocalHost(), 5006);
+            socket = new Socket(ClientSocket.SERVER_IP, 5006);
             out = new ObjectOutputStream(socket.getOutputStream());
             out.flush();
             in = new ObjectInputStream(socket.getInputStream());
@@ -66,7 +66,6 @@ public class ClientStreamSocket {
                 while (appRun) {
                     Response response = (Response) in.readObject();
                     System.out.println("Client Received response " + response);
-
                     switch (response.getMessage()) {
                         case REQUEST_GAME:
                             if (!isInGame) {
@@ -74,12 +73,21 @@ public class ClientStreamSocket {
                             }
                             break;
                         case START_GAME:
-                            PrimaryController.isOnline = true;
                             if (!isInGame) {
+                                PrimaryController.isOnline = true;
                                 currentGame = (GameData) response.getData();
                                 GameRequest.startOnlineGame((GameData) response.getData());
                                 isInGame = true;
                             }
+                            break;
+                        case INVITE_ACCEPTED:
+                        case INVITE_REJECTED:
+                        case INVITE_DROPPED:
+                        case SERVER_FAILURE:
+                            GameRequest.handleInviteResponse(response);
+                            break;
+                        case GAME_OVER:
+                            isInGame = false;
                             break;
                         case Server_SENT_MOVE:
                             GameMove move = (GameMove) response.getData();
@@ -125,10 +133,6 @@ public class ClientStreamSocket {
                                 }
                             });
                             break;
-                        case INVITE_REJECTED:
-                        case INVITE_ACCEPTED:
-                        case INVITE_DROPPED:
-                        case SERVER_FAILURE:
                     }
                 }
             } catch (IOException ex) {
@@ -197,7 +201,12 @@ public class ClientStreamSocket {
             }
 
         } catch (IOException ex) {
-            ex.printStackTrace();
+
+        } finally {
+            out = null;
+            in = null;
+            socket = null;
+            user = null;
         }
     }
 }

@@ -86,7 +86,7 @@ public class PrimaryController implements Initializable {
             ogc = new OnlineGameController(gamePane, gridPane);
             setPlayersNames(ogc.getUserData().getUserName(), ogc.getOpponentData().getUserName());
             userScoreText.setText("Score: " + ogc.getUserData().getScore());
-            opponentScoreText.setText("Score: " + ogc.getUserData().getScore());
+            opponentScoreText.setText("Score: " + ogc.getOpponentData().getScore());
 
             ogc.setOnUserChanged((currentPlayer) -> {
                 onUserChange(currentPlayer);
@@ -184,8 +184,10 @@ public class PrimaryController implements Initializable {
             } catch (ClassNotFoundException ex) {
                 System.getLogger(PrimaryController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
             }
+            ClientStreamSocket.isInGame = false;
         } else {
             gc.exitGame();
+            ClientStreamSocket.isInGame = false;
         }
     }
 
@@ -204,6 +206,8 @@ public class PrimaryController implements Initializable {
         if (gc != null) {
             gc.setModeType(modeType);
         }
+        ClientStreamSocket.isInGame = false;
+        gc.exitGame();
     }
 
 }
