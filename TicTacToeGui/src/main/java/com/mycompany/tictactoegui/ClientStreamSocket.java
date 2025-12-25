@@ -74,6 +74,7 @@ public class ClientStreamSocket {
                             }
                             break;
                         case START_GAME:
+                            PrimaryController.isOnline = true;
                             if (!isInGame) {
                                 currentGame = (GameData) response.getData();
                                 GameRequest.startOnlineGame((GameData) response.getData());

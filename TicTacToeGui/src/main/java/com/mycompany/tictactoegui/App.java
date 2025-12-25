@@ -1,15 +1,15 @@
 package com.mycompany.tictactoegui;
 
+import java.io.IOException;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.scene.control.Button;
 
 public class App extends Application {
 
@@ -41,6 +41,10 @@ public class App extends Application {
     static void setRoot(String fxml) throws IOException {
         scene.setRoot(loadFXML(fxml));
     }
+    public static void setRoot(Parent root) {
+    scene.setRoot(root);
+}
+
 
     private static Parent loadFXML(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/fxml/" + fxml + ".fxml"));

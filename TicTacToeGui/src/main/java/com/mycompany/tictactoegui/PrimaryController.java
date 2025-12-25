@@ -35,6 +35,9 @@ public class PrimaryController implements Initializable {
     @FXML
     private Text opponentScoreText;
 
+    private int modeType;
+    private int difficulty;
+
     private static PrimaryController instance;
     GameController gc;
     OnlineGameController ogc;
@@ -58,7 +61,8 @@ public class PrimaryController implements Initializable {
         instance = this;
         if (isOnline == false) {
             gc = new GameController(gamePane, gridPane);
-
+            gc.setModeType(modeType);
+            gc.setDifficultyLevel(difficulty);
             gc.setOnUserChanged((currentPlayer) -> {
                 onUserChange(currentPlayer);
             });
@@ -182,6 +186,23 @@ public class PrimaryController implements Initializable {
             }
         } else {
             gc.exitGame();
+        }
+    }
+
+    public void setDifficultyLevel(int difficulty) {
+        this.difficulty = difficulty;
+        System.out.println("difficulty" + difficulty);
+
+        if (gc != null) {
+            gc.setDifficultyLevel(difficulty);
+        }
+    }
+
+    public void setModeType(int modeType) {
+        this.modeType = modeType;
+
+        if (gc != null) {
+            gc.setModeType(modeType);
         }
     }
 

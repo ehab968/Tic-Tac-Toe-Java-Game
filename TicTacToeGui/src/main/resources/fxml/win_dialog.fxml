@@ -57,6 +57,7 @@
                         </HBox>
                         <StackPane alignment="BOTTOM_CENTER" prefHeight="99.0" prefWidth="416.0">
                             <children>
+
                                 <MediaView fx:id="mediaView" fitHeight="240" preserveRatio="true" smooth="true" />
                                 <Label fx:id="videoText" alignment="CENTER" text="🎉 Bravo! You Win!" textAlignment="CENTER" StackPane.alignment="BOTTOM_CENTER">
                                     <padding>

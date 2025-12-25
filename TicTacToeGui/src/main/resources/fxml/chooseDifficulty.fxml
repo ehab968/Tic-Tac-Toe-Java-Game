@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<VBox alignment="CENTER" prefHeight="394.0" prefWidth="537.0" spacing="20" 
+      style="-fx-background-color: linear-gradient(from 50% 0% to 50% 100%, #2b6cee1a, transparent); 
+             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0.5, 0, 5);" 
+      xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.mycompany.tictactoegui.ChooseDifficultyController">
+
+    <VBox alignment="CENTER" spacing="10">
+        <Text style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-font-family: 'Manrope';" text="Select Difficulty" wrappingWidth="193.770263671875" />
+        <Text> </Text>
+        
+        
+        <Text style="-fx-font-size: 14px; -fx-fill: #4c6c9a; -fx-font-family: 'Manrope';" text="Choose your opponent's skill level" />
+        <Text> </Text>
+
+    </VBox>
+
+    <VBox alignment="CENTER" spacing="20">
+        <Button fx:id="easyBtn" onAction="#onEasyClicked" prefWidth="200" style="-fx-background-color: #2b7cee; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0.5, 0, 2);" text="Easy" />
+        <Button fx:id="mediumBtn" onAction="#onMeduimClicked" prefWidth="200" style="-fx-background-color: #2b7cee; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0.5, 0, 2);" text="Medium" />
+        <Button fx:id="hardBtn" onAction="#onHardClicked" prefWidth="200" style="-fx-background-color: #2b7cee; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0.5, 0, 2);" text="Hard" />
+    </VBox>
+    <Text> </Text>
+
+    <Button fx:id="backBtn" onAction="#onBackClicked" prefHeight="42.0" prefWidth="131.0" 
+            style="-fx-background-color: #f8fafc; -fx-text-fill: #4c6c9a; -fx-font-weight: bold; -fx-font-size: 12px; -fx-background-radius: 15px; -fx-border-color: black; -fx-border-radius: 15px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 4, 0.5, 0, 2);" 
+            text="Back to Menu" textAlignment="CENTER" />
+</VBox>
