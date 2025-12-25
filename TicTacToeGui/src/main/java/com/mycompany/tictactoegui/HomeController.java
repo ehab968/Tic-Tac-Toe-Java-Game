@@ -7,6 +7,7 @@ package com.mycompany.tictactoegui;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -64,7 +65,17 @@ public class HomeController implements Initializable {
     private void onSelectMultiplayer(ActionEvent event) {
         PrimaryController.isOnline = false;
         try {
-            App.setRoot("primary");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/primary.fxml"));
+            Parent root = loader.load();
+            PrimaryController controller = loader.getController();
+
+            // Pass the path to a method you will create in PrimaryController
+            controller.gc.showChosseScoreDialog();
+
+            // Show the scene
+            Platform.runLater(() -> {
+                App.getScene().setRoot(root);
+            });
         } catch (IOException ex) {
             System.getLogger(HomeController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
@@ -83,4 +94,9 @@ public class HomeController implements Initializable {
         }
     }
 
+    @FXML
+    private void onPlayRecord(ActionEvent event) {
+        GameRecorder gameRecorder = new GameRecorder();
+        gameRecorder.showCustomRecordPicker();
+    }
 }

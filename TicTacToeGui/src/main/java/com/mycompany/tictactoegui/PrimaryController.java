@@ -34,7 +34,7 @@ public class PrimaryController implements Initializable {
     private Text userScoreText;
     @FXML
     private Text opponentScoreText;
-
+    public String recordPath;
     private int modeType;
     private int difficulty;
 
@@ -50,6 +50,14 @@ public class PrimaryController implements Initializable {
         return ogc;
     }
 
+    public void setRecordPath(String recordPath) {
+        System.out.println("setting recordPath= " + recordPath);
+        this.recordPath = recordPath;
+        if (recordPath != null && gc != null) {
+            gc.playRecord(recordPath);
+        }
+    }
+
     private void setPlayersNames(String userName, String opponentName) {
         userNameText.setText(userName);
         opponentNameText.setText(opponentName);
@@ -60,7 +68,9 @@ public class PrimaryController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         instance = this;
         if (isOnline == false) {
-            gc = new GameController(gamePane, gridPane);
+
+            gc = new GameController(gamePane, gridPane, recordPath);
+
             gc.setModeType(modeType);
             gc.setDifficultyLevel(difficulty);
             gc.setOnUserChanged((currentPlayer) -> {

@@ -1,9 +1,11 @@
 package com.mycompany.tictactoegui;
 
 import com.iti.group3.tic_tac_toe_shared.GameData;
+import com.iti.group3.tic_tac_toe_shared.GameMove;
 import com.iti.group3.tic_tac_toe_shared.UserData;
 import com.mycompany.tictactoegui.interfaces.OnUserEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.function.BiConsumer;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXMLLoader;
@@ -27,7 +29,7 @@ public class GameController {
     private OnUserEvent onUserChanged;
     private OnUserEvent onUserWinning;
     private char[] charMatrix = new char[9];
-    private StackPane[] stackCells = new StackPane[9]; // => كل ستاك بان هنا ريفرنس للسيل اللى موجودة فى الجريد بان
+    public StackPane[] stackCells = new StackPane[9]; // => كل ستاك بان هنا ريفرنس للسيل اللى موجودة فى الجريد بان
     private boolean isWin = false;
     private char currentPlayer = 'X';
     static int choosenScore;
@@ -41,20 +43,25 @@ public class GameController {
     private int difficulty;
     SingleMode singleMode;
 
-    
+    ArrayList<GameMove> gameMoves;
+    int actionOrder;
+    boolean isWantToSaveRecord;
+    GameRecorder gameRecorder;
 
-    public GameController(Pane gamePane, GridPane gridPane) {
+    public GameController(Pane gamePane, GridPane gridPane, String recordPath) {
+
         this.gridPane = gridPane;
         this.gamePane = gamePane;
+        gameMoves = new ArrayList(0);
+        actionOrder = 0;
         user = new UserData("UserName");
         opponent = new UserData("CPU_MEDIUM");
         game = new GameData("1", user, opponent, null);
-        showChosseScoreDialog();
-        singleMode = new SingleMode(charMatrix, stackCells, this); 
+        //showChosseScoreDialog();
+        singleMode = new SingleMode(charMatrix, stackCells, this);
 
         initiateGrid();
     }
-   
 
     private void initiateGrid() {
 
@@ -66,24 +73,27 @@ public class GameController {
                 stackCells[cellId] = cell;
                 cell.setPrefSize(120, 120);
                 cell.setId(Integer.toString(cellId));
-                final int id = cellId;
-                if (cell.isDisable() == false && !isWin) {
-                    cell.setOnMouseClicked((MouseEvent e) -> {
-                        doClickSound();
-                        e.consume();
-                        if (!cell.isDisable() && !isWin) {
-                            addShapeToCell(cell, currentPlayer);
-                            charMatrix[id] = currentPlayer;
-                            cell.setDisable(true);
+                cell.setOnMouseClicked((MouseEvent e) -> {
+                    System.out.println("Clicking");
+                    e.consume();
+                    handleCellPress(cell);
+                });
+                gridPane.add(cell, col, row);
+            }
+        }
+    }
 
-                            checkWin();
-                            if (!isWin) {
-                                changePlayer();
-                            }
-                        }
-                    });
-                    gridPane.add(cell, col, row);
-                }
+    public void handleCellPress(StackPane cell) {
+        doClickSound();
+        if (!isWin) {
+            addShapeToCell(cell, currentPlayer);
+            int cellId = Integer.parseInt(cell.getId());
+            charMatrix[cellId] = currentPlayer;
+            cell.setDisable(true);
+
+            checkWin();
+            if (!isWin) {
+                changePlayer();
             }
         }
     }
@@ -105,30 +115,39 @@ public class GameController {
     }
 
     public void addShapeToCell(StackPane cell, char player) {
+        UserData movePlayer;
         if (player == 'X') {
             XShape x = new XShape(45);
             cell.getChildren().add(x);
+            movePlayer = user;
         } else {
             OShape o = new OShape(15);
             cell.getChildren().add(o);
+            movePlayer = opponent;
         }
+
+        actionOrder++;
+        GameMove gameMove = new GameMove(Integer.parseInt(cell.getId()), player, actionOrder, movePlayer);
+        gameMoves.add(gameMove);
     }
 
-    public  void changePlayer() {
+    public void changePlayer() {
         currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
 
         if (onUserChanged != null) {
             onUserChanged.handle(currentPlayer);
         }
-        System.out.println("difffffffff"+difficulty);
-                        System.out.println("modeType"+modeType);
+        System.out.println("difffffffff" + difficulty);
+        System.out.println("modeType" + modeType);
 
-     
         if (modeType == 1 && currentPlayer == 'O') {
-                   switch (difficulty) {
-                case 1 -> singleMode.computerRoleEasy();
-                case 2 -> singleMode.computerRoleMeduim();
-                case 3 -> singleMode.computerRoleHard();
+            switch (difficulty) {
+                case 1 ->
+                    singleMode.computerRoleEasy();
+                case 2 ->
+                    singleMode.computerRoleMeduim();
+                case 3 ->
+                    singleMode.computerRoleHard();
 
             }
         }
@@ -136,8 +155,10 @@ public class GameController {
     }
 
     public final void restartGame() {
+        System.out.println("restart");
         gamePane.getChildren().removeIf(n -> n instanceof Line);
         isWin = false;
+        actionOrder = 0;
 
         for (int i = 0; i < 9; i++) {
             charMatrix[i] = '\0';
@@ -156,6 +177,9 @@ public class GameController {
     }
 
     public final void exitGame() {
+        if (gameRecorder != null) {
+            gameRecorder.stopPlayback();
+        }
         try {
             App.setRoot("home");
         } catch (IOException ex) {
@@ -237,7 +261,19 @@ public class GameController {
         if (onUserWinning != null) {
             onUserWinning.handle(currentPlayer);
         }
+        if (isWantToSaveRecord) {
+            saveRecord();
+        }
+    }
 
+    private void saveRecord() {
+        gameRecorder = new GameRecorder();
+        gameRecorder.saveRecord(gameMoves, game);
+    }
+
+    public void playRecord(String recordPath) {
+        gameRecorder = new GameRecorder();
+        gameRecorder.playRecord(recordPath, this);
     }
 
     public void startNewGame() {
@@ -285,14 +321,18 @@ public class GameController {
             dialogStage.initModality(Modality.APPLICATION_MODAL);
             dialogStage.setTitle("Choose Score");
             dialogStage.setScene(new Scene(dialogRoot));
+
             dialogStage.setOnCloseRequest(event -> {
                 event.consume();
             });
+
+            dialogStage.setResizable(false);
+
             dialogStage.showAndWait();
 
             choosenScore = chooseScoreController.getScore();
+            isWantToSaveRecord = chooseScoreController.isWantToRecord();
             return true;
-
         } catch (IOException ex) {
             System.getLogger(GameController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
@@ -308,6 +348,7 @@ public class GameController {
     public void setModeType(int modeType) {
         this.modeType = modeType;
     }
+
     public boolean getIsWin() {
         return isWin;
     }

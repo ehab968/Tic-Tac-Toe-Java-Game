@@ -21,7 +21,6 @@ import com.iti.group3.tic_tac_toe_shared.UserData;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
@@ -37,7 +36,6 @@ public class ClientStreamSocket {
     static private ObjectInputStream in;
     static private ObjectOutputStream out;
     static public UserData user;
-    public static ServerListener serverListener;
     public static GameData currentGame;
     public static volatile boolean appRun = true;
 
