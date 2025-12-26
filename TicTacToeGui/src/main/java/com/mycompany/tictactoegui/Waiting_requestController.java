@@ -4,6 +4,8 @@
  */
 package com.mycompany.tictactoegui;
 
+import com.iti.group3.tic_tac_toe_shared.Request;
+import com.iti.group3.tic_tac_toe_shared.RequestType;
 import com.iti.group3.tic_tac_toe_shared.UserData;
 import com.mycompany.tictactoegui.CustomDialog;
 import java.net.URL;
@@ -46,11 +48,22 @@ public class Waiting_requestController implements Initializable {
         opponentName.setText(opponent.getUserName());
     }
     @FXML
-    private void cancelInviteAction(ActionEvent event) {
-        if (stage != null) {
-            stage.close();
-        }
+private void cancelInviteAction(ActionEvent event) {
+    try {
+        // 1️⃣ نبعت للسيرفر اننا لغينا الإنفايت
+        Request cancelRequest = new Request(
+                RequestType.CANCEL_INVITE,
+                opponent
+        );
+        ClientStreamSocket.write(cancelRequest);
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        // 2️⃣ نقفل الديالوج
         CustomDialog.close();
     }
+}
+
 
 }

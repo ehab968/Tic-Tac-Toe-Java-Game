@@ -10,6 +10,7 @@ import com.iti.group3.tic_tac_toe_shared.UserData;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
@@ -27,8 +28,8 @@ public class ClientSocket extends Thread {
     
     static private void connectToServer() throws UnknownHostException, UnknownHostException, IOException {
         if (socket == null) {
-            SERVER_IP="192.168.1.23";
-            socket = new Socket(SERVER_IP, 5005);
+            //SERVER_IP="192.168.1.23";
+            socket = new Socket(InetAddress.getLocalHost(), 5005);
             out = new ObjectOutputStream(socket.getOutputStream());
             out.flush();
             in = new ObjectInputStream(socket.getInputStream());

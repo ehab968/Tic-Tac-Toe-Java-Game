@@ -80,10 +80,13 @@ public class ClientStreamSocket {
                             break;
                         case INVITE_ACCEPTED:
                         case INVITE_REJECTED:
-                        case INVITE_DROPPED:
                         case SERVER_FAILURE:
                             GameRequest.handleInviteResponse(response);
                             break;
+                        case INVITE_DROPPED:
+                            GameRequest.handleInviteResponse(response);
+                            break;
+
                         case GAME_OVER:
                             isInGame = false;
                             break;
