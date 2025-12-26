@@ -1,5 +1,7 @@
 package com.mycompany.tictactoegui;
 
+import com.iti.group3.tic_tac_toe_shared.Request;
+import com.iti.group3.tic_tac_toe_shared.RequestType;
 import java.io.File;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -8,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
 import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -59,7 +62,18 @@ public class App extends Application {
     @Override
     public void stop() throws Exception {
         super.stop();
-        ClientStreamSocket.stopStream();
+        if (ClientStreamSocket.isInGame) {
+            ClientStreamSocket.write(new Request(RequestType.END_GAME, null));
+        }
+        new Thread(() -> {
+            try {
+                Thread.sleep(1500);
+            } catch (InterruptedException ex) {
+                System.getLogger(App.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            }
+            ClientStreamSocket.stopStream();
+        }).start();
+
     }
 
     static void setRoot(String fxml) throws IOException {

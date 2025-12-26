@@ -21,6 +21,7 @@ import com.iti.group3.tic_tac_toe_shared.UserData;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
@@ -37,11 +38,12 @@ public class ClientStreamSocket {
     static private ObjectOutputStream out;
     static public UserData user;
     public static GameData currentGame;
+    static boolean isInGame = false;
     public static volatile boolean appRun = true;
 
     static private void connectToServer() throws UnknownHostException, UnknownHostException, IOException {
         if (socket == null) {
-            socket = new Socket(ClientSocket.SERVER_IP, 5006);
+            socket = new Socket(InetAddress.getLocalHost(), 5006);
             out = new ObjectOutputStream(socket.getOutputStream());
             out.flush();
             in = new ObjectInputStream(socket.getInputStream());
@@ -172,7 +174,6 @@ public class ClientStreamSocket {
             throw e;
         }
     }
-    static boolean isInGame = false;
 
     static public void write(Request request) throws IOException, ClassNotFoundException {
         try {

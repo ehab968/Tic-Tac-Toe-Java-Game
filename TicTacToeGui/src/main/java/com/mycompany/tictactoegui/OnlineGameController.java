@@ -23,7 +23,7 @@ public class OnlineGameController {
     private OnUserEvent onUserWinning;
     private char[] charMatrix = new char[9];
     private StackPane[] stackCells = new StackPane[9]; // => كل ستاك بان هنا ريفرنس للسيل اللى موجودة فى الجريد بان
-    private boolean isWin = false;
+    public boolean isWin = false;
     private char mySymbol;
     private char lastMoveSymbol;
     static int choosenScore;
@@ -167,6 +167,15 @@ public class OnlineGameController {
         if (onUserChanged != null) {
             onUserChanged.handle(mySymbol);
         }
+    }
+
+    public boolean allCellsFull() {
+        for (char c : charMatrix) {
+            if (c == '\0') {
+                return false;
+            }
+        }
+        return true;
     }
 
     public final void exitGame() {

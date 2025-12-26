@@ -2,12 +2,14 @@ package com.mycompany.tictactoegui;
 
 import com.iti.group3.tic_tac_toe_shared.Request;
 import com.iti.group3.tic_tac_toe_shared.RequestType;
+import static com.mycompany.tictactoegui.ClientStreamSocket.user;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -97,7 +99,7 @@ public class PrimaryController implements Initializable {
             setPlayersNames(ogc.getUserData().getUserName(), ogc.getOpponentData().getUserName());
             userScoreText.setText("Score: " + ogc.getUserData().getScore());
             opponentScoreText.setText("Score: " + ogc.getOpponentData().getScore());
-
+            onUserChange('x');
             ogc.setOnUserChanged((currentPlayer) -> {
                 onUserChange(currentPlayer);
             });
@@ -107,19 +109,25 @@ public class PrimaryController implements Initializable {
             });
 
             restartGameButton.setOnAction((action) -> {
-                try {
-                    ClientStreamSocket.write(new Request(RequestType.RESTART_GAME, null));
-                } catch (IOException ex) {
-                    System.getLogger(PrimaryController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-                } catch (ClassNotFoundException ex) {
-                    System.getLogger(PrimaryController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+                if (ogc.isWin || ogc.allCellsFull()) {
+                    try {
+                        ClientStreamSocket.write(new Request(RequestType.RESTART_GAME, null));
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    } catch (ClassNotFoundException ex) {
+                        ex.printStackTrace();
+                    }
+                    restartGameButton.setText("Restart the round");
+                } else {
+                    showAlert("restart error", "the game doesn't finish yet");
                 }
-                restartGameButton.setText("Restart the round");
             });
         }
     }
 
     public void updateScoreUI(int userScore, int opponentScore) {
+        //userScore = user.getScore();
+        //opponentScore = ogc.getOpponentData().getScore();
         userScoreText.setText("Score: " + userScore);
         opponentScoreText.setText("Score: " + opponentScore);
     }
@@ -187,14 +195,18 @@ public class PrimaryController implements Initializable {
     @FXML
     private void onExitPressed(ActionEvent event) {
         if (isOnline) {
-            try {
-                ClientStreamSocket.write(new Request(RequestType.END_GAME, null));
-            } catch (IOException ex) {
-                System.getLogger(PrimaryController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-            } catch (ClassNotFoundException ex) {
-                System.getLogger(PrimaryController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            if (ogc.isWin || ogc.allCellsFull()) {
+                try {
+                    ClientStreamSocket.write(new Request(RequestType.END_GAME, null));
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                } catch (ClassNotFoundException ex) {
+                    ex.printStackTrace();
+                }
+                ClientStreamSocket.isInGame = false;
+            } else {
+                showAlert("no exit", "finish the game first and exit");
             }
-            ClientStreamSocket.isInGame = false;
         } else {
             gc.exitGame();
             ClientStreamSocket.isInGame = false;
@@ -218,6 +230,14 @@ public class PrimaryController implements Initializable {
         }
         ClientStreamSocket.isInGame = false;
         gc.exitGame();
+    }
+
+    private void showAlert(String title, String msg) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.showAndWait();
     }
 
 }
