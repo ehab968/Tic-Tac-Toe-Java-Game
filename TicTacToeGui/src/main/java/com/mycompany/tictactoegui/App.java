@@ -64,16 +64,16 @@ public class App extends Application {
         super.stop();
         if (ClientStreamSocket.isInGame) {
             ClientStreamSocket.write(new Request(RequestType.END_GAME, null));
+            new Thread(() -> {
+                try {
+                    Thread.sleep(1500);
+                } catch (InterruptedException ex) {
+                    System.getLogger(App.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+                }
+                ClientStreamSocket.stopStream();
+            }).start();
         }
-        new Thread(() -> {
-            try {
-                Thread.sleep(1500);
-            } catch (InterruptedException ex) {
-                System.getLogger(App.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-            }
-            ClientStreamSocket.stopStream();
-        }).start();
-
+        ClientStreamSocket.stopStream();
     }
 
     static void setRoot(String fxml) throws IOException {

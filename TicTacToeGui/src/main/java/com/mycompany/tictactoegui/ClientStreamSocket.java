@@ -18,6 +18,7 @@ import static com.iti.group3.tic_tac_toe_shared.ResponseType.SERVER_FAILURE;
 import static com.iti.group3.tic_tac_toe_shared.ResponseType.SERVER_RESTART_GAME;
 import static com.iti.group3.tic_tac_toe_shared.ResponseType.START_GAME;
 import com.iti.group3.tic_tac_toe_shared.UserData;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -26,6 +27,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import javafx.application.Platform;
+import javafx.scene.control.Alert;
 
 /**
  *
@@ -135,15 +137,32 @@ public class ClientStreamSocket {
                             break;
                     }
                 }
-            } catch (IOException ex) {
+            } catch (EOFException | SocketException ex) {
                 if (appRun) {
-                    ex.printStackTrace();
+                    System.out.println("server disconnected");
+                    handleServerDown();
                 }
-            } catch (ClassNotFoundException ex) {
-                System.getLogger(ClientStreamSocket.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            } catch (IOException | ClassNotFoundException ex) {
+                System.out.println("server disconnected");
+                handleServerDown();
             }
 
         }).start();
+
+    }
+
+    public static void handleServerDown() {
+        appRun = false;
+        isInGame = false;
+        closeConnection();
+        Platform.runLater(() -> {
+            try {
+                App.setRoot("home");
+                showAlert("ServerDown", "Sorry, Server Closed", "try again at another time");
+            } catch (IOException ex) {
+                System.getLogger(ClientStreamSocket.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            }
+        });
 
     }
 
@@ -207,5 +226,13 @@ public class ClientStreamSocket {
             socket = null;
             user = null;
         }
+    }
+
+    private static void showAlert(String title, String headMsg, String msg) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(headMsg);
+        alert.setContentText(msg);
+        alert.showAndWait();
     }
 }
