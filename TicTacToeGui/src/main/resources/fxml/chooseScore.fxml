@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<StackPane style="-fx-background-color: #f0f4f8;-fx-background-radius: 12; -fx-border-radius: 12; -fx-border-width: 2;  -fx-border-color: #d1d5db;" stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.tictactoegui.ChooseScoreController">
+
+    <VBox alignment="CENTER" maxWidth="360" spacing="0" style="-fx-background-color: white;               -fx-background-radius: 24;               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 25, 0.3, 0, 10);           ">
+        <StackPane alignment="CENTER_RIGHT" prefHeight="33.0" prefWidth="539.0">
+            <children>
+                <Region minHeight="20" prefHeight="29.0" prefWidth="543.0" style="-fx-background-color: #2b7cee; -fx-background-radius: 0 0 12 12;" />
+                <Label alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" style="-fx-font-weight: 800;" text="Game Settings" textAlignment="CENTER" textFill="WHITE">
+                    <font>
+                        <Font name="System Bold" size="30.0" />
+                    </font>
+                </Label>   
+            </children>
+        </StackPane>
+        <!-- Content -->
+        <VBox alignment="CENTER" prefHeight="227.0" prefWidth="336.0" spacing="14">
+            <padding>
+                <Insets bottom="30" left="30" right="30" top="30" />
+            </padding>
+   
+      
+                     <!-- Message -->
+            <Label prefHeight="26.0" prefWidth="210.0" style="-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #0f172a;" text="Enter the game score:" />
+   
+                  <!-- TextField -->
+            <TextField fx:id="scoreField" maxWidth="200" prefHeight="30.0" prefWidth="192.0" promptText="Enter score here" style="-fx-font-size: 14px; -fx-background-radius: 10;" />
+   
+                  <!-- HBox للخطأ -->
+            <HBox fx:id="errorBox" alignment="CENTER" prefHeight="15.0" prefWidth="281.0" spacing="2">
+                <Label fx:id="errorLabel" style="-fx-text-fill: red; -fx-font-size: 10px;" text="" />
+            </HBox>
+            <CheckBox fx:id="recordGameCheckBox" alignment="TOP_LEFT" mnemonicParsing="false" prefHeight="20.0" prefWidth="216.0" style="-fx-font-weight: bold;" text="Record Game" textFill="#2b7cee">
+                <font>
+                    <Font size="14.0" />
+                </font>
+            </CheckBox>
+   
+                  <JFXButton maxWidth="Infinity" onMousePressed="#handlePressed" prefHeight="30.0" prefWidth="275.0" text="OK" textFill="#2b7cee" />
+        </VBox>
+
+    </VBox>
+
+</StackPane>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="546.0" prefWidth="689.0" style="white" stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.tictactoegui.LeaderBoardController">
+
+    <!-- ================= Header ================= -->
+    <top>
+        <HBox prefHeight="49.0" prefWidth="800.0" spacing="10" style="-fx-background-color: #ffffff; -fx-border-color: #e5e7eb;">
+            <padding>
+                <Insets bottom="10" left="10" right="10" top="10" />
+            </padding>
+            <Button 
+                onAction="#backToOnlineuSers"
+                text="←"
+                style="
+        -fx-background-color: transparent;
+        -fx-text-fill: black;
+        -fx-font-size: 28;
+        -fx-cursor: hand;
+        -fx-padding: 0;
+    "
+            />
+        
+            <Label prefHeight="54.0" prefWidth="151.0" style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Leaderboard" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Button onAction="#onRefresh"   style="
+        -fx-background-color: transparent;
+        -fx-text-fill: black;
+        -fx-font-size: 24;
+        -fx-cursor: hand;" text="⟳">
+                <font>
+                    <Font size="23.0" />
+                </font>
+            </Button>
+            
+        </HBox>
+    </top>
+
+    <!-- ================= Main Content ================= -->
+    <center >
+        <ScrollPane fitToWidth="true" prefHeight="456.0" prefWidth="642.0" style="-fx-background-color: linear-gradient(from 50% 0% to 50% 100%, #2b6cee1a, transparent);">
+            <VBox spacing="10" style="-fx-background-color: white;">
+                <padding>
+                    <Insets bottom="10" left="10" right="10" top="10" />
+                </padding>
+
+                <!-- Table Header -->
+                <GridPane hgap="10" prefHeight="35.0" prefWidth="653.0" style="-fx-background-color: #f1f5f9;" vgap="5">
+                    <padding>
+                        <Insets bottom="5" left="5" right="5" top="5" />
+                    </padding>
+
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="35.0" />
+                        <ColumnConstraints percentWidth="35.0" />
+                        <ColumnConstraints percentWidth="13.0" />
+                        <ColumnConstraints percentWidth="20.0" />
+                    </columnConstraints>
+
+                    <Label text="Player Username" GridPane.columnIndex="0">
+                        <font>
+                            <Font size="16.0" />
+                        </font>
+                    </Label>
+                    <Label text="Current Status" GridPane.columnIndex="1">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
+                    <Label text=" Rating" GridPane.columnIndex="2">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
+                    <Label text="Actions" GridPane.columnIndex="3">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
+                    <rowConstraints>
+                        <RowConstraints />
+                    </rowConstraints>
+                </GridPane>
+
+                <!-- Players Rows -->
+                <VBox fx:id="playersContainer" prefHeight="396.0" prefWidth="667.0" spacing="5" style="-fx-background-color: white;">
+              
+                </VBox>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>
