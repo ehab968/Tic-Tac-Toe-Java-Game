@@ -15,7 +15,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 
-public class OnlineGameController extends GameController {
+public class OnlineGameManager extends GameManager {
 
     GridPane gridPane;
     Pane gamePane;
@@ -34,8 +34,7 @@ public class OnlineGameController extends GameController {
     UserData opponent;
     boolean isMyTurn = false;
 
-    OnlineGameController(Pane gamePane, GridPane gridPane) {
-        super(gamePane, gridPane);
+    OnlineGameManager(Pane gamePane, GridPane gridPane) {
         this.gridPane = gridPane;
         this.gamePane = gamePane;
         game = ClientStreamSocket.currentGame;
@@ -71,9 +70,9 @@ public class OnlineGameController extends GameController {
                         try {
                             ClientStreamSocket.write(new Request(RequestType.MOVE, move));
                         } catch (IOException ex) {
-                            System.getLogger(GameController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+                            System.getLogger(GameManager.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
                         } catch (ClassNotFoundException ex) {
-                            System.getLogger(GameController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+                            System.getLogger(GameManager.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
                         }
 
                     });
@@ -113,6 +112,7 @@ public class OnlineGameController extends GameController {
         this.onUserChanged = listener;
     }
 
+    @Override
     public final void setOnUserWinning(OnUserEvent listener) {
         this.onUserWinning = listener;
     }
@@ -188,7 +188,9 @@ public class OnlineGameController extends GameController {
     @Override
     public void exitGame() {
         try {
-            WinDialogController.instance.close();
+            if (WinDialogController.instance != null) {
+                WinDialogController.instance.close();
+            }
             App.setRoot("onLineUsers");
         } catch (IOException ex) {
             System.getLogger(PrimaryController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
@@ -258,7 +260,7 @@ public class OnlineGameController extends GameController {
             try {
                 ClientStreamSocket.write(new Request(RequestType.UPDATE_SCORE, game.winner));
             } catch (IOException | ClassNotFoundException ex) {
-                System.getLogger(OnlineGameController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+                System.getLogger(OnlineGameManager.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
             }
         } else {
             game.setWinner(opponent);

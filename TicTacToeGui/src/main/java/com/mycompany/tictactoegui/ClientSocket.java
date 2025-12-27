@@ -29,7 +29,6 @@ public class ClientSocket extends Thread {
 
     static private void connectToServer() throws UnknownHostException, UnknownHostException, IOException {
         if (socket == null) {
-            //SERVER_IP="192.168.1.23";
 
             socket = new Socket(InetAddress.getLocalHost(), 5005);
 
@@ -41,7 +40,7 @@ public class ClientSocket extends Thread {
 
     public static void closeConnection() {
         try {
-            System.out.println("Closing Connection");
+            System.out.println("Closing ClientSocket Connection");
             if (out != null) {
                 out.close();
             }

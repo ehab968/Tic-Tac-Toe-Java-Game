@@ -60,10 +60,11 @@ public class ClientStreamSocket {
     }
 
     static public void startStream() {
-        System.out.println("Stream Socket started");
-        if(socket != null){
+        if (socket != null) {
             return;
         }
+        System.out.println("Stream Socket started");
+
         new Thread(() -> {
             try {
                 connectToServer();
@@ -159,6 +160,7 @@ public class ClientStreamSocket {
         appRun = false;
         isInGame = false;
         closeConnection();
+        ClientSocket.closeConnection();
         Platform.runLater(() -> {
             try {
                 App.setRoot("home");

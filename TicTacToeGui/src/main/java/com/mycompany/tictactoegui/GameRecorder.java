@@ -68,7 +68,7 @@ public class GameRecorder {
         }
     }
 
-    public void playRecord(String fileName, GameController gameController) {
+    public void playRecord(String fileName, GameManager gameController) {
         ArrayList<GameMove> recordedMoves = loadRecord(fileName);
 
         if (recordedMoves == null || recordedMoves.isEmpty()) {

@@ -41,14 +41,14 @@ public class PrimaryController implements Initializable {
     private int difficulty;
 
     private static PrimaryController instance;
-    GameController gc;
-    OnlineGameController ogc;
+    GameManager gc;
+    OnlineGameManager ogc;
 
     public static PrimaryController getInstance() {
         return instance;
     }
 
-    public OnlineGameController getOnlineGameController() {
+    public OnlineGameManager getOnlineGameController() {
         return ogc;
     }
 
@@ -69,9 +69,10 @@ public class PrimaryController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         instance = this;
+        //ClientStreamSocket.isInGame = true;
         if (isOnline == false) {
 
-            gc = new GameController(gamePane, gridPane, recordPath);
+            gc = new GameManager(gamePane, gridPane, recordPath);
 
             gc.setModeType(modeType);
             gc.setDifficultyLevel(difficulty);
@@ -99,7 +100,7 @@ public class PrimaryController implements Initializable {
             });
 
         } else {
-            ogc = new OnlineGameController(gamePane, gridPane);
+            ogc = new OnlineGameManager(gamePane, gridPane);
             setPlayersNames(ogc.getUserData().getUserName(), ogc.getOpponentData().getUserName());
             userScoreText.setText("Score: " + ogc.getUserData().getScore());
             opponentScoreText.setText("Score: " + ogc.getOpponentData().getScore());

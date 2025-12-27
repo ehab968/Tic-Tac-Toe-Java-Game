@@ -20,9 +20,9 @@ public class SingleMode {
 
     private char[] charMatrix;
     private StackPane[] stackCells;
-    public GameController controller;
+    public GameManager controller;
 
-    public SingleMode(char[] charMatrix, StackPane[] stackCells, GameController controller) {
+    public SingleMode(char[] charMatrix, StackPane[] stackCells, GameManager controller) {
         this.charMatrix = charMatrix;
         this.stackCells = stackCells;
         this.controller = controller;

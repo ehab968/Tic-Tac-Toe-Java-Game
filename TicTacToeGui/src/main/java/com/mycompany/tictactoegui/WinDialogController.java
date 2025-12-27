@@ -38,7 +38,7 @@ public class WinDialogController {
     private MediaView mediaView;
     private VideoManager videoManager;
 
-    private GameController gameController;
+    private GameManager gameController;
     @FXML
     private Label videoText;
     @FXML
@@ -59,7 +59,7 @@ public class WinDialogController {
         rand = new Random();
     }
 
-    public void setgameController(GameController gameController) {
+    public void setgameController(GameManager gameController) {
         this.gameController = gameController;
     }
 

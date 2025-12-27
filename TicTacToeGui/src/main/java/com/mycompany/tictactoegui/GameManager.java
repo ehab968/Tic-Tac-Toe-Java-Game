@@ -23,7 +23,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class GameController {
+public class GameManager {
 
     GridPane gridPane;
     Pane gamePane;
@@ -57,11 +57,9 @@ public class GameController {
     boolean isWantToSaveRecord;
     GameRecorder gameRecorder;
 
-    public GameController(Pane gamePane, GridPane gridPane) {
-        this(gamePane, gridPane, null);
-    }
+    public GameManager() {}
 
-    public GameController(Pane gamePane, GridPane gridPane, String recordPath) {
+    public GameManager(Pane gamePane, GridPane gridPane, String recordPath) {
 
         this.gridPane = gridPane;
         this.gamePane = gamePane;
@@ -335,7 +333,7 @@ public class GameController {
 
     }
 
-   public boolean showChosseScoreDialog() {
+    public boolean showChosseScoreDialog() {
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/chooseScore.fxml"));
@@ -368,12 +366,11 @@ public class GameController {
             isWantToSaveRecord = chooseScoreController.isWantToRecord();
             return true;
         } catch (IOException ex) {
-            System.getLogger(GameController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            System.getLogger(GameManager.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
         return false;
 
     }
-
 
     public void setDifficultyLevel(int difficulty) {
         this.difficulty = difficulty;
