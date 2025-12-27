@@ -27,7 +27,7 @@ public class ClientSocket extends Thread {
     
     static private void connectToServer() throws UnknownHostException, UnknownHostException, IOException {
         if (socket == null) {
-            SERVER_IP="192.168.1.23";
+            SERVER_IP="192.168.1.7";
             socket = new Socket(SERVER_IP, 5005);
             out = new ObjectOutputStream(socket.getOutputStream());
             out.flush();

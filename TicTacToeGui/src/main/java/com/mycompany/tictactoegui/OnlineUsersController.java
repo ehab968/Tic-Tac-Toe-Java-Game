@@ -12,12 +12,8 @@ import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -26,7 +22,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 
 public class OnlineUsersController implements Initializable {
 
@@ -52,6 +47,8 @@ public class OnlineUsersController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         loadOnlineUsers();
+        onlineUsersText.setText(String.valueOf(0) + " Online");
+
     }
 
     // ================= Networking =================
@@ -88,70 +85,91 @@ public class OnlineUsersController implements Initializable {
                             continue;
                         }
                         addUser(u, "Online", true);
+                        onlineUsersText.setText(String.valueOf(onlineUsers.size() - 1) + " Online");
+
                     }
                 }
             });
         }).start();
     }
+        @FXML
 
-    @FXML
     private void onlineUserReload(ActionEvent event) {
         loadOnlineUsers();
+        onlineUsersText.setText(String.valueOf(0) + " Online");
 
     }
 
     // ================= UI =================
-    public void addUser(UserData user, String status, boolean canInvite) {
+   public void addUser(UserData user, String status, boolean canInvite) {
 
-        HBox hbox = new HBox(10);
-        hbox.setAlignment(Pos.CENTER_LEFT);
-        hbox.setStyle("-fx-background-radius: 15; -fx-padding: 10;");
+    HBox hbox = new HBox(12);
+    hbox.setAlignment(Pos.CENTER_LEFT);
+    hbox.setStyle("-fx-background-radius: 15; -fx-padding: 10;");
 
-        VBox vbox = new VBox(2);
+    VBox vbox = new VBox(4);
 
-        Label nameLabel = new Label(user.getUserName());
-        nameLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #111827;");
+    Label nameLabel = new Label(user.getUserName());
+    nameLabel.setStyle(
+            "-fx-font-weight: bold;" +
+            "-fx-font-size: 15px;" +
+            "-fx-text-fill: #111827;"
+    );
 
-        Label statusLabel = new Label(status);
-        statusLabel.setStyle("-fx-font-size: 10px; -fx-font-weight: bold;");
+    Label statusLabel = new Label(status);
+    statusLabel.setStyle(
+            "-fx-font-size: 12px;" +
+            "-fx-font-weight: bold;"
+    );
 
-        Label scoreLabel = new Label("  - " + user.getScore());
-        scoreLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #111827;");
-
-        if ("Playing...".equals(status)) {
-            statusLabel.setTextFill(Color.ORANGE);
-        } else if ("Online".equals(status)) {
-            statusLabel.setTextFill(Color.GREEN);
-        } else {
-            statusLabel.setTextFill(Color.YELLOW);
-        }
-
-        vbox.getChildren().addAll(nameLabel, statusLabel);
-
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-
-        Button btn = new Button();
-        if (canInvite) {
-            btn.setText("Invite ⚔");
-            btn.setStyle("-fx-background-color:#2b7cee; -fx-text-fill:white; -fx-background-radius:20;");
-            btn.setOnAction(e -> GameRequest.sendRequest(user));
-        } else {
-            btn.setText("Spectate 👀");
-            btn.setStyle("-fx-background-color:#f3f4f6; -fx-text-fill:#4b5563; -fx-background-radius:20;");
-        }
-
-        hbox.getChildren().addAll(vbox, scoreLabel, spacer, btn);
-        userListContainer.getChildren().add(hbox);
+    if ("Playing...".equals(status)) {
+        statusLabel.setTextFill(Color.ORANGE);
+    } else if ("Online".equals(status)) {
+        statusLabel.setTextFill(Color.GREEN);
+    } else {
+        statusLabel.setTextFill(Color.GRAY);
     }
 
+    vbox.getChildren().addAll(nameLabel, statusLabel);
+
+    // مسافة بين الاسم والسكور
+    Region spacer1 = new Region();
+    HBox.setHgrow(spacer1, Priority.ALWAYS);
+
+    Label scoreLabel = new Label("Score: " + user.getScore());
+    scoreLabel.setStyle(
+            "-fx-font-size: 14px;" +
+            "-fx-font-weight: bold;" +
+            "-fx-text-fill: #111827;"
+    );
+
+    Region spacer2 = new Region();
+    HBox.setHgrow(spacer2, Priority.ALWAYS);
+
+    Button btn = new Button();
+    if (canInvite) {
+        btn.setText("Invite ⚔");
+        btn.setStyle("-fx-background-color:#2b7cee; -fx-text-fill:white; -fx-background-radius:20;");
+        btn.setOnAction(e -> GameRequest.sendRequest(user));
+    } else {
+        btn.setText("Spectate 👀");
+        btn.setStyle("-fx-background-color:#f3f4f6; -fx-text-fill:#4b5563; -fx-background-radius:20;");
+    }
+
+    hbox.getChildren().addAll(vbox, spacer1, scoreLabel, spacer2, btn);
+    userListContainer.getChildren().add(hbox);
+}
+
     // ================= Navigation =================
-    @FXML
+       @FXML
+
     private void navToLeaderBoard(ActionEvent event) {
         try {
             App.setRoot("leaderBoard");
         } catch (IOException ex) {
             System.getLogger(OnlineUsersController.class.getName());
+                        System.getLogger(OnlineUsersController.class.getName());
+
         }
     }
 

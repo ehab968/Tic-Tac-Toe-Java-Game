@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.function.BiConsumer;
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -42,6 +43,14 @@ public class GameController {
     private int modeType;
     private int difficulty;
     SingleMode singleMode;
+
+    public int getUserScore() {
+        return userScore;
+    }
+
+    public int getOpponentScore() {
+        return opponentScore;
+    }
 
     ArrayList<GameMove> gameMoves;
     int actionOrder;
@@ -296,11 +305,21 @@ public class GameController {
             PauseTransition pause = new PauseTransition(Duration.seconds(.5));
             pause.setOnFinished(event -> {
                 showWinningDialog(game);
+
                 startNewGame();
+                System.out.println("************************************");
+                PrimaryController.getInstance()
+                        .updateRestartButtonText("Restart the round");
+                System.out.println(PrimaryController.getInstance()
+                );
             });
             pause.play();
 
         }
+    }
+
+    public int getChoosenScore() {
+        return choosenScore;
     }
 
     public void setOnScoreChanged(BiConsumer<Integer, Integer> listener) {
@@ -309,9 +328,10 @@ public class GameController {
 
     private void showWinningDialog(GameData game) {
         WinDialog.show(game, user, this);
+
     }
 
-    public boolean showChosseScoreDialog() {
+   public boolean showChosseScoreDialog() {
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/chooseScore.fxml"));
@@ -321,12 +341,22 @@ public class GameController {
             dialogStage.initModality(Modality.APPLICATION_MODAL);
             dialogStage.setTitle("Choose Score");
             dialogStage.setScene(new Scene(dialogRoot));
+            dialogStage.setResizable(false);
 
             dialogStage.setOnCloseRequest(event -> {
-                event.consume();
-            });
 
-            dialogStage.setResizable(false);
+                event.consume();
+
+                dialogStage.close();
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        exitGame();
+                    }
+                });
+
+            }
+            );
 
             dialogStage.showAndWait();
 
@@ -340,6 +370,7 @@ public class GameController {
 
     }
 
+
     public void setDifficultyLevel(int difficulty) {
         this.difficulty = difficulty;
 
@@ -347,6 +378,9 @@ public class GameController {
 
     public void setModeType(int modeType) {
         this.modeType = modeType;
+        if (modeType == 1) {
+            showChosseScoreDialog();
+        }
     }
 
     public boolean getIsWin() {

@@ -17,7 +17,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -25,7 +24,6 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -79,16 +77,16 @@ public class LeaderBoardController implements Initializable {
         grid.setPadding(new Insets(5));
 
         ColumnConstraints c1 = new ColumnConstraints();
-        c1.setPercentWidth(50);
+        c1.setPercentWidth(35);
 
         ColumnConstraints c2 = new ColumnConstraints();
-        c2.setPercentWidth(22);
+        c2.setPercentWidth(35);
 
         ColumnConstraints c3 = new ColumnConstraints();
-        c3.setPercentWidth(20);
+        c3.setPercentWidth(10);
 
         ColumnConstraints c4 = new ColumnConstraints();
-        c4.setPercentWidth(8);
+        c4.setPercentWidth(20);
 
         grid.getColumnConstraints().addAll(c1, c2, c3, c4);
 
@@ -100,22 +98,22 @@ public class LeaderBoardController implements Initializable {
 
         String status = user.getStatus() == 1 ? "Online" : "Offline";
         Label statusLbl = new Label(status);
-        statusLbl.setPrefSize(68, 22);
+        statusLbl.setPrefSize(50, 22);
         statusLbl.setStyle(
                 "-fx-background-color: #d1fae5;"
-                + "-fx-padding: 2 6 2 6;"
+                + "-fx-padding: 2 6 2 2;"
                 + "-fx-background-radius: 6;"
         );
         if (user.getStatus() == 1) {
             statusLbl.setStyle(
                     "-fx-background-color: #d1fae5;"
-                    + "-fx-padding: 2 6 2 6;"
+                    + "-fx-padding: 2 6 2 2;"
                     + "-fx-background-radius: 6;"
             );
         } else {
             statusLbl.setStyle(
                     "-fx-background-color: #fad1d1;"
-                    + "-fx-padding: 2 6 2 6;"
+                    + "-fx-padding: 2 6 2 2;"
                     + "-fx-background-radius: 6;"
             );
 

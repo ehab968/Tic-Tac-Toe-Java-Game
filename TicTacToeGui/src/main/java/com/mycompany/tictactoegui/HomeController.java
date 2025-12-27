@@ -7,7 +7,6 @@ package com.mycompany.tictactoegui;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,7 +15,10 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
 /**
@@ -35,12 +37,33 @@ public class HomeController implements Initializable {
     @FXML
     private Button onlineBTN;
 
+    @FXML
+    private Circle statusCircle;
+    @FXML
+    private Label statusLabel;
+
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        if (ClientSocket.user == null) {
+            setOnline(false);
+        } else {
+            setOnline(true);
+        }
+
+    }
+
+    public void setOnline(boolean isOnline) {
+       
+        if (isOnline) {
+            statusLabel.setText("Online");
+            statusCircle.setFill(Color.web("#22e822"));
+        } else {
+            statusLabel.setText("Offline");
+            statusCircle.setFill(Color.RED);
+        }
     }
 
     @FXML
@@ -65,17 +88,22 @@ public class HomeController implements Initializable {
     private void onSelectMultiplayer(ActionEvent event) {
         PrimaryController.isOnline = false;
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/primary.fxml"));
-            Parent root = loader.load();
-            PrimaryController controller = loader.getController();
+           FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/primary.fxml"));
+        Parent root = loader.load();
+        PrimaryController controller = loader.getController();
 
-            // Pass the path to a method you will create in PrimaryController
-            controller.gc.showChosseScoreDialog();
+        App.getScene().setRoot(root);
 
-            // Show the scene
-            Platform.runLater(() -> {
-                App.getScene().setRoot(root);
-            });
+        Stage primaryStage = (Stage) App.getScene().getWindow();
+
+        boolean proceed = controller.gc.showChosseScoreDialog();
+
+        if (!proceed) {
+            FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/fxml/home.fxml"));
+            Parent homeRoot = homeLoader.load();
+            App.getScene().setRoot(homeRoot);
+        }
+
         } catch (IOException ex) {
             System.getLogger(HomeController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }

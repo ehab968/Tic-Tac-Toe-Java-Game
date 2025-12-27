@@ -14,7 +14,6 @@ import com.iti.group3.tic_tac_toe_shared.UserData;
 import java.util.Random;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;

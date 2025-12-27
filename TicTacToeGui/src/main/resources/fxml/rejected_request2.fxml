@@ -67,7 +67,7 @@
                           style="-fx-font-size: 15;
                                  -fx-font-weight: bold;
                                  -fx-fill: #334155;"/>
-                    <Text text="has rejected your game request."
+                    <Text text=" has rejected your game request."
                           style="-fx-font-size: 13;
                                  -fx-fill: #64748b;"/>
                 </TextFlow>

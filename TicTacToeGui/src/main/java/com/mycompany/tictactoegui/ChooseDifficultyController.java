@@ -31,7 +31,6 @@ public class ChooseDifficultyController {
     private int modeType;
     private int difficulty;
     private Parent previousRoot;
-    
 
     public void goToPrimary(int difficulty) {
         try {
@@ -49,14 +48,14 @@ public class ChooseDifficultyController {
 
     @FXML
     private void onEasyClicked(ActionEvent event) {
-        
+
         goToPrimary(1);
 
     }
 
     @FXML
     private void onMeduimClicked(ActionEvent event) {
-       
+
         goToPrimary(2);
 
     }
@@ -67,13 +66,11 @@ public class ChooseDifficultyController {
 
     }
 
-   
-
     @FXML
     private void onBackClicked(ActionEvent event) {
         if (previousRoot != null) {
-        App.setRoot(previousRoot);
-    }
+            App.setRoot(previousRoot);
+        }
 
     }
 
@@ -81,12 +78,13 @@ public class ChooseDifficultyController {
         this.modeType = modeType;
 
     }
+
     public void setDifficulityLevel(int modeType) {
         this.modeType = modeType;
 
     }
 
-     public void setPreviousRoot(Parent root) {
-    this.previousRoot = root;
-}
+    public void setPreviousRoot(Parent root) {
+        this.previousRoot = root;
+    }
 }

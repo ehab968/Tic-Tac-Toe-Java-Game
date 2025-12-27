@@ -29,7 +29,7 @@
                   <TextFlow maxWidth="300" textAlignment="CENTER">
                      <children>
                         <Text fx:id="opponentName" style="-fx-font-size: 15;                                  -fx-font-weight: bold;                                  -fx-fill: #334155;" text="Abo Elseeeed " />
-                        <Text style="-fx-font-size: 13;                                  -fx-fill: #64748b;" text="has rejected your game request." />
+                        <Text style="-fx-font-size: 13;                                  -fx-fill: #64748b;" text=" has rejected your game request." />
                      </children>
                   </TextFlow>
                </children>
