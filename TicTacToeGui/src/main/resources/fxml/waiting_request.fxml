@@ -29,7 +29,7 @@
                      <children>
                         <Text style="-fx-font-size: 13; -fx-fill: #64748b;" text="Waiting for " />
                         <Text fx:id="opponentName" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-fill: #334155;" text="AlexGamer99 " />
-                        <Text style="-fx-font-size: 13; -fx-fill: #64748b;" text="to accept your game invitation." />
+                        <Text style="-fx-font-size: 13; -fx-fill: #64748b;" text=" to accept your game invitation." />
                      </children>
                   </TextFlow>
                   <VBox alignment="CENTER" spacing="10" style="-fx-background-color: #f8fafc; -fx-border-color: #e2e8f0; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 16;">

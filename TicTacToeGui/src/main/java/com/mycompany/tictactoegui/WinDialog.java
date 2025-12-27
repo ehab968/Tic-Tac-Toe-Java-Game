@@ -25,6 +25,7 @@ public class WinDialog {
 
     public static void show(GameData game, UserData user, GameController gameController) {
         try {
+
             FXMLLoader loader = new FXMLLoader(
                     WinDialog.class.getResource("/fxml/win_dialog.fxml")
             );

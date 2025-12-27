@@ -32,6 +32,7 @@ public class ClientSocket extends Thread {
             //SERVER_IP="192.168.1.23";
 
             socket = new Socket(InetAddress.getLocalHost(), 5005);
+
             out = new ObjectOutputStream(socket.getOutputStream());
             out.flush();
             in = new ObjectInputStream(socket.getInputStream());

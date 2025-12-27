@@ -5,6 +5,7 @@ import com.iti.group3.tic_tac_toe_shared.RequestType;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -89,9 +90,14 @@ public class PrimaryController implements Initializable {
             gc.setOnScoreChanged((uScore, oScore) -> {
                 userScoreText.setText("Score: " + uScore);
                 opponentScoreText.setText("Score: " + oScore);
-                restartGameButton.setText("Continue");
+                if (uScore == 0 && oScore == 0) {
+                    restartGameButton.setText("Restart the round");
+                } else {
+                    restartGameButton.setText("continue");
+                }
 
             });
+
         } else {
             ogc = new OnlineGameController(gamePane, gridPane);
             setPlayersNames(ogc.getUserData().getUserName(), ogc.getOpponentData().getUserName());
@@ -110,6 +116,13 @@ public class PrimaryController implements Initializable {
                 restartGame();
             });
         }
+    }
+
+    public void updateRestartButtonText(String text) {
+        Platform.runLater(() -> {
+            restartGameButton.setText(text);
+            System.out.println("Button text updated!");
+        });
     }
 
     public void updateScoreUI(int userScore, int opponentScore) {
