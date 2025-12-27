@@ -27,7 +27,6 @@ public class CustomDialog {
 //    public static void show(String path) {
 //        show(path, null);
 //    }
-
     public static void show(String path, UserData user) {
         try {
             close();
@@ -48,21 +47,31 @@ public class CustomDialog {
                 if (loader.getController() instanceof Accept_requestController) {
                     Accept_requestController controller = loader.getController();
                     controller.setOpponent(user);
+                    stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                        @Override
+                        public void handle(final WindowEvent event) {
+                            controller.cancel();
+                        }
+                    });
                 }
                 if (loader.getController() instanceof Connection_lost_requestController) {
 //                      Connection_lost_requestController controller = loader.getController();
 //                      controller.setOpponent(user);
-                }if (loader.getController() instanceof Waiting_requestController) {
-                      Waiting_requestController controller = loader.getController();
-                      controller.setOpponent(user);
-                    
+                }
+                if (loader.getController() instanceof Waiting_requestController) {
+                    Waiting_requestController controller = loader.getController();
+                    controller.setOpponent(user);
+                    stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                        @Override
+                        public void handle(final WindowEvent event) {
+                            controller.cancel();
+                        }
+                    });
+
                 }
                 if (loader.getController() instanceof Rejected_requestController) {
-                      Rejected_requestController controller = loader.getController();
-                      controller.setOpponent(user);
-                      System.out.println("-----------------------------");
-                      System.out.println(user);
-                    
+                    Rejected_requestController controller = loader.getController();
+                    controller.setOpponent(user);
                 }
             }
         } catch (Exception e) {

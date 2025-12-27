@@ -23,8 +23,9 @@ import javafx.stage.WindowEvent;
 public class WinDialog {
 
 
-    public static void show(GameData game, UserData user, GameController gameController) {
+    public static void show(GameData game, UserData user, GameManager gameController) {
         try {
+
             FXMLLoader loader = new FXMLLoader(
                     WinDialog.class.getResource("/fxml/win_dialog.fxml")
             );
@@ -37,7 +38,7 @@ public class WinDialog {
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setResizable(false);
-            stage.initStyle(StageStyle.UNDECORATED);
+           // stage.initStyle(StageStyle.UNDECORATED);
             scene.setFill(Color.TRANSPARENT);
             stage.setScene(scene);
             stage.setOnCloseRequest(new EventHandler<WindowEvent>() {

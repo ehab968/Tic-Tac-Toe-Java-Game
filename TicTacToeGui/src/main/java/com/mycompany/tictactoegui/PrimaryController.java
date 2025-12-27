@@ -2,10 +2,10 @@ package com.mycompany.tictactoegui;
 
 import com.iti.group3.tic_tac_toe_shared.Request;
 import com.iti.group3.tic_tac_toe_shared.RequestType;
-import static com.mycompany.tictactoegui.ClientStreamSocket.user;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -41,14 +41,14 @@ public class PrimaryController implements Initializable {
     private int difficulty;
 
     private static PrimaryController instance;
-    GameController gc;
-    OnlineGameController ogc;
+    GameManager gc;
+    OnlineGameManager ogc;
 
     public static PrimaryController getInstance() {
         return instance;
     }
 
-    public OnlineGameController getOnlineGameController() {
+    public OnlineGameManager getOnlineGameController() {
         return ogc;
     }
 
@@ -69,9 +69,10 @@ public class PrimaryController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         instance = this;
+        //ClientStreamSocket.isInGame = true;
         if (isOnline == false) {
 
-            gc = new GameController(gamePane, gridPane, recordPath);
+            gc = new GameManager(gamePane, gridPane, recordPath);
 
             gc.setModeType(modeType);
             gc.setDifficultyLevel(difficulty);
@@ -84,18 +85,22 @@ public class PrimaryController implements Initializable {
             });
 
             restartGameButton.setOnAction((action) -> {
-                gc.restartGame();
-                restartGameButton.setText("Restart the round");
+                restartGame();
             });
 
             gc.setOnScoreChanged((uScore, oScore) -> {
                 userScoreText.setText("Score: " + uScore);
                 opponentScoreText.setText("Score: " + oScore);
-                restartGameButton.setText("Continue");
+                if (uScore == 0 && oScore == 0) {
+                    restartGameButton.setText("Restart the round");
+                } else {
+                    restartGameButton.setText("continue");
+                }
 
             });
+
         } else {
-            ogc = new OnlineGameController(gamePane, gridPane);
+            ogc = new OnlineGameManager(gamePane, gridPane);
             setPlayersNames(ogc.getUserData().getUserName(), ogc.getOpponentData().getUserName());
             userScoreText.setText("Score: " + ogc.getUserData().getScore());
             opponentScoreText.setText("Score: " + ogc.getOpponentData().getScore());
@@ -109,20 +114,16 @@ public class PrimaryController implements Initializable {
             });
 
             restartGameButton.setOnAction((action) -> {
-                if (ogc.isWin || ogc.allCellsFull()) {
-                    try {
-                        ClientStreamSocket.write(new Request(RequestType.RESTART_GAME, null));
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    } catch (ClassNotFoundException ex) {
-                        ex.printStackTrace();
-                    }
-                    restartGameButton.setText("Restart the round");
-                } else {
-                    showAlert("restart error", "the game doesn't finish yet");
-                }
+                restartGame();
             });
         }
+    }
+
+    public void updateRestartButtonText(String text) {
+        Platform.runLater(() -> {
+            restartGameButton.setText(text);
+            System.out.println("Button text updated!");
+        });
     }
 
     public void updateScoreUI(int userScore, int opponentScore) {
@@ -194,6 +195,30 @@ public class PrimaryController implements Initializable {
 
     @FXML
     private void onExitPressed(ActionEvent event) {
+        exitGame();
+    }
+
+    public void restartGame() {
+        if (isOnline) {
+            if (ogc.isWin || ogc.allCellsFull()) {
+                try {
+                    ClientStreamSocket.write(new Request(RequestType.RESTART_GAME, null));
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                } catch (ClassNotFoundException ex) {
+                    ex.printStackTrace();
+                }
+                restartGameButton.setText("Restart the round");
+            } else {
+                showAlert("restart error", "the game doesn't finish yet");
+            }
+        } else {
+            gc.restartGame();
+            restartGameButton.setText("Restart the round");
+        }
+    }
+
+    public void exitGame() {
         if (isOnline) {
             if (ogc.isWin || ogc.allCellsFull()) {
                 try {

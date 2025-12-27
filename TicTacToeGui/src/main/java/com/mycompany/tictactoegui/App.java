@@ -71,9 +71,12 @@ public class App extends Application {
                     System.getLogger(App.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
                 }
                 ClientStreamSocket.stopStream();
+                ClientSocket.closeConnection();
             }).start();
+        } else {
+            ClientStreamSocket.stopStream();
+            ClientSocket.closeConnection();
         }
-        ClientStreamSocket.stopStream();
     }
 
     static void setRoot(String fxml) throws IOException {

@@ -2,7 +2,6 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
@@ -26,29 +25,29 @@
             </children>
         </StackPane>
         <!-- Content -->
-        <VBox alignment="CENTER" spacing="14">
+        <VBox alignment="CENTER" prefHeight="227.0" prefWidth="336.0" spacing="14">
             <padding>
                 <Insets bottom="30" left="30" right="30" top="30" />
             </padding>
-
-
-            <!-- Message -->
-            <Label style="-fx-font-size: 16px; -fx-text-fill: #0f172a;" text="Enter the maximum score:" />
-
-            <!-- TextField -->
-            <TextField fx:id="scoreField" maxWidth="200" promptText="Enter score here" style="-fx-font-size: 14px; -fx-background-radius: 10;" />
-            <CheckBox fx:id="recordGameCheckBox" alignment="TOP_LEFT" mnemonicParsing="false" prefHeight="27.0" prefWidth="144.0" text="Record Gam" textFill="#2b7cee">
+   
+      
+                     <!-- Message -->
+            <Label prefHeight="26.0" prefWidth="210.0" style="-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #0f172a;" text="Enter the game score:" />
+   
+                  <!-- TextField -->
+            <TextField fx:id="scoreField" maxWidth="200" prefHeight="30.0" prefWidth="192.0" promptText="Enter score here" style="-fx-font-size: 14px; -fx-background-radius: 10;" />
+   
+                  <!-- HBox للخطأ -->
+            <HBox fx:id="errorBox" alignment="CENTER" prefHeight="15.0" prefWidth="281.0" spacing="2">
+                <Label fx:id="errorLabel" style="-fx-text-fill: red; -fx-font-size: 10px;" text="" />
+            </HBox>
+            <CheckBox fx:id="recordGameCheckBox" alignment="TOP_LEFT" mnemonicParsing="false" prefHeight="20.0" prefWidth="216.0" style="-fx-font-weight: bold;" text="Record Game" textFill="#2b7cee">
                 <font>
                     <Font size="14.0" />
                 </font>
             </CheckBox>
-
-            <!-- HBox للخطأ -->
-            <HBox fx:id="errorBox" alignment="CENTER" spacing="2">
-                <Label fx:id="errorLabel" style="-fx-text-fill: red; -fx-font-size: 10px;" text="" />
-            </HBox>
-
-            <JFXButton maxWidth="Infinity" onMousePressed="#handlePressed" text="OK" textFill="#2b7cee" />
+   
+                  <JFXButton maxWidth="Infinity" onMousePressed="#handlePressed" prefHeight="30.0" prefWidth="275.0" text="OK" textFill="#2b7cee" />
         </VBox>
 
     </VBox>

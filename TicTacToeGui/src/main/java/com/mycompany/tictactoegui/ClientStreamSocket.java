@@ -45,11 +45,16 @@ public class ClientStreamSocket {
 
     static private void connectToServer() throws UnknownHostException, UnknownHostException, IOException {
         if (socket == null) {
-            socket = new Socket(InetAddress.getLocalHost(), 5006);
+            if (ClientSocket.SERVER_IP != null) {
+                socket = new Socket(ClientSocket.SERVER_IP, 5006);
+            } else {
+                socket = new Socket(InetAddress.getLocalHost(), 5006);
+            }
+
             out = new ObjectOutputStream(socket.getOutputStream());
             out.flush();
             in = new ObjectInputStream(socket.getInputStream());
-
+            user = ClientSocket.user;
             setUserInServer();
         }
     }
@@ -60,6 +65,9 @@ public class ClientStreamSocket {
     }
 
     static public void startStream() {
+        if (socket != null) {
+            return;
+        }
         System.out.println("Stream Socket started");
 
         new Thread(() -> {
@@ -72,7 +80,15 @@ public class ClientStreamSocket {
                         case REQUEST_GAME:
                             if (!isInGame) {
                                 GameRequest.RequestReceived(response);
+                            } else {
+                                GameRequest.sendRejectRequest((UserData) response.getData());
                             }
+                            break;
+                        case INVITE_ACCEPTED:
+                        case INVITE_REJECTED:
+                        case SERVER_FAILURE:
+                        case INVITE_DROPPED:
+                            GameRequest.handleInviteResponse(response);
                             break;
                         case START_GAME:
                             if (!isInGame) {
@@ -81,12 +97,6 @@ public class ClientStreamSocket {
                                 GameRequest.startOnlineGame((GameData) response.getData());
                                 isInGame = true;
                             }
-                            break;
-                        case INVITE_ACCEPTED:
-                        case INVITE_REJECTED:
-                        case INVITE_DROPPED:
-                        case SERVER_FAILURE:
-                            GameRequest.handleInviteResponse(response);
                             break;
                         case GAME_OVER:
                             isInGame = false;
@@ -155,6 +165,7 @@ public class ClientStreamSocket {
         appRun = false;
         isInGame = false;
         closeConnection();
+        ClientSocket.closeConnection();
         Platform.runLater(() -> {
             try {
                 App.setRoot("home");

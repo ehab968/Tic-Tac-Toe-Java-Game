@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.function.BiConsumer;
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -22,7 +23,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class GameController {
+public class GameManager {
 
     GridPane gridPane;
     Pane gamePane;
@@ -43,12 +44,22 @@ public class GameController {
     private int difficulty;
     SingleMode singleMode;
 
+    public int getUserScore() {
+        return userScore;
+    }
+
+    public int getOpponentScore() {
+        return opponentScore;
+    }
+
     ArrayList<GameMove> gameMoves;
     int actionOrder;
     boolean isWantToSaveRecord;
     GameRecorder gameRecorder;
 
-    public GameController(Pane gamePane, GridPane gridPane, String recordPath) {
+    public GameManager() {}
+
+    public GameManager(Pane gamePane, GridPane gridPane, String recordPath) {
 
         this.gridPane = gridPane;
         this.gamePane = gamePane;
@@ -106,11 +117,11 @@ public class GameController {
         }
     }
 
-    public final void setOnUserChanged(OnUserEvent listener) {
+    public void setOnUserChanged(OnUserEvent listener) {
         this.onUserChanged = listener;
     }
 
-    public final void setOnUserWinning(OnUserEvent listener) {
+    public void setOnUserWinning(OnUserEvent listener) {
         this.onUserWinning = listener;
     }
 
@@ -154,7 +165,7 @@ public class GameController {
 
     }
 
-    public final void restartGame() {
+    public void restartGame() {
         System.out.println("restart");
         gamePane.getChildren().removeIf(n -> n instanceof Line);
         isWin = false;
@@ -176,7 +187,7 @@ public class GameController {
         }
     }
 
-    public final void exitGame() {
+    public void exitGame() {
         if (gameRecorder != null) {
             gameRecorder.stopPlayback();
         }
@@ -296,11 +307,21 @@ public class GameController {
             PauseTransition pause = new PauseTransition(Duration.seconds(.5));
             pause.setOnFinished(event -> {
                 showWinningDialog(game);
+
                 startNewGame();
+                System.out.println("************************************");
+                PrimaryController.getInstance()
+                        .updateRestartButtonText("Restart the round");
+                System.out.println(PrimaryController.getInstance()
+                );
             });
             pause.play();
 
         }
+    }
+
+    public int getChoosenScore() {
+        return choosenScore;
     }
 
     public void setOnScoreChanged(BiConsumer<Integer, Integer> listener) {
@@ -309,6 +330,7 @@ public class GameController {
 
     private void showWinningDialog(GameData game) {
         WinDialog.show(game, user, this);
+
     }
 
     public boolean showChosseScoreDialog() {
@@ -321,12 +343,22 @@ public class GameController {
             dialogStage.initModality(Modality.APPLICATION_MODAL);
             dialogStage.setTitle("Choose Score");
             dialogStage.setScene(new Scene(dialogRoot));
+            dialogStage.setResizable(false);
 
             dialogStage.setOnCloseRequest(event -> {
-                event.consume();
-            });
 
-            dialogStage.setResizable(false);
+                event.consume();
+
+                dialogStage.close();
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        exitGame();
+                    }
+                });
+
+            }
+            );
 
             dialogStage.showAndWait();
 
@@ -334,7 +366,7 @@ public class GameController {
             isWantToSaveRecord = chooseScoreController.isWantToRecord();
             return true;
         } catch (IOException ex) {
-            System.getLogger(GameController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            System.getLogger(GameManager.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
         return false;
 
@@ -347,6 +379,9 @@ public class GameController {
 
     public void setModeType(int modeType) {
         this.modeType = modeType;
+        if (modeType == 1) {
+            showChosseScoreDialog();
+        }
     }
 
     public boolean getIsWin() {

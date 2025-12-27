@@ -19,7 +19,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 /**
@@ -32,12 +31,13 @@ public class ChooseScoreController implements Initializable {
     @FXML
     private TextField scoreField;
     @FXML
-    private HBox errorBox;
-    @FXML
     private Label errorLabel;
-       private int choosenScore;
+    private int choosenScore;
     @FXML
     private CheckBox recordGameCheckBox;
+    @FXML
+    private HBox errorBox;
+
     /**
      * Initializes the controller class.
      */
@@ -45,29 +45,34 @@ public class ChooseScoreController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
     }
-    
+
     @FXML
     private void handlePressed(MouseEvent event) {
 
         try {
-             choosenScore = parseInt(scoreField.getText());
-            Button b = (Button) event.getSource();
-            Stage stage = (Stage) b.getScene().getWindow();
+            choosenScore = parseInt(scoreField.getText());
+
             if (choosenScore <= 0) {
                 errorLabel.setText("Please enter a number greater than 0");
                 return;
             }
+            Button b = (Button) event.getSource();
+            Stage stage = (Stage) b.getScene().getWindow();
             stage.close();
         } catch (NumberFormatException ex) {
             errorLabel.setText("Please enter a number greater than 0");
 
         }
     }
-     public int getScore() {
+
+    
+    public int getScore() {
         return choosenScore;
     }
+
+    public boolean isWantToRecord() {
+        return recordGameCheckBox.isSelected();
+    }
      
-     public boolean isWantToRecord(){
-         return recordGameCheckBox.isSelected();
-     }
+    
 }
