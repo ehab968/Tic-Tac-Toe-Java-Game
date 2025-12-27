@@ -49,7 +49,7 @@ public class ClientStreamSocket {
             out = new ObjectOutputStream(socket.getOutputStream());
             out.flush();
             in = new ObjectInputStream(socket.getInputStream());
-
+            user = ClientSocket.user;
             setUserInServer();
         }
     }
@@ -61,7 +61,9 @@ public class ClientStreamSocket {
 
     static public void startStream() {
         System.out.println("Stream Socket started");
-
+        if(socket != null){
+            return;
+        }
         new Thread(() -> {
             try {
                 connectToServer();

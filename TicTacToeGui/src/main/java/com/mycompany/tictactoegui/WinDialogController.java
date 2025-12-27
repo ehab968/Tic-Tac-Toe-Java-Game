@@ -8,7 +8,6 @@ package com.mycompany.tictactoegui;
  *
  * @author mahmo
  */
-
 import com.iti.group3.tic_tac_toe_shared.GameData;
 import com.iti.group3.tic_tac_toe_shared.UserData;
 import java.util.Random;
@@ -48,16 +47,16 @@ public class WinDialogController {
     @FXML
     private StackPane root;
 
-
     Random rand;
     GameData game;
     private UserData user;
     private UserData opponent;
 
     private int totalScore;
-
+    public static WinDialogController instance;
 
     public void initialize() {
+        instance = this;
         rand = new Random();
     }
 
@@ -82,22 +81,12 @@ public class WinDialogController {
 
     public void onBackToMainMenu() {
         close();
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                gameController.exitGame();
-            }
-        });
-
+        PrimaryController.getInstance().exitGame();
     }
 
     public void onPlayAgain() {
         close();
-        Platform.runLater(() -> {
-            gameController.restartGame();
-            gameController.showChosseScoreDialog();
-        });
-
+        PrimaryController.getInstance().restartGame();
     }
 
     public void playVideo() {
@@ -116,7 +105,7 @@ public class WinDialogController {
 
         videoText.setText(getRandomCongratsText());
         Platform.runLater(() -> {
-            videoManager = new VideoManager("/videos_audios/bravo_fixed.mp4", mediaView);
+            videoManager = new VideoManager("/videos_audios/bravo.mp4", mediaView);
         });
     }
 
@@ -136,14 +125,12 @@ public class WinDialogController {
             videoManager = new VideoManager("/videos_audios/losing.mp4", mediaView);
         });
     }
-    
-   
-    private void close() {
+
+    public void close() {
         videoManager.stop();
         Stage stage = (Stage) root.getScene().getWindow();
         stage.close();
     }
-
 
     private String getRandomCongratsText() {
         String userName = user.getUserName();
@@ -155,7 +142,6 @@ public class WinDialogController {
 
         return congrats[rand.nextInt(congrats.length)];
     }
-
 
     private String getRandomLosingText() {
         String userName = user.getUserName();

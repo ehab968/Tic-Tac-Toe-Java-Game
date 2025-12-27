@@ -2,7 +2,6 @@ package com.mycompany.tictactoegui;
 
 import com.iti.group3.tic_tac_toe_shared.Request;
 import com.iti.group3.tic_tac_toe_shared.RequestType;
-import static com.mycompany.tictactoegui.ClientStreamSocket.user;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -84,8 +83,7 @@ public class PrimaryController implements Initializable {
             });
 
             restartGameButton.setOnAction((action) -> {
-                gc.restartGame();
-                restartGameButton.setText("Restart the round");
+                restartGame();
             });
 
             gc.setOnScoreChanged((uScore, oScore) -> {
@@ -109,18 +107,7 @@ public class PrimaryController implements Initializable {
             });
 
             restartGameButton.setOnAction((action) -> {
-                if (ogc.isWin || ogc.allCellsFull()) {
-                    try {
-                        ClientStreamSocket.write(new Request(RequestType.RESTART_GAME, null));
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    } catch (ClassNotFoundException ex) {
-                        ex.printStackTrace();
-                    }
-                    restartGameButton.setText("Restart the round");
-                } else {
-                    showAlert("restart error", "the game doesn't finish yet");
-                }
+                restartGame();
             });
         }
     }
@@ -194,6 +181,30 @@ public class PrimaryController implements Initializable {
 
     @FXML
     private void onExitPressed(ActionEvent event) {
+        exitGame();
+    }
+
+    public void restartGame() {
+        if (isOnline) {
+            if (ogc.isWin || ogc.allCellsFull()) {
+                try {
+                    ClientStreamSocket.write(new Request(RequestType.RESTART_GAME, null));
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                } catch (ClassNotFoundException ex) {
+                    ex.printStackTrace();
+                }
+                restartGameButton.setText("Restart the round");
+            } else {
+                showAlert("restart error", "the game doesn't finish yet");
+            }
+        } else {
+            gc.restartGame();
+            restartGameButton.setText("Restart the round");
+        }
+    }
+
+    public void exitGame() {
         if (isOnline) {
             if (ogc.isWin || ogc.allCellsFull()) {
                 try {

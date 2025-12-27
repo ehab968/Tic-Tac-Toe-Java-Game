@@ -48,6 +48,10 @@ public class GameController {
     boolean isWantToSaveRecord;
     GameRecorder gameRecorder;
 
+    public GameController(Pane gamePane, GridPane gridPane) {
+        this(gamePane, gridPane, null);
+    }
+
     public GameController(Pane gamePane, GridPane gridPane, String recordPath) {
 
         this.gridPane = gridPane;
@@ -106,11 +110,11 @@ public class GameController {
         }
     }
 
-    public final void setOnUserChanged(OnUserEvent listener) {
+    public void setOnUserChanged(OnUserEvent listener) {
         this.onUserChanged = listener;
     }
 
-    public final void setOnUserWinning(OnUserEvent listener) {
+    public void setOnUserWinning(OnUserEvent listener) {
         this.onUserWinning = listener;
     }
 
@@ -154,7 +158,7 @@ public class GameController {
 
     }
 
-    public final void restartGame() {
+    public void restartGame() {
         System.out.println("restart");
         gamePane.getChildren().removeIf(n -> n instanceof Line);
         isWin = false;
@@ -176,7 +180,7 @@ public class GameController {
         }
     }
 
-    public final void exitGame() {
+    public void exitGame() {
         if (gameRecorder != null) {
             gameRecorder.stopPlayback();
         }

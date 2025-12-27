@@ -74,6 +74,7 @@ public class OnlineUsersController implements Initializable {
 
     public void loadOnlineUsers() {
         new Thread(() -> {
+            ClientStreamSocket.startStream();
             List<UserData> onlineUsers = getOnlineUsers();
 
             Platform.runLater(() -> {

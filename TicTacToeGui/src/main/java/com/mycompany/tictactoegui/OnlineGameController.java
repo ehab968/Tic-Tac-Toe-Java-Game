@@ -15,7 +15,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 
-public class OnlineGameController {
+public class OnlineGameController extends GameController {
 
     GridPane gridPane;
     Pane gamePane;
@@ -35,6 +35,7 @@ public class OnlineGameController {
     boolean isMyTurn = false;
 
     OnlineGameController(Pane gamePane, GridPane gridPane) {
+        super(gamePane, gridPane);
         this.gridPane = gridPane;
         this.gamePane = gamePane;
         game = ClientStreamSocket.currentGame;
@@ -107,6 +108,7 @@ public class OnlineGameController {
         }
     }
 
+    @Override
     public final void setOnUserChanged(OnUserEvent listener) {
         this.onUserChanged = listener;
     }
@@ -115,7 +117,8 @@ public class OnlineGameController {
         this.onUserWinning = listener;
     }
 
-    private void addShapeToCell(StackPane cell, char player) {
+    @Override
+    public void addShapeToCell(StackPane cell, char player) {
         if (player == 'X') {
             XShape x = new XShape(45);
             cell.getChildren().add(x);
@@ -125,7 +128,8 @@ public class OnlineGameController {
         }
     }
 
-    private void changePlayer() {
+    @Override
+    public void changePlayer() {
         mySymbol = (mySymbol == 'X') ? 'O' : 'X';
 
         if (onUserChanged != null) {
@@ -149,7 +153,8 @@ public class OnlineGameController {
         return isMyTurn;
     }
 
-    public final void restartGame() {
+    @Override
+    public void restartGame() {
         gamePane.getChildren().removeIf(n -> n instanceof Line);
         lastMoveSymbol = '\0';
         isWin = false;
@@ -167,6 +172,8 @@ public class OnlineGameController {
         if (onUserChanged != null) {
             onUserChanged.handle(mySymbol);
         }
+        WinDialogController.instance.close();
+
     }
 
     public boolean allCellsFull() {
@@ -178,8 +185,10 @@ public class OnlineGameController {
         return true;
     }
 
-    public final void exitGame() {
+    @Override
+    public void exitGame() {
         try {
+            WinDialogController.instance.close();
             App.setRoot("onLineUsers");
         } catch (IOException ex) {
             System.getLogger(PrimaryController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
@@ -191,7 +200,8 @@ public class OnlineGameController {
         3   4   5
         6   7   8
      */
-    private void checkWin() {
+    @Override
+    public void checkWin() {
         int[][] wins = {
             // Horizontal
             {0, 1, 2}, {3, 4, 5}, {6, 7, 8},
@@ -238,6 +248,7 @@ public class OnlineGameController {
         gamePane.getChildren().add(line);
     }
 
+    @Override
     public void onUserWon(int[] winningLine) {
         isWin = true;
         drawWinningLine(winningLine);
@@ -246,25 +257,24 @@ public class OnlineGameController {
             game.setWinner(user);
             try {
                 ClientStreamSocket.write(new Request(RequestType.UPDATE_SCORE, game.winner));
-            } catch (IOException ex) {
-                System.getLogger(OnlineGameController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-            } catch (ClassNotFoundException ex) {
+            } catch (IOException | ClassNotFoundException ex) {
                 System.getLogger(OnlineGameController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
             }
         } else {
             game.setWinner(opponent);
         }
-        //showWinningDialog(game);
+        showWinningDialog(game);
         if (onUserWinning != null) {
             onUserWinning.handle(lastMoveSymbol);
         }
 
     }
 
+    @Override
     public void startNewGame() {
     }
 
-    /*private void showWinningDialog(GameData game) {
+    private void showWinningDialog(GameData game) {
         WinDialog.show(game, user, this);
-    }*/
+    }
 }
