@@ -43,43 +43,24 @@ public class Accept_requestController implements Initializable {
 
     @FXML
     private void acceptBtnAction(ActionEvent event) {
-
-        try {
-            Request request = new Request(
-                    RequestType.ACCEPT_INVITE,
-                    PendingInvite.getSender()
-            );
-            ClientStreamSocket.write(request);
-
-            Platform.runLater(() -> {
-                CustomDialog.close();
-            });
-            PendingInvite.clear();
-
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        GameRequest.sendAcceptRequest(PendingInvite.getSender());
+        Platform.runLater(() -> {
+            CustomDialog.close();
+        });
+        PendingInvite.clear();
     }
 
     @FXML
     private void backArrowBtnAction(ActionEvent event) {
+        cancel();
+    }
 
-        try {
-            Request request = new Request(
-                    RequestType.REJECT_INVITE,
-                    PendingInvite.getSender()
-            );
-            ClientStreamSocket.write(request);
-
-            Platform.runLater(() -> {
-                CustomDialog.close();
-            });
-
-            PendingInvite.clear();
-
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+    public void cancel() {
+        GameRequest.sendRejectRequest(PendingInvite.getSender());
+        Platform.runLater(() -> {
+            CustomDialog.close();
+        });
+        PendingInvite.clear();
     }
 
     public void setOpponent(UserData opponent) {

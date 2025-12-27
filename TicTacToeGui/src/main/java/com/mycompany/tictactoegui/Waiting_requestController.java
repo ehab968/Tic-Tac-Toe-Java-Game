@@ -12,10 +12,13 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
 import javafx.scene.text.Text;
+import javafx.stage.WindowEvent;
+
 /**
  * FXML Controller class
  *
@@ -23,17 +26,9 @@ import javafx.scene.text.Text;
  */
 public class Waiting_requestController implements Initializable {
 
-
     @FXML
     private Text opponentName;
-    
-        private Stage stage;
-        
-        UserData opponent;
-
-        public void setStage(Stage stage) {
-        this.stage = stage;
-    }
+    UserData opponent;
 
     /**
      * Initializes the controller class.
@@ -41,29 +36,34 @@ public class Waiting_requestController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-    }    
-    
+        
+    }
+
     public void setOpponent(UserData opponent) {
         this.opponent = opponent;
         opponentName.setText(opponent.getUserName());
     }
+
     @FXML
-private void cancelInviteAction(ActionEvent event) {
-    try {
-        // 1️⃣ نبعت للسيرفر اننا لغينا الإنفايت
-        Request cancelRequest = new Request(
-                RequestType.CANCEL_INVITE,
-                opponent
-        );
-        ClientStreamSocket.write(cancelRequest);
-
-    } catch (Exception e) {
-        e.printStackTrace();
-    } finally {
-        // 2️⃣ نقفل الديالوج
-        CustomDialog.close();
+    private void cancelInviteAction(ActionEvent event) {
+        cancel();
     }
-}
 
+    public void cancel() {
+        try {
+            // 1️⃣ نبعت للسيرفر اننا لغينا الإنفايت
+            Request cancelRequest = new Request(
+                    RequestType.CANCEL_INVITE,
+                    opponent
+            );
+            ClientStreamSocket.write(cancelRequest);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // 2️⃣ نقفل الديالوج
+            CustomDialog.close();
+        }
+    }
 
 }

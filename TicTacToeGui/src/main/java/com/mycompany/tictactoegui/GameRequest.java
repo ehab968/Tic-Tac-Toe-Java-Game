@@ -32,6 +32,45 @@ public class GameRequest {
         }
     }
 
+    public static void RequestReceived(Response response) {
+        UserData sender = (UserData) response.getData();
+
+        Platform.runLater(() -> {
+            PendingInvite.setSender(sender);
+            CustomDialog.show("accept_request.fxml", sender);
+        });
+    }
+
+    public static void sendAcceptRequest(UserData user1) {
+        try {
+            Request request = new Request(
+                    RequestType.ACCEPT_INVITE,
+                    user1
+            );
+            ClientStreamSocket.write(request);
+
+        } catch (IOException ex) {
+            System.getLogger(GameRequest.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        } catch (ClassNotFoundException ex) {
+            System.getLogger(GameRequest.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+    }
+
+    public static void sendRejectRequest(UserData user1) {
+        try {
+            Request request = new Request(
+                    RequestType.REJECT_INVITE,
+                    user1
+            );
+            ClientStreamSocket.write(request);
+
+        } catch (IOException ex) {
+            System.getLogger(GameRequest.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        } catch (ClassNotFoundException ex) {
+            System.getLogger(GameRequest.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+    }
+
     public static void invitationAccepted(UserData userData2) {
         Platform.runLater(() -> {
             CustomDialog.close();
@@ -54,15 +93,6 @@ public class GameRequest {
             } catch (IOException ex) {
                 System.getLogger(GameRequest.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
             }
-        });
-    }
-
-    public static void RequestReceived(Response response) {
-        UserData sender = (UserData) response.getData();
-
-        Platform.runLater(() -> {
-            PendingInvite.setSender(sender);
-            CustomDialog.show("accept_request.fxml", sender);
         });
     }
 
