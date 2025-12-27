@@ -74,7 +74,15 @@ public class ClientStreamSocket {
                         case REQUEST_GAME:
                             if (!isInGame) {
                                 GameRequest.RequestReceived(response);
+                            } else {
+                                GameRequest.sendRejectRequest((UserData) response.getData());
                             }
+                            break;
+                        case INVITE_ACCEPTED:
+                        case INVITE_REJECTED:
+                        case SERVER_FAILURE:
+                        case INVITE_DROPPED:
+                            GameRequest.handleInviteResponse(response);
                             break;
                         case START_GAME:
                             if (!isInGame) {
@@ -83,12 +91,6 @@ public class ClientStreamSocket {
                                 GameRequest.startOnlineGame((GameData) response.getData());
                                 isInGame = true;
                             }
-                            break;
-                        case INVITE_ACCEPTED:
-                        case INVITE_REJECTED:
-                        case INVITE_DROPPED:
-                        case SERVER_FAILURE:
-                            GameRequest.handleInviteResponse(response);
                             break;
                         case GAME_OVER:
                             isInGame = false;

@@ -23,7 +23,46 @@ public class GameRequest {
         try {
             Request request = new Request(RequestType.INVITE_USER, user2);
             ClientStreamSocket.write(request);
-            CustomDialog.show("waiting_request.fxml",user2);
+            CustomDialog.show("waiting_request.fxml", user2);
+
+        } catch (IOException ex) {
+            System.getLogger(GameRequest.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        } catch (ClassNotFoundException ex) {
+            System.getLogger(GameRequest.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+    }
+
+    public static void RequestReceived(Response response) {
+        UserData sender = (UserData) response.getData();
+
+        Platform.runLater(() -> {
+            PendingInvite.setSender(sender);
+            CustomDialog.show("accept_request.fxml", sender);
+        });
+    }
+
+    public static void sendAcceptRequest(UserData user1) {
+        try {
+            Request request = new Request(
+                    RequestType.ACCEPT_INVITE,
+                    user1
+            );
+            ClientStreamSocket.write(request);
+
+        } catch (IOException ex) {
+            System.getLogger(GameRequest.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        } catch (ClassNotFoundException ex) {
+            System.getLogger(GameRequest.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+    }
+
+    public static void sendRejectRequest(UserData user1) {
+        try {
+            Request request = new Request(
+                    RequestType.REJECT_INVITE,
+                    user1
+            );
+            ClientStreamSocket.write(request);
 
         } catch (IOException ex) {
             System.getLogger(GameRequest.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
@@ -39,11 +78,11 @@ public class GameRequest {
     }
 
     public static void invitationRejected(UserData userData2) {
-        CustomDialog.show("rejected_request.fxml",userData2);
+        CustomDialog.show("rejected_request.fxml", userData2);
     }
 
     public static void invitationDropped() {
-        CustomDialog.show("connection_lost_request.fxml",null);
+        Platform.runLater(CustomDialog::close);
     }
 
     public static void startOnlineGame(GameData game) {
@@ -57,15 +96,6 @@ public class GameRequest {
         });
     }
 
-    public static void RequestReceived(Response response) {
-        UserData sender = (UserData) response.getData();
-
-        Platform.runLater(() -> {
-            PendingInvite.setSender(sender);
-            CustomDialog.show("accept_request.fxml", sender);
-        });
-    }
-
     public static void handleInviteResponse(Response response) {
         Platform.runLater(() -> {
             System.out.println("entering switch" + response);
@@ -75,14 +105,14 @@ public class GameRequest {
                     startOnlineGame(new GameData("1", ClientSocket.user, opponent));
                     break;
                 case INVITE_REJECTED:
-                 UserData opponent2 = (UserData) response.getData();
+                    UserData opponent2 = (UserData) response.getData();
 
                     invitationRejected(opponent2);
                     break;
                 case INVITE_DROPPED:
                 case SERVER_FAILURE:
                     invitationDropped();
-                    break;           
+                    break;
             }
         });
     }

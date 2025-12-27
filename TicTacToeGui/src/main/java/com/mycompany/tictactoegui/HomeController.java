@@ -84,13 +84,21 @@ public class HomeController implements Initializable {
     @FXML
     private void onSelectOnline(ActionEvent event) {
         try {
+            if (ClientSocket.SERVER_IP == null || ClientSocket.SERVER_IP.isBlank()) {
+                App.setRoot("git_ip");
+                return;
+            }
+
             if (ClientSocket.user == null) {
                 App.setRoot("login");
-            } else {
+            } 
+            else {
                 App.setRoot("onLineUsers");
             }
+
         } catch (IOException ex) {
             System.getLogger(HomeController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+
         }
     }
 

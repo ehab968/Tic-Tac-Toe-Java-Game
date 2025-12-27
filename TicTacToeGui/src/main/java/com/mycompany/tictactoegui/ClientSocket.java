@@ -20,15 +20,17 @@ import java.net.UnknownHostException;
  * @author mahmo
  */
 public class ClientSocket extends Thread {
-    static  String SERVER_IP ;
+
+    static String SERVER_IP = null;
     static private Socket socket;
     static private ObjectInputStream in;
     static private ObjectOutputStream out;
     static public UserData user;
-    
+
     static private void connectToServer() throws UnknownHostException, UnknownHostException, IOException {
         if (socket == null) {
-            SERVER_IP="192.168.1.23";
+            //SERVER_IP="192.168.1.23";
+
             socket = new Socket(InetAddress.getLocalHost(), 5005);
             out = new ObjectOutputStream(socket.getOutputStream());
             out.flush();
