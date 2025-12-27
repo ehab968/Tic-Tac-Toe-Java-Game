@@ -27,29 +27,31 @@ This project implements the classic Tic Tac Toe game logic:
 - Leaderboard support  
 
 
-## 📸 Screenshots
+## Screenshots
 
-### 🏠 Home Screen & 🔐 Login
-<img src="https://github.com/user-attachments/assets/1242fdae-1b1d-4180-8fd5-e81ef3a3e9b5" width="450" />
-<img src="https://github.com/user-attachments/assets/b483d8df-ab83-404f-b39b-77a8dc820bf6" width="450" />
+### Home Screen
+<img src="https://github.com/user-attachments/assets/1242fdae-1b1d-4180-8fd5-e81ef3a3e9b5" width="500" height="500" />
 
-<br><br>
+### Login
+<img src="https://github.com/user-attachments/assets/b483d8df-ab83-404f-b39b-77a8dc820bf6" width="500" height="500" />
 
-### 📝 Register & 👥 Online Users
-<img src="https://github.com/user-attachments/assets/edd03a99-27ab-4596-acd3-9cee9d7d4d63" width="450" />
-<img src="https://github.com/user-attachments/assets/092899a3-6646-48a1-88ff-6c94e0ff946a" width="450" />
+### Register
+<img src="https://github.com/user-attachments/assets/edd03a99-27ab-4596-acd3-9cee9d7d4d63" width="500" height="500" />
 
-<br><br>
+### Online Users
+<img src="https://github.com/user-attachments/assets/092899a3-6646-48a1-88ff-6c94e0ff946a" width="500" height="500" />
 
-### 🎮 Online Game & 🤖 AI Mode
-<img src="https://github.com/user-attachments/assets/f903b66c-00fc-4b04-b4de-945096ced237" width="450" />
-<img src="https://github.com/user-attachments/assets/d3bd5bbd-c6ff-4cc1-9f9d-d664913afcd4" width="450" />
+### Game Board (Online)
+<img src="https://github.com/user-attachments/assets/f903b66c-00fc-4b04-b4de-945096ced237" width="500" height="500" />
 
-<br><br>
+### AI Mode
+<img src="https://github.com/user-attachments/assets/d3bd5bbd-c6ff-4cc1-9f9d-d664913afcd4" width="500" height="500" />
 
-### 🏁 Choose Score & 🏆 Leaderboard
-<img src="https://github.com/user-attachments/assets/44f378e6-b249-4260-bdd7-b769d3caa45e" width="450" />
-<img src="https://github.com/user-attachments/assets/87b56404-f205-4241-9856-6adaeb8d28e3" width="450" />
+### Choose Score
+<img src="https://github.com/user-attachments/assets/44f378e6-b249-4260-bdd7-b769d3caa45e" width="500" height="500" />
+
+### Leaderboard
+<img src="https://github.com/user-attachments/assets/87b56404-f205-4241-9856-6adaeb8d28e3" width="500" height="500" />
 
 
 
