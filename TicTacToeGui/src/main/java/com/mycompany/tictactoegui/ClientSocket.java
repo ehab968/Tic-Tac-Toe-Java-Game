@@ -29,8 +29,11 @@ public class ClientSocket extends Thread {
 
     static private void connectToServer() throws UnknownHostException, UnknownHostException, IOException {
         if (socket == null) {
-
-            socket = new Socket(InetAddress.getLocalHost(), 5005);
+            if (SERVER_IP != null) {
+                socket = new Socket(SERVER_IP, 5005);
+            } else {
+                socket = new Socket(InetAddress.getLocalHost(), 5005);
+            }
 
             out = new ObjectOutputStream(socket.getOutputStream());
             out.flush();

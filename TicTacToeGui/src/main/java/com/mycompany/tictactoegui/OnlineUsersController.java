@@ -37,6 +37,10 @@ public class OnlineUsersController implements Initializable {
     private Button reloadButton;
     @FXML
     private Label screenTitle;
+    
+    @FXML
+    private Label userName;
+    
     @FXML
     private Label onlineUsersText;
 
@@ -48,7 +52,7 @@ public class OnlineUsersController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         loadOnlineUsers();
         onlineUsersText.setText(String.valueOf(0) + " Online");
-
+        userName.setText(ClientSocket.user.getUserName());
     }
 
     // ================= Networking =================

@@ -45,7 +45,12 @@ public class ClientStreamSocket {
 
     static private void connectToServer() throws UnknownHostException, UnknownHostException, IOException {
         if (socket == null) {
-            socket = new Socket(InetAddress.getLocalHost(), 5006);
+            if (ClientSocket.SERVER_IP != null) {
+                socket = new Socket(ClientSocket.SERVER_IP, 5006);
+            } else {
+                socket = new Socket(InetAddress.getLocalHost(), 5006);
+            }
+
             out = new ObjectOutputStream(socket.getOutputStream());
             out.flush();
             in = new ObjectInputStream(socket.getInputStream());
