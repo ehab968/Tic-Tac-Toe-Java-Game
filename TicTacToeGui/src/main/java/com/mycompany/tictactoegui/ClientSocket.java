@@ -78,6 +78,7 @@ public class ClientSocket extends Thread {
 
     static public void write(Request request) throws IOException, ClassNotFoundException {
         try {
+            System.out.println("sending request:" + request);
             connectToServer();
             out.writeObject(request);
             out.flush();

@@ -70,6 +70,9 @@ public class PrimaryController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         instance = this;
         //ClientStreamSocket.isInGame = true;
+        if (ClientSocket.user != null) {
+            userNameText.setText(ClientSocket.user.getUserName());
+        }
         if (isOnline == false) {
 
             gc = new GameManager(gamePane, gridPane, recordPath);
@@ -242,6 +245,17 @@ public class PrimaryController implements Initializable {
         this.difficulty = difficulty;
         System.out.println("difficulty" + difficulty);
 
+        switch (difficulty) {
+            case 1:
+                opponentNameText.setText("CPU_Easy");
+                break;
+            case 2:
+                opponentNameText.setText("CPU_Medium");
+                break;
+            case 3:
+                opponentNameText.setText("CPU_Hard");
+                break;
+        }
         if (gc != null) {
             gc.setDifficultyLevel(difficulty);
         }

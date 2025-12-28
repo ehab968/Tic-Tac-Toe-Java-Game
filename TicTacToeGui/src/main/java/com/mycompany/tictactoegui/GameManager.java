@@ -66,8 +66,12 @@ public class GameManager {
         this.gamePane = gamePane;
         gameMoves = new ArrayList(0);
         actionOrder = 0;
-        user = new UserData("UserName");
-        opponent = new UserData("CPU_MEDIUM");
+        if (ClientSocket.user != null) {
+            user = ClientSocket.user;
+        } else {
+            user = new UserData("Player X");
+        }
+        opponent = new UserData("PLayer O");
         game = new GameData("1", user, opponent, null);
         //showChosseScoreDialog();
         singleMode = new SingleMode(charMatrix, stackCells, this);
@@ -376,6 +380,17 @@ public class GameManager {
     public void setDifficultyLevel(int difficulty) {
         this.difficulty = difficulty;
 
+        switch (difficulty) {
+            case 1:
+                game.playerO = opponent = new UserData("CPU_Easy");
+                break;
+            case 2:
+                game.playerO = opponent = new UserData("CPU_Medium");
+                break;
+            case 3:
+                game.playerO = opponent = new UserData("CPU_Hard");
+                break;
+        }
     }
 
     public void setModeType(int modeType) {
