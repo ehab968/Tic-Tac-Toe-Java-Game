@@ -36,7 +36,6 @@ public class PrimaryController implements Initializable {
     private Text userScoreText;
     @FXML
     private Text opponentScoreText;
-    public String recordPath;
     private int modeType;
     private int difficulty;
 
@@ -54,7 +53,6 @@ public class PrimaryController implements Initializable {
 
     public void setRecordPath(String recordPath) {
         System.out.println("setting recordPath= " + recordPath);
-        this.recordPath = recordPath;
         if (recordPath != null && gc != null) {
             gc.playRecord(recordPath);
         }
@@ -69,10 +67,12 @@ public class PrimaryController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         instance = this;
-        //ClientStreamSocket.isInGame = true;
         if (isOnline == false) {
+            if (ClientSocket.user != null) {
+                userNameText.setText(ClientSocket.user.getUserName());
+            }
 
-            gc = new GameManager(gamePane, gridPane, recordPath);
+            gc = new GameManager(gamePane, gridPane);
 
             gc.setModeType(modeType);
             gc.setDifficultyLevel(difficulty);
@@ -127,8 +127,6 @@ public class PrimaryController implements Initializable {
     }
 
     public void updateScoreUI(int userScore, int opponentScore) {
-        //userScore = user.getScore();
-        //opponentScore = ogc.getOpponentData().getScore();
         userScoreText.setText("Score: " + userScore);
         opponentScoreText.setText("Score: " + opponentScore);
     }
@@ -242,6 +240,17 @@ public class PrimaryController implements Initializable {
         this.difficulty = difficulty;
         System.out.println("difficulty" + difficulty);
 
+        switch (difficulty) {
+            case 1:
+                opponentNameText.setText("CPU_Easy");
+                break;
+            case 2:
+                opponentNameText.setText("CPU_MEDIUM");
+                break;
+            case 3:
+                opponentNameText.setText("CPU_Hard");
+                break;
+        }
         if (gc != null) {
             gc.setDifficultyLevel(difficulty);
         }

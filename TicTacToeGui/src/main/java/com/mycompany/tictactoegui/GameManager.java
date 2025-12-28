@@ -6,6 +6,7 @@ import com.iti.group3.tic_tac_toe_shared.UserData;
 import com.mycompany.tictactoegui.interfaces.OnUserEvent;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.UUID;
 import java.util.function.BiConsumer;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
@@ -25,24 +26,27 @@ import javafx.util.Duration;
 
 public class GameManager {
 
-    GridPane gridPane;
-    Pane gamePane;
-    private OnUserEvent onUserChanged;
-    private OnUserEvent onUserWinning;
-    private char[] charMatrix = new char[9];
-    public StackPane[] stackCells = new StackPane[9]; // => كل ستاك بان هنا ريفرنس للسيل اللى موجودة فى الجريد بان
-    private boolean isWin = false;
-    private char currentPlayer = 'X';
+    protected GridPane gridPane;
+    protected Pane gamePane;
+    protected OnUserEvent onUserChanged;
+    protected OnUserEvent onUserWinning;
+    protected char[] charMatrix = new char[9];
+    protected StackPane[] stackCells = new StackPane[9]; // => كل ستاك بان هنا ريفرنس للسيل اللى موجودة فى الجريد بان
+    protected boolean isWin = false;
+    protected char currentPlayer;
     static int choosenScore;
     private int userScore = 0;
     private int opponentScore = 0;
     private BiConsumer<Integer, Integer> onScoreChanged;
-    UserData user;
-    UserData opponent;
-    GameData game;
+    protected GameData game;
     private int modeType;
     private int difficulty;
     SingleMode singleMode;
+
+    ArrayList<GameMove> gameMoves;
+    protected int actionOrder;
+    boolean isWantToSaveRecord;
+    GameRecorder gameRecorder;
 
     public int getUserScore() {
         return userScore;
@@ -52,29 +56,29 @@ public class GameManager {
         return opponentScore;
     }
 
-    ArrayList<GameMove> gameMoves;
-    int actionOrder;
-    boolean isWantToSaveRecord;
-    GameRecorder gameRecorder;
+    public GameManager() {
+    }
 
-    public GameManager() {}
-
-    public GameManager(Pane gamePane, GridPane gridPane, String recordPath) {
+    public GameManager(Pane gamePane, GridPane gridPane) {
 
         this.gridPane = gridPane;
         this.gamePane = gamePane;
         gameMoves = new ArrayList(0);
         actionOrder = 0;
-        user = new UserData("UserName");
-        opponent = new UserData("CPU_MEDIUM");
-        game = new GameData("1", user, opponent, null);
-        //showChosseScoreDialog();
+        currentPlayer = 'X';
+        UserData user = new UserData("Player X");
+        if (ClientSocket.user != null) {
+            user = ClientSocket.user;
+        }
+        UserData opponent = new UserData("Player O");
+        String gameId = UUID.randomUUID().toString();
+        game = new GameData(gameId, user, opponent, null);
         singleMode = new SingleMode(charMatrix, stackCells, this);
 
         initiateGrid();
     }
 
-    private void initiateGrid() {
+    protected void initiateGrid() {
 
         int cellId = -1;
         for (int row = 0; row < 3; row++) {
@@ -95,8 +99,9 @@ public class GameManager {
     }
 
     public void handleCellPress(StackPane cell) {
-        doClickSound();
         if (!isWin) {
+            doClickSound(currentPlayer);
+
             addShapeToCell(cell, currentPlayer);
             int cellId = Integer.parseInt(cell.getId());
             charMatrix[cellId] = currentPlayer;
@@ -109,10 +114,10 @@ public class GameManager {
         }
     }
 
-    private void doClickSound() {
-        if (currentPlayer == 'X') {
+    protected void doClickSound(char symbol) {
+        if (symbol == 'X') {
             SoundPlayer.PlayerXClick();
-        } else if (currentPlayer == 'O') {
+        } else if (symbol == 'O') {
             SoundPlayer.playerOClick();
         }
     }
@@ -130,11 +135,11 @@ public class GameManager {
         if (player == 'X') {
             XShape x = new XShape(45);
             cell.getChildren().add(x);
-            movePlayer = user;
+            movePlayer = game.playerX;
         } else {
             OShape o = new OShape(15);
             cell.getChildren().add(o);
-            movePlayer = opponent;
+            movePlayer = game.playerO;
         }
 
         actionOrder++;
@@ -148,8 +153,6 @@ public class GameManager {
         if (onUserChanged != null) {
             onUserChanged.handle(currentPlayer);
         }
-        System.out.println("difffffffff" + difficulty);
-        System.out.println("modeType" + modeType);
 
         if (modeType == 1 && currentPlayer == 'O') {
             switch (difficulty) {
@@ -159,7 +162,6 @@ public class GameManager {
                     singleMode.computerRoleMeduim();
                 case 3 ->
                     singleMode.computerRoleHard();
-
             }
         }
 
@@ -171,6 +173,9 @@ public class GameManager {
         isWin = false;
         actionOrder = 0;
 
+        if (gameRecorder != null) {
+            gameRecorder.stopPlayback();
+        }
         for (int i = 0; i < 9; i++) {
             charMatrix[i] = '\0';
             StackPane cell = stackCells[i];
@@ -185,12 +190,31 @@ public class GameManager {
         if (onScoreChanged != null) {
             onScoreChanged.accept(userScore, opponentScore);
         }
+        if (WinDialogController.instance != null) {
+            WinDialogController.instance.close();
+        }
+    }
+
+    public void startNewGame() {
+
+        userScore = opponentScore = 0;
+        restartGame();
+
+        if (onScoreChanged != null) {
+            onScoreChanged.accept(userScore, opponentScore);
+        }
+
+        currentPlayer = 'X';
+        if (onUserChanged != null) {
+            onUserChanged.handle(currentPlayer);
+        }
     }
 
     public void exitGame() {
         if (gameRecorder != null) {
             gameRecorder.stopPlayback();
         }
+
         try {
             App.setRoot("home");
         } catch (IOException ex) {
@@ -227,7 +251,7 @@ public class GameManager {
         return;
     }
 
-    private void drawWinningLine(int[] winIndex) {
+    protected void drawWinningLine(int[] winIndex) {
         //wait until the UI is stable to get the correct X and Y
         gridPane.applyCss();
         gridPane.layout();
@@ -253,15 +277,14 @@ public class GameManager {
     public void onUserWon(int[] winningLine) {
         isWin = true;
         drawWinningLine(winningLine);
-        game.setWinner(user);
 
         if (currentPlayer == 'X') {
             userScore++;
-            game.setWinner(user);
+            game.setWinner(game.playerX);
             userWonWholeGame(userScore);
         } else {
             opponentScore++;
-            game.setWinner(opponent);
+            game.setWinner(game.playerO);
             userWonWholeGame(opponentScore);
 
         }
@@ -277,43 +300,13 @@ public class GameManager {
         }
     }
 
-    private void saveRecord() {
-        gameRecorder = new GameRecorder();
-        gameRecorder.saveRecord(gameMoves, game);
-    }
-
-    public void playRecord(String recordPath) {
-        gameRecorder = new GameRecorder();
-        gameRecorder.playRecord(recordPath, this);
-    }
-
-    public void startNewGame() {
-
-        userScore = opponentScore = 0;
-        restartGame();
-
-        if (onScoreChanged != null) {
-            onScoreChanged.accept(userScore, opponentScore);
-        }
-
-        currentPlayer = 'X';
-        if (onUserChanged != null) {
-            onUserChanged.handle(currentPlayer);
-        }
-    }
-
     private void userWonWholeGame(int userScore) {
         if (userScore > choosenScore / 2) {
             PauseTransition pause = new PauseTransition(Duration.seconds(.5));
             pause.setOnFinished(event -> {
                 showWinningDialog(game);
 
-                startNewGame();
-                System.out.println("************************************");
-                PrimaryController.getInstance()
-                        .updateRestartButtonText("Restart the round");
-                System.out.println(PrimaryController.getInstance()
-                );
+                PrimaryController.getInstance().updateRestartButtonText("Restart the round");
             });
             pause.play();
 
@@ -328,8 +321,8 @@ public class GameManager {
         this.onScoreChanged = listener;
     }
 
-    private void showWinningDialog(GameData game) {
-        WinDialog.show(game, user, this);
+    protected void showWinningDialog(GameData game) {
+        WinDialog.show(game, this);
 
     }
 
@@ -372,9 +365,30 @@ public class GameManager {
 
     }
 
+    private void saveRecord() {
+        gameRecorder = new GameRecorder();
+        gameRecorder.saveRecord(gameMoves, game);
+    }
+
+    public void playRecord(String recordPath) {
+        gameRecorder = new GameRecorder();
+        gameRecorder.playRecord(recordPath, this);
+    }
+
     public void setDifficultyLevel(int difficulty) {
         this.difficulty = difficulty;
 
+        switch (difficulty) {
+            case 1:
+                game.playerO = new UserData("CPU_Easy");
+                break;
+            case 2:
+                game.playerO = new UserData("CPU_MEDIUM");
+                break;
+            case 3:
+                game.playerO = new UserData("CPU_Hard");
+                break;
+        }
     }
 
     public void setModeType(int modeType) {
