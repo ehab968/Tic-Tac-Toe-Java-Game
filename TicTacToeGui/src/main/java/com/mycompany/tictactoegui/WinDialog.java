@@ -38,7 +38,7 @@ public class WinDialog {
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setResizable(false);
-           // stage.initStyle(StageStyle.UNDECORATED);
+            stage.initStyle(StageStyle.UNDECORATED);
             scene.setFill(Color.TRANSPARENT);
             stage.setScene(scene);
             stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
