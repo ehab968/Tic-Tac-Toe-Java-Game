@@ -57,7 +57,8 @@ public class GameManager {
     boolean isWantToSaveRecord;
     GameRecorder gameRecorder;
 
-    public GameManager() {}
+    public GameManager() {
+    }
 
     public GameManager(Pane gamePane, GridPane gridPane, String recordPath) {
 
@@ -329,7 +330,7 @@ public class GameManager {
     }
 
     private void showWinningDialog(GameData game) {
-        WinDialog.show(game, user, this);
+        WinDialog.show(game, this);
 
     }
 
