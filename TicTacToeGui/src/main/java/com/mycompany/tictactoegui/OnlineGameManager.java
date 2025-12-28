@@ -277,6 +277,6 @@ public class OnlineGameManager extends GameManager {
     }
 
     private void showWinningDialog(GameData game) {
-        WinDialog.show(game, user, this);
+        WinDialog.show(game, this);
     }
 }
