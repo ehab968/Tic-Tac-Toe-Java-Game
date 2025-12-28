@@ -90,7 +90,7 @@
                                         <Label style="-fx-text-fill: #94a3b8; -fx-font-weight: 800; -fx-font-size: 10px;" text="UPDATE" />
                                         <HBox alignment="CENTER_RIGHT" spacing="4.0">
                                             <children>
-                                                <Label fx:id="updatedScoreLabel" style="-fx-text-fill: #10b981; -fx-font-weight: 700; -fx-font-size: 18px;" text="+20" />
+                                                <Label fx:id="updatedScoreLabel" style="-fx-text-fill: #10b981; -fx-font-weight: 700; -fx-font-size: 18px;" text="+1" />
                                             </children>
                                         </HBox>
                                     </children>
