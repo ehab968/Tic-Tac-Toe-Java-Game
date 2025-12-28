@@ -63,10 +63,15 @@ public class WinDialogController {
         this.gameController = gameController;
     }
 
-    public void setGameData(GameData game, UserData user) {
+    public void setGameData(GameData game) {
         this.game = game;
-        this.user = user;
-        if (game.playerX == user) {
+        if (ClientSocket.user != null) {
+            this.user = ClientSocket.user;
+        } else {
+            this.user = game.playerX;
+        }
+
+        if (game.playerX.getUserName().equals(this.user.getUserName())) {
             this.opponent = game.playerO;
         } else {
             this.opponent = game.playerX;
@@ -85,11 +90,15 @@ public class WinDialogController {
 
     public void onPlayAgain() {
         close();
+        if (PrimaryController.getInstance().gc != null) {
+            PrimaryController.getInstance().gc.showChosseScoreDialog();
+        }
+
         PrimaryController.getInstance().restartGame();
     }
 
     public void playVideo() {
-        if (game.winner == user) {
+        if (game.winner.getUserName().equals(user.getUserName())) {
             showWinningDialog();
         } else {
             showLosingDialog();
@@ -100,7 +109,7 @@ public class WinDialogController {
         topTitle.setText("Winner 🎉🎉");
         descriptionTxt.setText("You won against");
         opponentName.setText(opponent.getUserName());
-        scoreLabel.setText(Integer.toString(user.getScore()));
+        scoreLabel.setText(Integer.toString(user.getScore() + 1));
 
         videoText.setText(getRandomCongratsText());
         Platform.runLater(() -> {
@@ -115,7 +124,7 @@ public class WinDialogController {
         opponentName.setText(opponent.getUserName());
         descriptionTxt.setTextFill(Color.RED);
 
-        updatedScoreLabel.setText("-20");
+        updatedScoreLabel.setText("0");
         updatedScoreLabel.setTextFill(Color.RED);
         scoreLabel.setText(Integer.toString(user.getScore()));
 
