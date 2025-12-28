@@ -65,6 +65,7 @@ public class ClientStreamSocket {
     }
 
     static public void startStream() {
+        appRun = true;
         if (socket != null) {
             return;
         }
@@ -162,8 +163,6 @@ public class ClientStreamSocket {
     }
 
     public static void handleServerDown() {
-        appRun = false;
-        isInGame = false;
         closeConnection();
         ClientSocket.closeConnection();
         Platform.runLater(() -> {
@@ -193,18 +192,6 @@ public class ClientStreamSocket {
 
     }
 
-    static public Response read() throws IOException, ClassNotFoundException {
-        try {
-            Response response = null;
-            connectToServer();
-            response = (Response) in.readObject();
-            return response;
-        } catch (SocketException e) {
-            closeConnection();
-            throw e;
-        }
-    }
-
     static public void write(Request request) throws IOException, ClassNotFoundException {
         try {
             connectToServer();
@@ -218,7 +205,7 @@ public class ClientStreamSocket {
 
     private static void closeConnection() {
         try {
-            System.out.println("Closing Connection");
+            System.out.println("Closing Client Stream Connection");
             if (out != null) {
                 out.close();
             }
@@ -236,6 +223,9 @@ public class ClientStreamSocket {
             in = null;
             socket = null;
             user = null;
+            appRun = false;
+            isInGame = false;
+            currentGame = null;
         }
     }
 
