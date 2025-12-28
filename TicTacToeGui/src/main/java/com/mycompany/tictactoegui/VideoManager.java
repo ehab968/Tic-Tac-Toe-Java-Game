@@ -2,7 +2,6 @@ package com.mycompany.tictactoegui;
 
 
 import javafx.animation.PauseTransition;
-import javafx.application.Platform;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;

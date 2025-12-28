@@ -90,6 +90,10 @@ public class WinDialogController {
 
     public void onPlayAgain() {
         close();
+        if (PrimaryController.getInstance().gc != null) {
+            PrimaryController.getInstance().gc.showChosseScoreDialog();
+        }
+
         PrimaryController.getInstance().restartGame();
     }
 

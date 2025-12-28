@@ -17,6 +17,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -24,6 +25,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 
 /**
  * FXML Controller class
@@ -99,6 +101,8 @@ public class LeaderBoardController implements Initializable {
         String status = user.getStatus() == 1 ? "Online" : "Offline";
         Label statusLbl = new Label(status);
         statusLbl.setPrefSize(50, 22);
+        statusLbl.setAlignment(Pos.CENTER);        
+        statusLbl.setTextAlignment(TextAlignment.CENTER);
         statusLbl.setStyle(
                 "-fx-background-color: #d1fae5;"
                 + "-fx-padding: 2 6 2 2;"
